@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32126.317
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D635824E-349A-4B66-B335-26C53FB2F530}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{FB464ADA-526A-49CB-B31D-730D808EDED0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{619FB45F-BD60-48F2-8A8D-2BC2671BA3D7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlogApp.Core", "BlogApp.Core\BlogApp.Core.csproj", "{E289F5BC-E4BA-46C1-88B4-5C41339EBEE8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8CE948F1-FA91-41B2-9C7B-088C1B5AC1F8}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E289F5BC-E4BA-46C1-88B4-5C41339EBEE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E289F5BC-E4BA-46C1-88B4-5C41339EBEE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E289F5BC-E4BA-46C1-88B4-5C41339EBEE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E289F5BC-E4BA-46C1-88B4-5C41339EBEE8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{FB464ADA-526A-49CB-B31D-730D808EDED0} = {D635824E-349A-4B66-B335-26C53FB2F530}
+		{619FB45F-BD60-48F2-8A8D-2BC2671BA3D7} = {D635824E-349A-4B66-B335-26C53FB2F530}
+		{E289F5BC-E4BA-46C1-88B4-5C41339EBEE8} = {FB464ADA-526A-49CB-B31D-730D808EDED0}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9BFD0213-F307-4354-A314-C05885DCA1DD}
+	EndGlobalSection
+EndGlobal

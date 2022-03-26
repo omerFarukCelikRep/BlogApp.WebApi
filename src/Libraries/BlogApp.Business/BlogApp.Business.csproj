@@ -8,15 +8,13 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="11.0.1" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="10.4.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="10.4.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BlogApp.Authentication\BlogApp.Authentication.csproj" />
     <ProjectReference Include="..\BlogApp.DataAccess\BlogApp.DataAccess.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Validations\" />
   </ItemGroup>
 
 </Project>

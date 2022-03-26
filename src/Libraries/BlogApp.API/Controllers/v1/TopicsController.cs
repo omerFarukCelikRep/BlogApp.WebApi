@@ -1,6 +1,5 @@
 ﻿using BlogApp.Business.Abstract;
 using BlogApp.Entities.Dtos.Topics;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlogApp.API.Controllers.v1;
@@ -20,20 +19,20 @@ public class TopicsController : BaseController
 
         if (!result.IsSuccess)
         {
-            return NotFound();
+            return NotFound(result);
         }
 
         return Ok(result);
     }
 
-    [HttpGet("{id}", Name = "GetByIdAsync")]
+    [HttpGet("{id}")]
     public async Task<IActionResult> GetByIdAsync(Guid id)
     {
         var result = await _topicService.GetByIdAsync(id);
 
         if (!result.IsSuccess)
         {
-            return NotFound();
+            return NotFound(result);
         }
 
         return Ok(result);
@@ -44,7 +43,7 @@ public class TopicsController : BaseController
     {
         if (!ModelState.IsValid)
         {
-            return BadRequest(createTopicDto);
+            return BadRequest(ModelState);
         }
 
         var result = await _topicService.AddAsync(createTopicDto);
@@ -54,17 +53,42 @@ public class TopicsController : BaseController
             return BadRequest(result);
         }
 
-        return CreatedAtRoute(nameof(GetByIdAsync), new { Id = result.Data.Id}, result);
+        return CreatedAtRoute(nameof(GetByIdAsync), new { Id = result.Data.Id }, result);
     }
 
-    //[HttpPut("{id}")]
-    //public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] UpdateTopicDto updateTopicDto)
-    //{
-    //    var topic = await _topicService.GetByIdAsync(id);
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] UpdateTopicDto updateTopicDto)
+    {
+        if (id != updateTopicDto.Id)
+        {
+            return BadRequest();
+        }
 
-    //    if (topic is { Length > 0})
-    //    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
 
-    //    }
-    //}
+        var result = await _topicService.UpdateAsync(updateTopicDto);
+
+        if (!result.IsSuccess)
+        {
+            return BadRequest(result);
+        }
+
+        return Ok(result);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteAsync(Guid id)
+    {
+        var result = await _topicService.DeleteAsync(id);
+
+        if (!result.IsSuccess)
+        {
+            return BadRequest(result);
+        }
+
+        return Ok(result);
+    }
 }

@@ -20,6 +20,10 @@ public class AccountsController : BaseController
     [Route("Register")]
     public async Task<IActionResult> Register([FromBody] UserRegistrationRequestDto registrationRequestDto)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
         var userExistingResult = await _userService.FindByEmailAsync(registrationRequestDto.Email);
 
         if (userExistingResult.IsSuccess)
@@ -60,6 +64,11 @@ public class AccountsController : BaseController
     [Route("Login")]
     public async Task<IActionResult> Login([FromBody] UserLoginRequestDto loginRequestDto)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         var userExistingResult = await _userService.FindByEmailAsync(loginRequestDto.Email);
 
         if (!userExistingResult.IsSuccess)
@@ -96,8 +105,48 @@ public class AccountsController : BaseController
         return Ok(new UserLoginResponseDto()
         {
             Success = checkPasswordResult.IsSuccess,
-            Token = jwtToken.JwtToken,
+            Token = jwtToken.Token,
             RefreshToken = jwtToken.RefreshToken
         });
+    }
+
+    [HttpPost]
+    [Route("RefreshToken")]
+    public async Task<IActionResult> RefreshToken([FromBody] TokenRequestDto tokenRequestDto)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(new UserRegistrationResponseDto()
+            {
+                Success = false,
+                Errors = new List<string>()
+                {
+                    "Invalid Payload"
+                }
+            });
+        }
+
+        var verifyResult = await _tokenService.VerifyToken(tokenRequestDto);
+
+        if (verifyResult == null || !verifyResult.Success)
+        {
+            return BadRequest(new UserRegistrationResponseDto
+            {
+                Success = false,
+                Errors = new List<string>()
+                {
+                    "Token Validation Failed" //TODO: Magic String
+                }
+            });
+        }
+
+        var updateResult = await _tokenService.UpdateToken(verifyResult.RefreshToken);
+
+        if (!updateResult.Success)
+        {
+            return BadRequest(updateResult);
+        }
+
+        return Ok(updateResult);
     }
 }

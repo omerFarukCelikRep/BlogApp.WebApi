@@ -19,52 +19,104 @@ public class EfBaseRepository<TEntity, TContext> : IRepositoryAsync<TEntity>
     }
     public async Task<TEntity> AddAsync(TEntity entity)
     {
-        await _table.AddAsync(entity);
+        try
+        {
+            await _table.AddAsync(entity);
 
-        await _context.SaveChangesAsync();
-        return entity;
+            await _context.SaveChangesAsync();
+            return entity;
+        }
+        catch (Exception)
+        {
+            //TODO:Add Logger
+            //TODO: Throw
+            return null;
+        }
     }
 
     public async Task DeleteAsync(TEntity entity)
     {
-        entity.Status = Status.Deleted;
+        try
+        {
+            entity.Status = Status.Deleted;
 
-        await UpdateAsync(entity);
+            await UpdateAsync(entity);
+        }
+        catch (Exception)
+        {
+            //TODO:Add Logger
+            //TODO: Throw
+        }
     }
 
     public async Task<IEnumerable<TEntity>> GetAllAsync()
     {
-        return await _table.Where(x => x.Status != Status.Deleted)
-                           .AsNoTracking()
-                           .ToListAsync();
+        try
+        {
+            return await _table.Where(x => x.Status != Status.Deleted)
+                               .AsNoTracking()
+                               .ToListAsync();
+        }
+        catch (Exception)
+        {
+            //TODO:Add Logger
+            //TODO: Throw
+        }
     }
 
     public async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> expression)
     {
-        return await _table.Where(x => x.Status != Status.Deleted)
-                         .Where(expression)
-                         .AsNoTracking()
-                         .ToListAsync();
+        try
+        {
+            return await _table.Where(x => x.Status != Status.Deleted)
+                             .Where(expression)
+                             .AsNoTracking()
+                             .ToListAsync();
+        }
+        catch (Exception)
+        {
+            //TODO:Add Logger
+            //TODO: Throw
+            return null;
+        }
     }
 
     public async Task<IEnumerable<TEntity>> GetAllAsync<TKey>(Expression<Func<TEntity, bool>> expression, Expression<Func<TEntity, TKey>> orderby, bool orderDesc = false)
     {
-        var data = _table.Where(x => x.Status != Status.Deleted)
-                         .Where(expression)
-                         .AsNoTracking();
-        if (orderDesc)
+        try
         {
-            return await data.OrderByDescending(orderby)
+            var data = _table.Where(x => x.Status != Status.Deleted)
+                             .Where(expression)
+                             .AsNoTracking();
+            if (orderDesc)
+            {
+                return await data.OrderByDescending(orderby)
+                                 .ToListAsync();
+            }
+
+            return await data.OrderBy(orderby)
                              .ToListAsync();
         }
-
-        return await data.OrderBy(orderby)
-                         .ToListAsync();
+        catch (Exception)
+        {
+            //TODO:Add Logger
+            //TODO: Throw
+            return null;
+        }
     }
 
     public async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> expression)
     {
-        return await _table.FirstOrDefaultAsync(expression);
+        try
+        {
+            return await _table.FirstOrDefaultAsync(expression);
+        }
+        catch (Exception)
+        {
+            //TODO:Add Logger
+            //TODO: Throw
+            return null;
+        }
     }
 
     public async Task<TEntity> GetByIdAsync(Guid id)
@@ -72,11 +124,22 @@ public class EfBaseRepository<TEntity, TContext> : IRepositoryAsync<TEntity>
         return await _table.FindAsync(id);
     }
 
-    public async Task UpdateAsync(TEntity entity)
+    public async Task<TEntity> UpdateAsync(TEntity entity)
     {
-        _context.Entry(entity).State = EntityState.Modified;
+        try
+        {
+            _context.Entry(entity).State = EntityState.Modified;
 
-        await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
+
+            return entity;
+        }
+        catch (Exception)
+        {
+            //TODO:Add Logger
+            //TODO: Throw
+            return null;
+        }
     }
 
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlogApp.API.Controllers.v1;
+
 [Route("api/v{version:apiVersion}/[controller]")]
 [ApiController]
 [ApiVersion("1.0")]

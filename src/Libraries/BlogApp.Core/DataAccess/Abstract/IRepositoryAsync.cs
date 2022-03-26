@@ -10,6 +10,6 @@ public interface IRepositoryAsync<TEntity> where TEntity : BaseEntity
     Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> expression);
     Task<TEntity> GetByIdAsync(Guid id);
     Task<TEntity> AddAsync(TEntity entity);
-    Task UpdateAsync(TEntity entity);
     Task DeleteAsync(TEntity entity);
+    Task<TEntity> UpdateAsync(TEntity entity);
 }

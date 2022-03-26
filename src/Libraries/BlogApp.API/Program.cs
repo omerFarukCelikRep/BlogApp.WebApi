@@ -1,8 +1,11 @@
 ﻿using BlogApp.API.Extensions;
+using BlogApp.API.Middlewares;
 using BlogApp.Authentication;
 using BlogApp.Authentication.Configurations;
 using BlogApp.Business;
+using BlogApp.Business.Validations;
 using BlogApp.DataAccess;
+using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +17,14 @@ builder.Services.AddAuthenticationServices();
 
 builder.Services.AddBusinessServices();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddFluentValidation(options =>
+    {
+        options.ImplicitlyValidateChildProperties = true;
+        options.ImplicitlyValidateRootCollectionElements = true;
+
+        options.RegisterValidatorsFromAssembly(typeof(IValidationMaker).Assembly);
+    });
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -32,6 +42,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ErrorHandlerMiddleware>();
 
 app.UseHttpsRedirection();
 

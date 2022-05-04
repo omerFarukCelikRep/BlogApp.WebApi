@@ -1,4 +1,5 @@
-﻿using BlogApp.Core.Utilities.Results.Concrete;
+﻿using BlogApp.Core.Utilities.Exceptions;
+using BlogApp.Core.Utilities.Results.Concrete;
 using System.Net;
 using System.Text.Json;
 
@@ -26,15 +27,12 @@ public class ErrorHandlerMiddleware
 
             var responseModel = new ErrorResult(error.Message);
 
-            switch (error)
+            response.StatusCode = error switch
             {
-                case KeyNotFoundException:
-                    response.StatusCode = (int)HttpStatusCode.NotFound;
-                    break;
-                default:
-                    response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                    break;
-            }
+                AppException => (int)HttpStatusCode.BadRequest,
+                KeyNotFoundException => (int)HttpStatusCode.NotFound,
+                _ => (int)HttpStatusCode.InternalServerError
+            };
 
             var result = JsonSerializer.Serialize(responseModel);
 

@@ -3,23 +3,24 @@ using BlogApp.DataAccess.Abstract;
 using BlogApp.DataAccess.Contexts;
 using BlogApp.Entities.Concrete;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace BlogApp.DataAccess.Repositories;
 public class RefreshTokenRepository : EfBaseRepository<RefreshToken, BlogAppDbContext>, IRefreshTokenRepository
 {
-    public RefreshTokenRepository(BlogAppDbContext context) : base(context) { }
+    public RefreshTokenRepository(BlogAppDbContext context, ILogger<RefreshTokenRepository> logger) : base(context, logger) { }
 
     public async Task<RefreshToken?> GetByRefreshTokenAsync(string refreshToken)
     {
         try
         {
-            return await _table.Where(x => x.Token.ToLower() == refreshToken.ToLower())
+            return await _table.Where(x => x.Token == refreshToken)
                                 .AsNoTracking()
                                 .FirstOrDefaultAsync();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            //TODO: Add logger
+            _logger.LogError(ex.InnerException, ex.Message);
             return null;
         }
     }
@@ -28,21 +29,20 @@ public class RefreshTokenRepository : EfBaseRepository<RefreshToken, BlogAppDbCo
     {
         try
         {
-            var token = await _table.Where(x => x.Token.ToLower() == refreshToken.Token.ToLower())
+            var token = await _table.Where(x => x.Token == refreshToken.Token)
                                     .AsNoTracking()
                                     .FirstOrDefaultAsync();
 
             if (token == null) return false;
 
-            token.IsUsed = true;
+            token.RevokedDate = DateTime.UtcNow;
 
             _ = await UpdateAsync(token);
             return true;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            //TODO:Add Logger
-            //TODO: Throw
+            _logger.LogError(ex.InnerException, ex.Message);
             return false;
         }
     }

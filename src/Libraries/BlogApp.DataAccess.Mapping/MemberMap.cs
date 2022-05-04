@@ -9,11 +9,11 @@ public class MemberMap : BaseMap<Member>
     {
         base.Configure(builder);
 
-        builder.Property(x => x.FirstName).IsRequired();
-        builder.Property(x => x.LastName).IsRequired();
-        builder.Property(x => x.Biography).IsRequired(false);
+        builder.Property(x => x.FirstName).HasMaxLength(256).IsRequired();
+        builder.Property(x => x.LastName).HasMaxLength(256).IsRequired();
+        builder.Property(x => x.Biography).HasMaxLength(512).IsRequired(false);
         builder.Property(x => x.ProfilePicture).IsRequired(false);
-        builder.Property(x => x.Url).IsRequired(false);
+        builder.Property(x => x.Url).HasMaxLength(512).IsRequired(false);
         builder.Property(x => x.IdentityId).IsRequired();
     }
 }

@@ -1,6 +1,5 @@
 ﻿using BlogApp.Authentication.Dtos.Incoming;
 using BlogApp.Authentication.Dtos.Outgoing;
-using BlogApp.Authentication.Services.Abstract;
 using BlogApp.Business.Abstract;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,12 +7,10 @@ namespace BlogApp.API.Controllers.v1;
 public class AccountsController : BaseController
 {
     private readonly IUserService _userService;
-    private readonly ITokenService _tokenService;
 
-    public AccountsController(IUserService userService, ITokenService tokenService)
+    public AccountsController(IUserService userService)
     {
         _userService = userService;
-        _tokenService = tokenService;
     }
 
     [HttpPost]
@@ -28,36 +25,19 @@ public class AccountsController : BaseController
 
         if (userExistingResult.IsSuccess)
         {
-            return BadRequest(new UserRegistrationResponseDto()
-            {
-                Success = false,
-                Errors = new()
-                {
-                    "Email already taken" //TODO: Magic string
-                }
-            });
+            return BadRequest(new AuthResult(string.Empty, string.Empty, false, "Email already taken")); //TODO: Magic string            
         }
+
+        registrationRequestDto.IpAddress = GetIpAddress();
 
         var registerResult = await _userService.AddAsync(registrationRequestDto);
 
-        if (!registerResult.IsSuccess)
+        if (!registerResult.Success)
         {
-            return BadRequest(new UserRegistrationResponseDto()
-            {
-                Success = registerResult.IsSuccess,
-                Errors = new()
-                {
-                    registerResult.Message
-                }
-            });
+            return BadRequest(registerResult);
         }
 
-        return Ok(new UserRegistrationResponseDto()
-        {
-            Success = registerResult.IsSuccess,
-            RefreshToken = registerResult.Data.RefreshToken,
-            Token = registerResult.Data.JwtToken
-        });
+        return Ok(registerResult);
     }
 
     [HttpPost]
@@ -69,45 +49,14 @@ public class AccountsController : BaseController
             return BadRequest(ModelState);
         }
 
-        var userExistingResult = await _userService.FindByEmailAsync(loginRequestDto.Email);
+        var authenticationResult = await _userService.AuthenticateAsync(loginRequestDto, GetIpAddress());
 
-        if (!userExistingResult.IsSuccess)
+        if (!authenticationResult.Success)
         {
-            return BadRequest(new UserLoginResponseDto()
-            {
-                Success = userExistingResult.IsSuccess,
-                Errors = new List<string>()
-                {
-                    "Invalid authentication request",
-                    userExistingResult.Message
-                }
-
-            });
+            return Unauthorized(authenticationResult);
         }
 
-        var checkPasswordResult = await _userService.CheckPasswordAsync(userExistingResult.Data, loginRequestDto.Password);
-
-        if (!checkPasswordResult.IsSuccess)
-        {
-            return BadRequest(new UserLoginResponseDto()
-            {
-                Success = userExistingResult.IsSuccess,
-                Errors = new List<string>()
-                {
-                    "Invalid authentication request"
-                }
-
-            });
-        }
-
-        var jwtToken = await _tokenService.GenerateJwtToken(userExistingResult.Data);
-
-        return Ok(new UserLoginResponseDto()
-        {
-            Success = checkPasswordResult.IsSuccess,
-            Token = jwtToken.Token,
-            RefreshToken = jwtToken.RefreshToken
-        });
+        return Ok(authenticationResult);
     }
 
     [HttpPost]
@@ -116,37 +65,26 @@ public class AccountsController : BaseController
     {
         if (!ModelState.IsValid)
         {
-            return BadRequest(new UserRegistrationResponseDto()
-            {
-                Success = false,
-                Errors = new List<string>()
-                {
-                    "Invalid Payload"
-                }
-            });
+            return BadRequest(ModelState);
         }
 
-        var verifyResult = await _tokenService.VerifyToken(tokenRequestDto);
+        tokenRequestDto.IpAddress = GetIpAddress();
 
-        if (verifyResult == null || !verifyResult.Success)
+        var result = await _userService.RefreshTokenAsync(tokenRequestDto);
+
+        if (!result.Success)
         {
-            return BadRequest(new UserRegistrationResponseDto
-            {
-                Success = false,
-                Errors = new List<string>()
-                {
-                    "Token Validation Failed" //TODO: Magic String
-                }
-            });
+            return BadRequest(result);
         }
 
-        var updateResult = await _tokenService.UpdateToken(verifyResult.RefreshToken);
+        return Ok(result);
+    }
 
-        if (!updateResult.Success)
-        {
-            return BadRequest(updateResult);
-        }
-
-        return Ok(updateResult);
+    private string GetIpAddress()
+    {
+        if (Request.Headers.ContainsKey("X-Forwarded-For"))
+            return Request.Headers["X-Forwarded-For"];
+        else
+            return HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
     }
 }

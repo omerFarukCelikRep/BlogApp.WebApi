@@ -10,7 +10,7 @@ public class ArticleMap : BaseMap<Article>
         base.Configure(builder);
 
         builder.Property(x => x.Content).IsRequired();
-        builder.Property(x => x.Title).IsRequired();
+        builder.Property(x => x.Title).HasMaxLength(256).IsRequired();
         builder.Property(x => x.Thumbnail).IsRequired();
         builder.Property(x => x.ReadTime).IsRequired();
 

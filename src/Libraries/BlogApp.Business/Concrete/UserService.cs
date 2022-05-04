@@ -1,5 +1,5 @@
-﻿using BlogApp.Authentication.Dtos.Generic;
-using BlogApp.Authentication.Dtos.Incoming;
+﻿using BlogApp.Authentication.Dtos.Incoming;
+using BlogApp.Authentication.Dtos.Outgoing;
 using BlogApp.Authentication.Services.Abstract;
 using BlogApp.Business.Abstract;
 using BlogApp.Business.Mappings.Mapper;
@@ -7,7 +7,6 @@ using BlogApp.Core.Utilities.Results.Abstract;
 using BlogApp.Core.Utilities.Results.Concrete;
 using BlogApp.DataAccess.Abstract;
 using BlogApp.Entities.Concrete;
-using BlogApp.Entities.Dtos.Members;
 using Microsoft.AspNetCore.Identity;
 using System.Text;
 
@@ -24,20 +23,53 @@ public class UserService : IUserService
         _memberRepository = memberRepository;
         _tokenService = tokenService;
     }
-    public async Task<IDataResult<TokenData>> AddAsync(UserRegistrationRequestDto registrationRequestDto)
+    public async Task<AuthResult> AddAsync(UserRegistrationRequestDto registrationRequestDto)
     {
         var identityCreateResult = await AddIdentityUser(registrationRequestDto);
 
         if (!identityCreateResult.IsSuccess)
         {
-            return new ErrorDataResult<TokenData>(identityCreateResult.Message);
+            return new AuthResult(string.Empty,string.Empty, false, identityCreateResult.Message);
         }
 
-        var addMemberResult = await AddMember(registrationRequestDto, identityCreateResult.Data.Id);
+        _ = await AddMember(registrationRequestDto, identityCreateResult.Data.Id);
 
-        var token = await _tokenService.GenerateJwtToken(identityCreateResult.Data);
+        var jwtToken = _tokenService.GenerateJwtToken(identityCreateResult.Data);
+        var refreshToken = await _tokenService.GenerateRefreshTokenAsync(identityCreateResult.Data, registrationRequestDto.IpAddress);
 
-        return new SuccessDataResult<TokenData>(token, "Kullanıcı Eklendi"); //TODO : Magic string
+        var authResult = new AuthResult
+        {
+            Success = true,
+            Token = jwtToken,
+            RefreshToken = refreshToken.Token
+        };
+
+        return authResult;
+    }
+
+    public async Task<AuthResult> AuthenticateAsync(UserLoginRequestDto loginRequestDto, string ipAddress)
+    {
+        var findUserResult = await FindByEmailAsync(loginRequestDto.Email);
+        if (!findUserResult.IsSuccess)
+        {
+            return new AuthResult(string.Empty, string.Empty, false, "Invalid authentication request");
+        }
+
+        var checkPasswordResult = await _userManager.CheckPasswordAsync(findUserResult.Data, loginRequestDto.Password);
+        if (!checkPasswordResult)
+        {
+            return new AuthResult(string.Empty,string.Empty, false, "Invalid authentication request");
+        }
+
+        var jwtToken = _tokenService.GenerateJwtToken(findUserResult.Data);
+        var refreshToken = await _tokenService.GenerateRefreshTokenAsync(findUserResult.Data, ipAddress);
+
+        return new AuthResult
+        {
+            Success = true,
+            Token = jwtToken,
+            RefreshToken = refreshToken.Token
+        };
     }
 
     public async Task<IDataResult<IdentityUser<Guid>>> FindByEmailAsync(string email)
@@ -46,18 +78,39 @@ public class UserService : IUserService
         return user == null ? new ErrorDataResult<IdentityUser<Guid>>("Kullanıcı Bulunamadı") : new SuccessDataResult<IdentityUser<Guid>>(user);
     }
 
-    public async Task<IResult> CheckPasswordAsync(IdentityUser<Guid> user, string password)
+    public async Task<AuthResult> RefreshTokenAsync(TokenRequestDto tokenRequestDto)
     {
-        return new Result(await _userManager.CheckPasswordAsync(user, password));
+        var userId = await _tokenService.ValidateJwtTokenAsync(tokenRequestDto.Token);
+
+        var verifyResult = await _tokenService.VerifyTokenAsync(tokenRequestDto);
+
+        if (!verifyResult.Success)
+        {
+            return verifyResult;
+        }
+
+        _ = await _tokenService.UpdateRefreshTokenAsUsedAsync(tokenRequestDto.RefreshToken);
+
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+
+        var jwtToken = _tokenService.GenerateJwtToken(user);
+        var refreshToken = await _tokenService.GenerateRefreshTokenAsync(user, tokenRequestDto.IpAddress);
+
+        return new AuthResult
+        {
+            Success = true,
+            Token = jwtToken,
+            RefreshToken = refreshToken.Token
+        };
     }
 
-    private async Task<IDataResult<Member>> AddMember(UserRegistrationRequestDto registrationRequestDto, Guid identityId)
+    private async Task<Member> AddMember(UserRegistrationRequestDto registrationRequestDto, Guid identityId)
     {
         var member = ObjectMapper.Mapper.Map<Member>(registrationRequestDto);
 
-        member.IdentityId = identityId; 
+        member.IdentityId = identityId;
 
-        return new SuccessDataResult<Member>(await _memberRepository.AddAsync(member));
+        return await _memberRepository.AddAsync(member);
     }
 
     private async Task<IDataResult<IdentityUser<Guid>>> AddIdentityUser(UserRegistrationRequestDto registrationRequestDto)

@@ -10,10 +10,9 @@ public class RefreshTokenMap : BaseMap<RefreshToken>
         base.Configure(builder);
 
         builder.Property(x => x.Token).IsRequired();
-        builder.Property(x => x.JwtId).IsRequired();
-        builder.Property(x => x.IsUsed).IsRequired();
-        builder.Property(x => x.IsRevoked).IsRequired();
+        builder.Property(x => x.UserId).IsRequired();
         builder.Property(x => x.ExpiryDate).IsRequired();
+        builder.Property(x => x.CreatedByIp).IsRequired(false); //TODO:Zorunlu olacak
 
         builder.HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId);
     }

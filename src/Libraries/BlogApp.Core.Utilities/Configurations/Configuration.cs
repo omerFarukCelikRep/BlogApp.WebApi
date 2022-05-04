@@ -3,7 +3,8 @@
 namespace BlogApp.Core.Utilities.Configurations;
 public class Configuration
 {
-    private static ConfigurationManager ConfigurationManager {
+    private static ConfigurationManager ConfigurationManager
+    {
         get
         {
             ConfigurationManager configurationManager = new();

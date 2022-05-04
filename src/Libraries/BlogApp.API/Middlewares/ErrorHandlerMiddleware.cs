@@ -29,7 +29,7 @@ public class ErrorHandlerMiddleware
 
             response.StatusCode = error switch
             {
-                AppException => (int)HttpStatusCode.BadRequest,
+                DatabaseValidationException => (int)HttpStatusCode.BadRequest,
                 KeyNotFoundException => (int)HttpStatusCode.NotFound,
                 _ => (int)HttpStatusCode.InternalServerError
             };

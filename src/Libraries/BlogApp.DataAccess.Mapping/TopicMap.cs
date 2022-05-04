@@ -9,7 +9,7 @@ public class TopicMap : BaseMap<Topic>
     {
         base.Configure(builder);
 
-        builder.Property(x => x.Name).IsRequired();
-        builder.Property(x => x.Thumbnail).IsRequired();
+        builder.Property(x => x.Name).HasMaxLength(256).IsRequired();
+        builder.Property(x => x.Thumbnail).IsRequired(false); //TODO: Zorunlu olacak
     }
 }

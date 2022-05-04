@@ -8,5 +8,6 @@ public static class BusinessServiceRegistration
     public static void AddBusinessServices(this IServiceCollection services)
     {
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<ITopicService, TopicService>();
     }
 }

@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using BlogApp.Business.Abstract;
+﻿using BlogApp.Business.Abstract;
 using BlogApp.Business.Mappings.Mapper;
 using BlogApp.Core.Utilities.Results.Concrete;
 using BlogApp.DataAccess.Abstract;
@@ -18,6 +17,11 @@ public class TopicService : ITopicService
     }
     public async Task<DataResult<TopicDto>> AddAsync(CreateTopicDto createDto)
     {
+        if (await _topicRepository.AnyAsync(x => String.Compare(x.Name, createDto.Name, StringComparison.OrdinalIgnoreCase) == 0))
+        {
+            return new ErrorDataResult<TopicDto>("Duplicate Name"); //TODO: Magic string
+        }
+
         var topic = ObjectMapper.Mapper.Map<Topic>(createDto);
 
         topic.CreatedBy = Guid.NewGuid(); //TODO: Düzeltilecek
@@ -99,7 +103,7 @@ public class TopicService : ITopicService
             return new ErrorDataResult<TopicDto>("Topic couldn't find"); //TODO: Magic string
         }
 
-        var updatedTopic = ObjectMapper.Mapper.Map<Topic>(updateDto);
+        var updatedTopic = ObjectMapper.Mapper.Map(updateDto, dbTopic);
 
         await _topicRepository.UpdateAsync(updatedTopic);
 

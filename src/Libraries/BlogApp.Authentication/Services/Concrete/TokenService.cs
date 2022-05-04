@@ -2,7 +2,6 @@
 using BlogApp.Authentication.Dtos.Incoming;
 using BlogApp.Authentication.Dtos.Outgoing;
 using BlogApp.Authentication.Services.Abstract;
-using BlogApp.Core.Entities.Enums;
 using BlogApp.DataAccess.Abstract;
 using BlogApp.Entities.Concrete;
 using Microsoft.AspNetCore.Identity;
@@ -10,6 +9,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace BlogApp.Authentication.Services.Concrete;
@@ -18,19 +18,15 @@ public class TokenService : ITokenService
     private readonly JwtConfig _jwtConfig;
     private readonly IRefreshTokenRepository _refreshTokenRepository;
     private readonly TokenValidationParameters _tokenValidationParameters;
-    private readonly UserManager<IdentityUser<Guid>> _userManager;
-
     public TokenService(IOptions<JwtConfig> options,
                         IRefreshTokenRepository refreshTokenRepository,
-                        TokenValidationParameters tokenValidationParameters,
-                        UserManager<IdentityUser<Guid>> userManager)
+                        TokenValidationParameters tokenValidationParameters)
     {
         _jwtConfig = options.Value;
         _refreshTokenRepository = refreshTokenRepository;
         _tokenValidationParameters = tokenValidationParameters;
-        _userManager = userManager;
     }
-    public async Task<AuthResult> GenerateJwtToken(IdentityUser<Guid> user)
+    public string GenerateJwtToken(IdentityUser<Guid> user)
     {
         //The handler is going to be responsible for creating the token
         var jwtHandler = new JwtSecurityTokenHandler();
@@ -55,38 +51,12 @@ public class TokenService : ITokenService
             )
         };
 
-        //Generate the security token
-        var token = jwtHandler.CreateToken(tokenDescriptor);
+            var token = jwtHandler.CreateToken(tokenDescriptor);
 
-        //Convert the security obj token into a string
-        var jwtToken = jwtHandler.WriteToken(token);
-
-        //Generate a refresh token
-        var refreshToken = new RefreshToken
-        {
-            CreatedDate = DateTime.UtcNow,
-            Token = $"{RandomStringGenerator(25)}_{Guid.NewGuid()}",
-            UserId = user.Id,
-            IsRevoked = false,
-            IsUsed = false,
-            Status = Status.Added,
-            JwtId = token.Id,
-            ExpiryDate = DateTime.UtcNow.AddMonths(6)
-        };
-
-        _ = await _refreshTokenRepository.AddAsync(refreshToken);
-
-        var result = new AuthResult()
-        {
-            Success = true,
-            Token = jwtToken,
-            RefreshToken = refreshToken.Token
-        };
-
-        return result;
+            return jwtHandler.WriteToken(token);
     }
 
-    public async Task<AuthResult?> VerifyToken(TokenRequestDto tokenRequestDto)
+    public async Task<AuthResult?> VerifyTokenAsync(TokenRequestDto tokenRequestDto)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
 
@@ -94,7 +64,17 @@ public class TokenService : ITokenService
         {
             var principal = tokenHandler.ValidateToken(tokenRequestDto.Token, _tokenValidationParameters, out var validatedToken);
 
-            if (!ValidateEncryptionAlg(validatedToken)) return null;
+            if (!ValidateEncryptionAlg(validatedToken))
+            {
+                return new AuthResult()
+                {
+                    Success = false,
+                    Errors = new List<string>()
+                    {
+                        "JWT token has not expired" //TODO:Magic string
+                    }
+                };
+            }
 
             if (!CheckTokenExpired(principal))
             {
@@ -122,7 +102,7 @@ public class TokenService : ITokenService
                 };
             }
 
-            if (refreshToken.IsUsed)
+            if (refreshToken.IsExpired)
             {
                 return new AuthResult()
                 {
@@ -146,21 +126,7 @@ public class TokenService : ITokenService
                 };
             }
 
-            var jti = principal.Claims.SingleOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti).Value;
-
-            if (refreshToken.JwtId != jti)
-            {
-                return new AuthResult()
-                {
-                    Success = false,
-                    Errors = new List<string>()
-                        {
-                            "Refresh Token reference does not match the Jwt Token"  //TODO:Magic string
-                        }
-                };
-            }
-
-            if (refreshToken.ExpiryDate < DateTime.Now)
+            if (refreshToken.IsExpired)
             {
                 return new AuthResult()
                 {
@@ -222,21 +188,55 @@ public class TokenService : ITokenService
         }
     }
 
-    public async Task<AuthResult> UpdateToken(string refreshToken)
+    public async Task<RefreshToken> GenerateRefreshTokenAsync(IdentityUser<Guid> user, string ipAddress)
     {
-        var token = await CheckRefreshTokenExist(refreshToken);
-        var user = await _userManager.FindByIdAsync(token.UserId.ToString());
+        var refreshToken = new RefreshToken()
+        {
+            Token = Convert.ToHexString(RandomNumberGenerator.GetBytes(64)),
+            ExpiryDate = DateTime.Now.AddDays(7),
+            UserId = user.Id,
+            User = user
+        };
 
-        return await GenerateJwtToken(user);
+        var tokenIsNotUnique = await _refreshTokenRepository.AnyAsync(x => x.Token == refreshToken.Token);
+
+        if (tokenIsNotUnique)
+        {
+            return await GenerateRefreshTokenAsync(user, ipAddress);
+        }
+
+        return refreshToken;
     }
 
-    private string RandomStringGenerator(int length)
+    public async Task<Guid?> ValidateJwtTokenAsync(string token)
     {
-        var random = new Random();
-        const string chars = "ABCDEFGHIJKLMNOPQRSTUVXYZ0123456789";
+        if (string.IsNullOrEmpty(token))
+        {
+            return null;
+        }
 
-        return new string(Enumerable.Repeat(chars, length)
-            .Select(a => a[random.Next(a.Length)]).ToArray());
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.UTF8.GetBytes(_jwtConfig.Secret);
+
+        try
+        {
+            var validationResult = await tokenHandler.ValidateTokenAsync(token, _tokenValidationParameters);
+
+            var jwtToken = (JwtSecurityToken)validationResult.SecurityToken;
+            return Guid.Parse(jwtToken.Claims.FirstOrDefault(x => x.Type == "Id").Value);
+        }
+        catch (Exception ex)
+        {
+            //TODO:Add Logger
+            return null;
+        }
+    }
+
+    public async Task<bool> UpdateRefreshTokenAsUsedAsync(string token)
+    {
+        var refreshToken = await _refreshTokenRepository.GetByRefreshTokenAsync(token);
+
+        return await _refreshTokenRepository.UpdateRefreshTokenAsUsed(refreshToken);
     }
 
     private bool ValidateEncryptionAlg(SecurityToken validatedToken)
@@ -257,7 +257,7 @@ public class TokenService : ITokenService
     {
         DateTime dateTime = new(1970, 1, 1, 0, 0, 0, DateTimeKind.Local);
 
-        dateTime.AddSeconds(unixDate).ToLocalTime();
+        dateTime = dateTime.AddSeconds(unixDate).ToUniversalTime();
 
         return dateTime;
     }

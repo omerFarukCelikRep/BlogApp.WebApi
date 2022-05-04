@@ -2,6 +2,7 @@
 using BlogApp.Core.Entities.Base;
 using BlogApp.Core.Entities.Enums;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
 
 namespace BlogApp.Core.DataAccess.Base.EntityFramework.Repositories;
@@ -10,11 +11,13 @@ public class EfBaseRepository<TEntity, TContext> : IRepositoryAsync<TEntity>
     where TContext : DbContext
 {
     protected readonly TContext _context;
+    protected readonly ILogger<EfBaseRepository<TEntity, TContext>> _logger;
     protected readonly DbSet<TEntity> _table;
 
-    public EfBaseRepository(TContext context)
+    public EfBaseRepository(TContext context, ILogger<EfBaseRepository<TEntity, TContext>> logger)
     {
         _context = context;
+        _logger = logger;
         _table = _context.Set<TEntity>();
     }
     public async Task<TEntity> AddAsync(TEntity entity)
@@ -26,69 +29,84 @@ public class EfBaseRepository<TEntity, TContext> : IRepositoryAsync<TEntity>
             await _context.SaveChangesAsync();
             return entity;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            //TODO:Add Logger
-            //TODO: Throw
+            _logger.LogError(ex.InnerException, ex.Message);
+        }
+        return null;
+    }
+
+    public async Task<bool> AnyAsync(Expression<Func<TEntity, bool>> expression)
+    {
+        try
+        {
+            return await _table.AnyAsync(expression);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.InnerException, ex.Message);
+            throw;
+        }
+    }
+
+    public async Task<bool> DeleteAsync(TEntity entity)
+    {
+        try
+        {
+            _table.Remove(entity);
+            return await _context.SaveChangesAsync() > 0;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.InnerException, ex.Message);
+            throw;
+        }
+    }
+
+    public async Task<IEnumerable<TEntity>> GetAllAsync(bool tracking = true)
+    {
+        try
+        {
+            return tracking ? await _table.Where(x => x.Status != Status.Deleted)
+                                          .ToListAsync() : await _table.Where(x => x.Status != Status.Deleted)
+                                                                       .AsNoTracking()
+                                                                       .ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.InnerException, ex.Message);
+
             return null;
         }
     }
 
-    public async Task DeleteAsync(TEntity entity)
+    public async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> expression, bool tracking = true)
     {
         try
         {
-            entity.Status = Status.Deleted;
+            return tracking ? await _table.Where(x => x.Status != Status.Deleted)
+                                          .Where(expression)
+                                          .ToListAsync() : await _table.Where(x => x.Status != Status.Deleted)
+                                                                       .Where(expression)
+                                                                       .AsNoTracking()
+                                                                       .ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.InnerException, ex.Message);
 
-            await UpdateAsync(entity);
-        }
-        catch (Exception)
-        {
-            //TODO:Add Logger
-            //TODO: Throw
-        }
-    }
-
-    public async Task<IEnumerable<TEntity>> GetAllAsync()
-    {
-        try
-        {
-            return await _table.Where(x => x.Status != Status.Deleted)
-                               .AsNoTracking()
-                               .ToListAsync();
-        }
-        catch (Exception)
-        {
-            //TODO:Add Logger
-            //TODO: Throw
             return null;
         }
     }
 
-    public async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> expression)
+    public async Task<IEnumerable<TEntity>> GetAllAsync<TKey>(Expression<Func<TEntity, bool>> expression, Expression<Func<TEntity, TKey>> orderby, bool orderDesc = false, bool tracking = true)
     {
         try
         {
-            return await _table.Where(x => x.Status != Status.Deleted)
-                             .Where(expression)
-                             .AsNoTracking()
-                             .ToListAsync();
-        }
-        catch (Exception)
-        {
-            //TODO:Add Logger
-            //TODO: Throw
-            return null;
-        }
-    }
-
-    public async Task<IEnumerable<TEntity>> GetAllAsync<TKey>(Expression<Func<TEntity, bool>> expression, Expression<Func<TEntity, TKey>> orderby, bool orderDesc = false)
-    {
-        try
-        {
-            var data = _table.Where(x => x.Status != Status.Deleted)
-                             .Where(expression)
-                             .AsNoTracking();
+            var data = tracking ? _table.Where(x => x.Status != Status.Deleted)
+                                        .Where(expression) : _table.Where(x => x.Status != Status.Deleted)
+                                                                                        .Where(expression)
+                                                                                        .AsNoTracking();
             if (orderDesc)
             {
                 return await data.OrderByDescending(orderby)
@@ -98,31 +116,40 @@ public class EfBaseRepository<TEntity, TContext> : IRepositoryAsync<TEntity>
             return await data.OrderBy(orderby)
                              .ToListAsync();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            //TODO:Add Logger
-            //TODO: Throw
+            _logger.LogError(ex.InnerException, ex.Message);
+
             return null;
         }
     }
 
-    public async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> expression)
+    public async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> expression, bool tracking = true)
     {
         try
         {
-            return await _table.FirstOrDefaultAsync(expression);
+            return tracking ? await _table.FirstOrDefaultAsync(expression) : await _table.FirstOrDefaultAsync(expression);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            //TODO:Add Logger
-            //TODO: Throw
+            _logger.LogError(ex.InnerException, ex.Message);
+
             return null;
         }
     }
 
-    public async Task<TEntity> GetByIdAsync(Guid id)
+    public async Task<TEntity> GetByIdAsync(Guid id, bool tracking = true)
     {
-        return await _table.FindAsync(id);
+        try
+        {
+            return tracking ? await _table.FindAsync(id) : await _table.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.InnerException, ex.Message);
+
+            return null;
+        }
     }
 
     public async Task<TEntity> UpdateAsync(TEntity entity)
@@ -135,10 +162,10 @@ public class EfBaseRepository<TEntity, TContext> : IRepositoryAsync<TEntity>
 
             return entity;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            //TODO:Add Logger
-            //TODO: Throw
+            _logger.LogError(ex.InnerException, ex.Message);
+
             return null;
         }
     }

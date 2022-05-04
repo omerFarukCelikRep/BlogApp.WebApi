@@ -9,8 +9,8 @@ public class UserMappingProfile : Profile
     public UserMappingProfile()
     {
         CreateMap<UserRegistrationRequestDto, IdentityUser<Guid>>()
-            .AfterMap((s,d) => d.EmailConfirmed = true)
-            .AfterMap((s,d) => d.UserName = s.Email);
+            .AfterMap((s, d) => d.EmailConfirmed = true)
+            .AfterMap((s, d) => d.UserName = s.Email);
 
         CreateMap<UserRegistrationRequestDto, Member>();
     }

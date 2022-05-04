@@ -25,7 +25,7 @@ public class TopicsController : BaseController
         return Ok(result);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetByIdAsync(Guid id)
     {
         var result = await _topicService.GetByIdAsync(id);
@@ -53,10 +53,10 @@ public class TopicsController : BaseController
             return BadRequest(result);
         }
 
-        return CreatedAtRoute(nameof(GetByIdAsync), new { Id = result.Data.Id }, result);
+        return CreatedAtAction(string.Empty, new { id = result.Data.Id }, result);
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] UpdateTopicDto updateTopicDto)
     {
         if (id != updateTopicDto.Id)
@@ -79,7 +79,7 @@ public class TopicsController : BaseController
         return Ok(result);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteAsync(Guid id)
     {
         var result = await _topicService.DeleteAsync(id);

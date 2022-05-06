@@ -1,8 +1,10 @@
-﻿using BlogApp.Authentication.Dtos.Incoming;
+﻿using BlogApp.Authentication.Constants;
+using BlogApp.Authentication.Dtos.Incoming;
 using BlogApp.Authentication.Dtos.Outgoing;
 using BlogApp.Authentication.Services.Abstract;
 using BlogApp.Business.Abstract;
 using BlogApp.Business.Mappings.Mapper;
+using BlogApp.Core.Utilities.Constants;
 using BlogApp.Core.Utilities.Results.Abstract;
 using BlogApp.Core.Utilities.Results.Concrete;
 using BlogApp.DataAccess.Abstract;
@@ -29,7 +31,7 @@ public class UserService : IUserService
 
         if (!identityCreateResult.IsSuccess)
         {
-            return new AuthResult(string.Empty,string.Empty, false, identityCreateResult.Message);
+            return new AuthResult(false, identityCreateResult.Message);
         }
 
         _ = await AddMember(registrationRequestDto, identityCreateResult.Data.Id);
@@ -52,17 +54,18 @@ public class UserService : IUserService
         var findUserResult = await FindByEmailAsync(loginRequestDto.Email);
         if (!findUserResult.IsSuccess)
         {
-            return new AuthResult(string.Empty, string.Empty, false, "Invalid authentication request");
+            return new AuthResult(false, AuthenticationMessages.InvalidRequest);
         }
 
         var checkPasswordResult = await _userManager.CheckPasswordAsync(findUserResult.Data, loginRequestDto.Password);
         if (!checkPasswordResult)
         {
-            return new AuthResult(string.Empty,string.Empty, false, "Invalid authentication request");
+            return new AuthResult(false, AuthenticationMessages.InvalidRequest);
         }
 
         var jwtToken = _tokenService.GenerateJwtToken(findUserResult.Data);
-        var refreshToken = await _tokenService.GenerateRefreshTokenAsync(findUserResult.Data, ipAddress);
+        var refreshToken = await _tokenService.GetActiveRefreshTokenAsync(findUserResult.Data)
+                           ?? await _tokenService.GenerateRefreshTokenAsync(findUserResult.Data, ipAddress);
 
         return new AuthResult
         {
@@ -75,7 +78,7 @@ public class UserService : IUserService
     public async Task<IDataResult<IdentityUser<Guid>>> FindByEmailAsync(string email)
     {
         var user = await _userManager.FindByEmailAsync(email);
-        return user == null ? new ErrorDataResult<IdentityUser<Guid>>("Kullanıcı Bulunamadı") : new SuccessDataResult<IdentityUser<Guid>>(user);
+        return user == null ? new ErrorDataResult<IdentityUser<Guid>>("Kullanıcı Bulunamadı") : new SuccessDataResult<IdentityUser<Guid>>(user); //TODO:Magic string
     }
 
     public async Task<AuthResult> RefreshTokenAsync(TokenRequestDto tokenRequestDto)
@@ -89,7 +92,12 @@ public class UserService : IUserService
             return verifyResult;
         }
 
-        _ = await _tokenService.UpdateRefreshTokenAsUsedAsync(tokenRequestDto.RefreshToken);
+        bool markedAsUsed = await _tokenService.UpdateRefreshTokenAsUsedAsync(tokenRequestDto.RefreshToken);
+
+        if (!markedAsUsed)
+        {
+            return new AuthResult(false, ExceptionMessages.SomethingWentWrong);
+        }
 
         var user = await _userManager.FindByIdAsync(userId.ToString());
 

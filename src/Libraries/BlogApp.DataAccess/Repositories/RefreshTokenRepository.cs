@@ -35,7 +35,7 @@ public class RefreshTokenRepository : EfBaseRepository<RefreshToken, BlogAppDbCo
 
             if (token == null) return false;
 
-            token.RevokedDate = DateTime.UtcNow;
+            token.RevokedDate = DateTime.Now;
 
             _ = await UpdateAsync(token);
             return true;

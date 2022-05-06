@@ -1,4 +1,5 @@
-﻿using BlogApp.Authentication.Dtos.Incoming;
+﻿using BlogApp.Authentication.Constants;
+using BlogApp.Authentication.Dtos.Incoming;
 using BlogApp.Authentication.Dtos.Outgoing;
 using BlogApp.Business.Abstract;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +26,7 @@ public class AccountsController : BaseController
 
         if (userExistingResult.IsSuccess)
         {
-            return BadRequest(new AuthResult(string.Empty, string.Empty, false, "Email already taken")); //TODO: Magic string            
+            return BadRequest(new AuthResult(false, AuthenticationMessages.EmailAlredyTaken));
         }
 
         registrationRequestDto.IpAddress = GetIpAddress();
@@ -41,8 +42,8 @@ public class AccountsController : BaseController
     }
 
     [HttpPost]
-    [Route("Login")]
-    public async Task<IActionResult> Login([FromBody] UserLoginRequestDto loginRequestDto)
+    [Route("Authenticate")]
+    public async Task<IActionResult> Authenticate([FromBody] UserLoginRequestDto loginRequestDto)
     {
         if (!ModelState.IsValid)
         {

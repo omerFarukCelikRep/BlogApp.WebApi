@@ -128,13 +128,13 @@ public class EfBaseRepository<TEntity, TContext> : IRepositoryAsync<TEntity>
     {
         try
         {
-            return tracking ? await _table.FirstOrDefaultAsync(expression) : await _table.FirstOrDefaultAsync(expression);
+            return tracking ? await _table.FirstOrDefaultAsync(expression) : await _table.AsNoTracking().FirstOrDefaultAsync(expression);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex.InnerException, ex.Message);
 
-            return null;
+            throw;
         }
     }
 
@@ -148,7 +148,7 @@ public class EfBaseRepository<TEntity, TContext> : IRepositoryAsync<TEntity>
         {
             _logger.LogError(ex.InnerException, ex.Message);
 
-            return null;
+            throw;
         }
     }
 

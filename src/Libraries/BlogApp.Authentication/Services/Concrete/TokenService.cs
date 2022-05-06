@@ -1,7 +1,9 @@
 ﻿using BlogApp.Authentication.Configurations;
+using BlogApp.Authentication.Constants;
 using BlogApp.Authentication.Dtos.Incoming;
 using BlogApp.Authentication.Dtos.Outgoing;
 using BlogApp.Authentication.Services.Abstract;
+using BlogApp.Core.Utilities.Constants;
 using BlogApp.DataAccess.Abstract;
 using BlogApp.Entities.Concrete;
 using Microsoft.AspNetCore.Identity;
@@ -45,15 +47,15 @@ public class TokenService : ITokenService
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()) //Used by the refreshed token
 
                 }),
-            Expires = DateTime.UtcNow.Add(_jwtConfig.ExpiryTimeFrame), //TODO: Update expiration time
+            Expires = DateTime.Now.Add(_jwtConfig.ExpiryTimeFrame), //TODO: Update expiration time
             SigningCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature //TODO: Review the algorithm
             )
         };
 
-            var token = jwtHandler.CreateToken(tokenDescriptor);
+        var token = jwtHandler.CreateToken(tokenDescriptor);
 
-            return jwtHandler.WriteToken(token);
+        return jwtHandler.WriteToken(token);
     }
 
     public async Task<AuthResult?> VerifyTokenAsync(TokenRequestDto tokenRequestDto)
@@ -62,95 +64,33 @@ public class TokenService : ITokenService
 
         try
         {
-            var principal = tokenHandler.ValidateToken(tokenRequestDto.Token, _tokenValidationParameters, out var validatedToken);
+            var validationResult = await tokenHandler.ValidateTokenAsync(tokenRequestDto.Token, _tokenValidationParameters);
 
-            if (!ValidateEncryptionAlg(validatedToken))
+            if (!ValidateEncryptionAlg(validationResult.SecurityToken))
             {
-                return new AuthResult()
-                {
-                    Success = false,
-                    Errors = new List<string>()
-                    {
-                        "JWT token has not expired" //TODO:Magic string
-                    }
-                };
+                return new AuthResult(false, validationResult.Exception.Message);
             }
 
-            if (!CheckTokenExpired(principal))
+            if (!CheckTokenExpired(validationResult.Claims))
             {
-                return new AuthResult()
-                {
-                    Success = false,
-                    Errors = new List<string>()
-                    {
-                        "JWT token has not expired" //TODO:Magic string
-                    }
-                };
+                return new AuthResult(false, AuthenticationMessages.JWTTokenNotExpired);
             }
 
             var refreshToken = await CheckRefreshTokenExist(tokenRequestDto.RefreshToken);
 
             if (refreshToken == null)
             {
-                return new AuthResult()
-                {
-                    Success = false,
-                    Errors = new List<string>()
-                    {
-                        "Invalid Refresh Token" //TODO:Magic string
-                    }
-                };
+                return new AuthResult(false, AuthenticationMessages.InvalidRefreshToken);
             }
 
             if (refreshToken.IsExpired)
             {
-                return new AuthResult()
-                {
-                    Success = false,
-                    Errors = new List<string>()
-                    {
-                        "Token has been used" //TODO:Magic string
-                    }
-                };
+                return new AuthResult(false, AuthenticationMessages.UsedRefreshToken);
             }
 
             if (refreshToken.IsRevoked)
             {
-                return new AuthResult()
-                {
-                    Success = false,
-                    Errors = new List<string>()
-                    {
-                        "Refresh Token has been revoked, it cannot be used"  //TODO:Magic string
-                    }
-                };
-            }
-
-            if (refreshToken.IsExpired)
-            {
-                return new AuthResult()
-                {
-                    Success = false,
-                    Errors = new List<string>()
-                    {
-                        "Refresh token has expired" //TODO:Magic string
-                    },
-
-                };
-            }
-
-            var markasUsed = await _refreshTokenRepository.UpdateRefreshTokenAsUsed(refreshToken);
-
-            if (!markasUsed)
-            {
-                return new AuthResult()
-                {
-                    Success = false,
-                    Errors = new List<string>()
-                    {
-                        "Something went wrong" //TODO:Magic string
-                    }
-                };
+                return new AuthResult(false, AuthenticationMessages.RevokedRefreshToken);
             }
 
             return new AuthResult()
@@ -163,27 +103,7 @@ public class TokenService : ITokenService
         catch (Exception ex)
         {
             //TODO: Add logger
-            if (ex.Message.Contains("Lifetime validation failed. The token is expired."))
-            {
-
-                return new AuthResult()
-                {
-                    Success = false,
-                    Errors = new List<string>()
-                    {
-                        "Token has expired please re-login"
-                    }
-                };
-
-            }
-            return new AuthResult()
-            {
-                Success = false,
-                Errors = new List<string>()
-                {
-                    "Something went wrong."
-                }
-            };
+            return new AuthResult(false, ExceptionMessages.SomethingWentWrong, ex.Message);
 
         }
     }
@@ -205,7 +125,14 @@ public class TokenService : ITokenService
             return await GenerateRefreshTokenAsync(user, ipAddress);
         }
 
-        return refreshToken;
+        return await _refreshTokenRepository.AddAsync(refreshToken);
+    }
+
+    public async Task<RefreshToken> GetActiveRefreshTokenAsync(IdentityUser<Guid> user)
+    {
+        var refreshTokens = await _refreshTokenRepository.GetAllAsync(x => x.UserId == user.Id, false);
+
+        return refreshTokens.Single(x => x.IsActive);
     }
 
     public async Task<Guid?> ValidateJwtTokenAsync(string token)
@@ -262,9 +189,9 @@ public class TokenService : ITokenService
         return dateTime;
     }
 
-    private bool CheckTokenExpired(ClaimsPrincipal principal)
+    private bool CheckTokenExpired(IDictionary<string, object> claims)
     {
-        var expiryUnixDate = long.Parse(principal.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Exp).Value);
+        var expiryUnixDate = long.Parse(claims.FirstOrDefault(x => x.Key == JwtRegisteredClaimNames.Exp).Value.ToString());
 
         var expiryDate = UnixTimeStampToDateTime(expiryUnixDate);
 

@@ -13,7 +13,7 @@ public class RefreshToken : BaseEntity
     {
         get
         {
-            return DateTime.UtcNow >= ExpiryDate;
+            return DateTime.Now >= ExpiryDate;
         }
     }
     public bool IsRevoked

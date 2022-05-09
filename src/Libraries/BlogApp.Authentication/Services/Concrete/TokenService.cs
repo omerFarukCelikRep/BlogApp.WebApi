@@ -58,7 +58,7 @@ public class TokenService : ITokenService
         return jwtHandler.WriteToken(token);
     }
 
-    public async Task<AuthResult?> VerifyTokenAsync(TokenRequestDto tokenRequestDto)
+    public async Task<AuthResult> VerifyTokenAsync(TokenRequestDto tokenRequestDto)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
 

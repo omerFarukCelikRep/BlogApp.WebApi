@@ -11,5 +11,5 @@ public interface ITokenService
     Task<RefreshToken> GetActiveRefreshTokenAsync(IdentityUser<Guid> user);
     Task<bool> UpdateRefreshTokenAsUsedAsync(string token);
     Task<Guid?> ValidateJwtTokenAsync(string token);
-    Task<AuthResult?> VerifyTokenAsync(TokenRequestDto tokenRequestDto);
+    Task<AuthResult> VerifyTokenAsync(TokenRequestDto tokenRequestDto);
 }

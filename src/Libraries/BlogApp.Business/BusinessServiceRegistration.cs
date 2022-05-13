@@ -9,5 +9,6 @@ public static class BusinessServiceRegistration
     {
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<ITopicService, TopicService>();
+        services.AddScoped<IMemberService, MemberService>();
     }
 }

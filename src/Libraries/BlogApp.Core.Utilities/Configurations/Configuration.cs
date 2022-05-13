@@ -25,4 +25,9 @@ public class Configuration
     {
         return ConfigurationManager.GetSection(section).Value;
     }
+
+    public static IConfigurationSection GetSection(string section)
+    {
+        return ConfigurationManager.GetSection(section);
+    }
 }

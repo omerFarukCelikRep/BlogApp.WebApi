@@ -1,4 +1,5 @@
-﻿using BlogApp.Authentication.Services.Abstract;
+﻿using BlogApp.Authentication.Configurations;
+using BlogApp.Authentication.Services.Abstract;
 using BlogApp.Authentication.Services.Concrete;
 using BlogApp.Core.Utilities.Configurations;
 using BlogApp.DataAccess.Contexts;
@@ -13,6 +14,8 @@ public static class AuthenticationServiceRegistration
 {
     public static void AddAuthenticationServices(this IServiceCollection services)
     {
+        services.Configure<JwtConfig>(Configuration.GetSection("Jwt"));
+
         var secret = Configuration.GetValue("Jwt:Secret");
 
         var key = Encoding.ASCII.GetBytes(secret);
@@ -36,7 +39,7 @@ public static class AuthenticationServiceRegistration
             options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
         })
             .AddJwtBearer(options =>
-            { 
+            {
                 options.SaveToken = true;
                 options.TokenValidationParameters = tokenValidationParameters;
             });

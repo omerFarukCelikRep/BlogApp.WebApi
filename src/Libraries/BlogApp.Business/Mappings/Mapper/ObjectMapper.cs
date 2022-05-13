@@ -10,6 +10,7 @@ public static class ObjectMapper
         {
             config.AddProfile<TopicMappingProfile>();
             config.AddProfile<UserMappingProfile>();
+            config.AddProfile<MemberProfile>();
         });
 
         return configuration.CreateMapper();

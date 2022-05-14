@@ -1,5 +1,4 @@
-﻿using AutoMapper.Internal.Mappers;
-using BlogApp.Business.Abstract;
+﻿using BlogApp.Business.Abstract;
 using BlogApp.Business.Mappings.Mapper;
 using BlogApp.Core.Utilities.Results.Abstract;
 using BlogApp.Core.Utilities.Results.Concrete;

@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace BlogApp.Core.Utilities.Exceptions;
 public class DatabaseValidationException : Exception
 {
-    public DatabaseValidationException() :base() { }
+    public DatabaseValidationException() : base() { }
 
     public DatabaseValidationException(string? message) : base(message) { }
 

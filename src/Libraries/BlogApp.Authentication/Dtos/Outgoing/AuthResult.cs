@@ -10,7 +10,7 @@ public class AuthResult
         Success = success;
         Errors.AddRange(errors);
     }
-    
+
     public AuthResult(string token, string refreshToken, bool success)
     {
         Token = token;

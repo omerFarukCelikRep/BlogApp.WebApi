@@ -8,5 +8,6 @@ public class PublishedArticle : BaseEntity
     public int LikeCount { get; set; }
 
     //Navigation Prop.
+    public Guid ArticleId { get; set; }
     public virtual Article? Article { get; set; }
 }

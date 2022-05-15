@@ -14,6 +14,6 @@ public class PublishedArticleMap : BaseMap<PublishedArticle>
         builder.Property(x => x.ReadingCount).HasDefaultValue(0);
         builder.Property(x => x.LikeCount).HasDefaultValue(0);
 
-        builder.HasOne(x => x.Article).WithMany().HasForeignKey(x => x.Id);
+        builder.HasOne(x => x.Article).WithMany().HasForeignKey(x => x.ArticleId);
     }
 }

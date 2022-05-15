@@ -5,4 +5,6 @@ namespace BlogApp.Business.Abstract;
 public interface IMemberService
 {
     Task<IDataResult<List<MemberDto>>> GetAllAsync();
+    Task<IDataResult<MemberDto>> GetByIdAsync(Guid id, bool tracking = true);
+    Task<IDataResult<MemberDto>> UpdateAsync(UpdateMemberDto updateMemberDto);
 }

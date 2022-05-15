@@ -1,6 +1,4 @@
-﻿using BlogApp.Business.Validations;
-using FluentValidation.AspNetCore;
-using Microsoft.OpenApi.Models;
+﻿using Microsoft.OpenApi.Models;
 
 namespace BlogApp.API.Extensions;
 
@@ -30,18 +28,5 @@ public static class ServiceCollectionExtension
                 Description = "Enter 'Bearer' [space] and then your valid token in the text input below.\r\n\r\nExample: \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\"",
             });
         });
-    }
-
-    public static IMvcBuilder AddCustomValidation(this IMvcBuilder mvcBuilder)
-    {
-        mvcBuilder.AddFluentValidation(options =>
-        {
-            options.ImplicitlyValidateChildProperties = true;
-            options.ImplicitlyValidateRootCollectionElements = true;
-
-            options.RegisterValidatorsFromAssembly(typeof(IValidationMaker).Assembly);
-        });
-
-        return mvcBuilder;
     }
 }

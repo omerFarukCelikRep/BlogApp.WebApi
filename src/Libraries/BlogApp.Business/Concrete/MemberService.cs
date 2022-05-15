@@ -1,4 +1,5 @@
 ﻿using BlogApp.Business.Abstract;
+using BlogApp.Business.Constants;
 using BlogApp.Business.Mappings.Mapper;
 using BlogApp.Core.Utilities.Results.Abstract;
 using BlogApp.Core.Utilities.Results.Concrete;
@@ -19,6 +20,34 @@ public class MemberService : IMemberService
     {
         var members = await _memberRepository.GetAllAsync(false);
 
-        return new SuccessDataResult<List<MemberDto>>(ObjectMapper.Mapper.Map<List<MemberDto>>(members));
+        if (!members.Any())
+        {
+            return new ErrorDataResult<List<MemberDto>>(ServiceMessages.MemberNotFound);
+        }
+
+        return new SuccessDataResult<List<MemberDto>>(ObjectMapper.Mapper.Map<List<MemberDto>>(members), ServiceMessages.MembersListed);
+    }
+
+    public async Task<IDataResult<MemberDto>> GetByIdAsync(Guid id, bool tracking = true)
+    {
+        var member = await _memberRepository.GetByIdAsync(id, tracking);
+
+        if (member is null)
+        {
+            return new ErrorDataResult<MemberDto>(ServiceMessages.MemberNotFound);
+        }
+
+        return new SuccessDataResult<MemberDto>(ObjectMapper.Mapper.Map<MemberDto>(member), ServiceMessages.MemberGetted);
+    }
+
+    public async Task<IDataResult<MemberDto>> UpdateAsync(UpdateMemberDto updateMemberDto)
+    {
+        var member = await _memberRepository.GetByIdAsync(updateMemberDto.Id);
+
+        var mappedMember = ObjectMapper.Mapper.Map(updateMemberDto, member);
+
+        var updatedMember = await _memberRepository.UpdateAsync(mappedMember);
+
+        return new SuccessDataResult<MemberDto>(ObjectMapper.Mapper.Map<MemberDto>(updatedMember), ServiceMessages.MemberUpdateSuccess);
     }
 }

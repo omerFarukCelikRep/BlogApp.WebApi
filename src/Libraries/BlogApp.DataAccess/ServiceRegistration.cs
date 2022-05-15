@@ -1,4 +1,5 @@
 ﻿using BlogApp.Core.Utilities.Configurations;
+using BlogApp.Core.Utilities.Constants;
 using BlogApp.DataAccess.Abstract;
 using BlogApp.DataAccess.Contexts;
 using BlogApp.DataAccess.EFCore.Repositories;
@@ -13,7 +14,7 @@ public static class ServiceRegistration
     {
         services.AddDbContext<BlogAppDbContext>(options =>
         {
-            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), builder => builder.MigrationsAssembly(typeof(BlogAppDbContext).Assembly.FullName));
+            options.UseSqlServer(Configuration.GetConnectionString(DatabaseContants.DefaultConnectionString), builder => builder.MigrationsAssembly(typeof(BlogAppDbContext).Assembly.FullName));
         });
 
         services.AddScoped<ITopicRepository, TopicRepository>();

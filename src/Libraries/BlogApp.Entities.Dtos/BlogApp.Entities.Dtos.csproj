@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Articles\" />
     <Folder Include="PublishedArticles\" />
   </ItemGroup>
 

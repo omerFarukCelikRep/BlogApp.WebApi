@@ -5,6 +5,7 @@ using BlogApp.Authentication.Services.Abstract;
 using BlogApp.Business.Abstract;
 using BlogApp.Business.Mappings.Mapper;
 using BlogApp.Core.Utilities.Constants;
+using BlogApp.Core.Utilities.Helpers;
 using BlogApp.Core.Utilities.Results.Abstract;
 using BlogApp.Core.Utilities.Results.Concrete;
 using BlogApp.DataAccess.Abstract;
@@ -117,6 +118,7 @@ public class UserService : IUserService
         var member = ObjectMapper.Mapper.Map<Member>(registrationRequestDto);
 
         member.IdentityId = identityId;
+        member.ProfilePicture = UserHelper.EmptyImage();
 
         return await _memberRepository.AddAsync(member);
     }

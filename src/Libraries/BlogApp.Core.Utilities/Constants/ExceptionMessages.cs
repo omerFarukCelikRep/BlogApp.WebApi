@@ -1,5 +1,5 @@
 ﻿namespace BlogApp.Core.Utilities.Constants;
-public class ExceptionMessages
+public static class ExceptionMessages
 {
-    public const string SomethingWentWrong = "Something went wrong.";
+    public static readonly string SomethingWentWrong = "Something went wrong.";
 }

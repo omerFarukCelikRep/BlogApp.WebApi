@@ -32,8 +32,8 @@ public class EfBaseRepository<TEntity, TContext> : IRepositoryAsync<TEntity>
         catch (Exception ex)
         {
             _logger.LogError(ex.InnerException, ex.Message);
+            throw;
         }
-        return null;
     }
 
     public async Task<bool> AnyAsync(Expression<Func<TEntity, bool>> expression)
@@ -76,7 +76,7 @@ public class EfBaseRepository<TEntity, TContext> : IRepositoryAsync<TEntity>
         {
             _logger.LogError(ex.InnerException, ex.Message);
 
-            return null;
+            throw;
         }
     }
 
@@ -95,7 +95,32 @@ public class EfBaseRepository<TEntity, TContext> : IRepositoryAsync<TEntity>
         {
             _logger.LogError(ex.InnerException, ex.Message);
 
-            return null;
+            throw;
+        }
+    }
+
+    public async Task<IEnumerable<TEntity>> GetAllAsync<TKey>(Expression<Func<TEntity, TKey>> orderby, bool orderDesc = false, bool tracking = true)
+    {
+        try
+        {
+            var data = tracking ? _table.Where(x => x.Status != Status.Deleted)
+                                        : _table.Where(x => x.Status != Status.Deleted)
+                                                .AsNoTracking();
+
+            if (orderDesc)
+            {
+                return await data.OrderByDescending(orderby)
+                                 .ToListAsync();
+            }
+
+            return await data.OrderBy(orderby)
+                             .ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.InnerException, ex.Message);
+
+            throw;
         }
     }
 
@@ -120,7 +145,7 @@ public class EfBaseRepository<TEntity, TContext> : IRepositoryAsync<TEntity>
         {
             _logger.LogError(ex.InnerException, ex.Message);
 
-            return null;
+            throw;
         }
     }
 
@@ -166,7 +191,7 @@ public class EfBaseRepository<TEntity, TContext> : IRepositoryAsync<TEntity>
         {
             _logger.LogError(ex.InnerException, ex.Message);
 
-            return null;
+            throw;
         }
     }
 

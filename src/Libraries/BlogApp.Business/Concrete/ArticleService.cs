@@ -1,9 +1,9 @@
-﻿using BlogApp.Business.Abstract;
-using BlogApp.Business.Constants;
+﻿using BlogApp.Business.Constants;
+using BlogApp.Business.Interfaces;
 using BlogApp.Business.Mappings.Mapper;
 using BlogApp.Core.Utilities.Results.Abstract;
 using BlogApp.Core.Utilities.Results.Concrete;
-using BlogApp.DataAccess.Abstract;
+using BlogApp.DataAccess.Interfaces.Repositories;
 using BlogApp.Entities.Concrete;
 using BlogApp.Entities.Dtos.Articles;
 
@@ -19,7 +19,35 @@ public class ArticleService : IArticleService
         _publishedArticleRepository = publishedArticleRepository;
     }
 
-    public async Task<IDataResult<List<ArticleDto>>> GetTrends()
+    public async Task<IDataResult<List<ArticleDto>>> GetAllAsync()
+    {
+        var articles = await _publishedArticleRepository.GetAllAsync(false);
+
+        if (!articles.Any())
+        {
+            return new ErrorDataResult<List<ArticleDto>>(ServiceMessages.ArticleNotFound);
+        }
+
+        var mappedArticles = ObjectMapper.Mapper.Map<List<ArticleDto>>(articles);
+
+        return new SuccessDataResult<List<ArticleDto>>(mappedArticles, ServiceMessages.ArticlesListed);
+    }
+
+    public async Task<IDataResult<ArticleDto>> GetByIdAsync(Guid id)
+    {
+        var article = await _articleRepository.GetByIdAsync(id);
+
+        if (article is null)
+        {
+            return new ErrorDataResult<ArticleDto>(ServiceMessages.ArticleNotFound);
+        }
+
+        var mappedArticle = ObjectMapper.Mapper.Map<ArticleDto>(article);
+
+        return new SuccessDataResult<ArticleDto>(mappedArticle, ServiceMessages.ArticlesListed);
+    }
+
+    public async Task<IDataResult<List<ArticleDto>>> GetTrendsAsync()
     {
         var articles = await _publishedArticleRepository.GetAllAsync(orderby: x => x.ReadingCount, orderDesc: true, tracking: false);
 
@@ -35,7 +63,7 @@ public class ArticleService : IArticleService
         return new SuccessDataResult<List<ArticleDto>>(mappedArticles, ServiceMessages.ArticlesListed);
     }
 
-    public async Task<IResult> Publish(Guid articleId)
+    public async Task<IResult> PublishAsync(Guid articleId)
     {
         var article = await _articleRepository.GetByIdAsync(articleId);
 

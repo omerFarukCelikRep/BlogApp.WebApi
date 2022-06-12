@@ -16,7 +16,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BlogApp.Core\BlogApp.Core.csproj" />
-    <ProjectReference Include="..\BlogApp.Entities.Dtos\BlogApp.Entities.Dtos.csproj" />
   </ItemGroup>
 
 </Project>

@@ -4,7 +4,7 @@ using BlogApp.Authentication.Dtos.Incoming;
 using BlogApp.Authentication.Dtos.Outgoing;
 using BlogApp.Authentication.Services.Abstract;
 using BlogApp.Core.Utilities.Constants;
-using BlogApp.DataAccess.Abstract;
+using BlogApp.DataAccess.Interfaces.Repositories;
 using BlogApp.Entities.Concrete;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
@@ -163,7 +163,7 @@ public class TokenService : ITokenService
     {
         var refreshToken = await _refreshTokenRepository.GetByRefreshTokenAsync(token);
 
-        return await _refreshTokenRepository.UpdateRefreshTokenAsUsed(refreshToken);
+        return await _refreshTokenRepository.UpdateRefreshTokenAsUsedAsync(refreshToken);
     }
 
     private bool ValidateEncryptionAlg(SecurityToken validatedToken)

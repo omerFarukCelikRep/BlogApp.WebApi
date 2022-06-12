@@ -1,4 +1,4 @@
-﻿using BlogApp.Core.DataAccess.Abstract;
+﻿using BlogApp.Core.DataAccess.Interfaces;
 using BlogApp.Core.Entities.Base;
 using BlogApp.Core.Entities.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -6,15 +6,14 @@ using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
 
 namespace BlogApp.Core.DataAccess.Base.EntityFramework.Repositories;
-public class EfBaseRepository<TEntity, TContext> : IRepositoryAsync<TEntity>
+public class EfBaseRepository<TEntity> : IFindableRepositoryAsync<TEntity>, IOrderableRepositoryAsync<TEntity>, IQueryableRepositoryAsync<TEntity>, IInsertableRepositoryAsync<TEntity>, IUpdateableRepositoryAsync<TEntity>, IDeleteableRepositoryAsync<TEntity>, IRepositoryAsync
     where TEntity : BaseEntity
-    where TContext : DbContext
 {
-    protected readonly TContext _context;
-    protected readonly ILogger<EfBaseRepository<TEntity, TContext>> _logger;
+    protected readonly DbContext _context;
+    protected readonly ILogger<EfBaseRepository<TEntity>> _logger;
     protected readonly DbSet<TEntity> _table;
 
-    public EfBaseRepository(TContext context, ILogger<EfBaseRepository<TEntity, TContext>> logger)
+    public EfBaseRepository(DbContext context, ILogger<EfBaseRepository<TEntity>> logger)
     {
         _context = context;
         _logger = logger;
@@ -36,10 +35,15 @@ public class EfBaseRepository<TEntity, TContext> : IRepositoryAsync<TEntity>
         }
     }
 
-    public async Task<bool> AnyAsync(Expression<Func<TEntity, bool>> expression)
+    public async Task<bool> AnyAsync(Expression<Func<TEntity, bool>>? expression)
     {
         try
         {
+            if (expression is null)
+            {
+                return await _table.AnyAsync();
+            }
+
             return await _table.AnyAsync(expression);
         }
         catch (Exception ex)
@@ -195,4 +199,8 @@ public class EfBaseRepository<TEntity, TContext> : IRepositoryAsync<TEntity>
         }
     }
 
+    public async Task<int> SaveChangesAsync()
+    {
+        return await _context.SaveChangesAsync();
+    }
 }

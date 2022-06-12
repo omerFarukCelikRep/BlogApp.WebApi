@@ -1,11 +1,11 @@
-﻿using BlogApp.Business.Abstract;
-using BlogApp.Business.Concrete;
+﻿using BlogApp.Business.Concrete;
+using BlogApp.Business.Interfaces;
 using BlogApp.Business.Validations;
 using FluentValidation.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BlogApp.Business;
-public static class BusinessServiceRegistration
+namespace BlogApp.Business.Extensions;
+public static class ServiceRegistration
 {
     public static void AddBusinessServices(this IServiceCollection services)
     {

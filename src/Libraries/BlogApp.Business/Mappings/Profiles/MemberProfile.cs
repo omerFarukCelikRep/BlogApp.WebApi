@@ -7,7 +7,6 @@ public class MemberProfile : Profile
 {
     public MemberProfile()
     {
-        CreateMap<Member, MemberDto>()
-            .ReverseMap();
+        CreateMap<Member, MemberDto>();
     }
 }

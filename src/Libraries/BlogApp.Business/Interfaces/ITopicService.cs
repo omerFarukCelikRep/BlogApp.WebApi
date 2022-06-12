@@ -3,7 +3,7 @@ using BlogApp.Entities.Concrete;
 using BlogApp.Entities.Dtos.Topics;
 using System.Linq.Expressions;
 
-namespace BlogApp.Business.Abstract;
+namespace BlogApp.Business.Interfaces;
 public interface ITopicService
 {
     Task<DataResult<IEnumerable<ListTopicDto>>> GetAllAsync();

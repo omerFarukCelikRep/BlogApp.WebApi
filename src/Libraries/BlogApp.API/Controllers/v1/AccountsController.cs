@@ -1,7 +1,7 @@
 ﻿using BlogApp.Authentication.Constants;
 using BlogApp.Authentication.Dtos.Incoming;
 using BlogApp.Authentication.Dtos.Outgoing;
-using BlogApp.Business.Abstract;
+using BlogApp.Business.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlogApp.API.Controllers.v1;

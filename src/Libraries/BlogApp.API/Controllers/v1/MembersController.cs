@@ -1,4 +1,4 @@
-﻿using BlogApp.Business.Abstract;
+﻿using BlogApp.Business.Interfaces;
 using BlogApp.Entities.Dtos.Members;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,7 +29,7 @@ public class MembersController : BaseController
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById([FromRoute] Guid id)
     {
-        var result = await _memberService.GetById(id, false);
+        var result = await _memberService.GetByIdAsync(id, false);
 
         if (!result.IsSuccess)
         {

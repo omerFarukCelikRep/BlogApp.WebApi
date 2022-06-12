@@ -1,6 +1,6 @@
 ﻿using BlogApp.Core.Entities.Enums;
 
-namespace BlogApp.Core.Entities.Abstract;
+namespace BlogApp.Core.Entities.Interfaces;
 
 public interface IEntity
 {

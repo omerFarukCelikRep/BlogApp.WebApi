@@ -9,8 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace BlogApp.Authentication;
-public static class AuthenticationServiceRegistration
+namespace BlogApp.Authentication.Extensions;
+public static class ServiceRegistration
 {
     public static void AddAuthenticationServices(this IServiceCollection services)
     {

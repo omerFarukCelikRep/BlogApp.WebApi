@@ -3,10 +3,12 @@ using BlogApp.API.Middlewares;
 using BlogApp.Authentication;
 using BlogApp.Business;
 using BlogApp.DataAccess;
+using BlogApp.DataAccess.EFCore.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDataAccessServices();
+builder.Services.AddDataAccessEFCoreServices();
 
 builder.Services.AddAuthenticationServices();
 

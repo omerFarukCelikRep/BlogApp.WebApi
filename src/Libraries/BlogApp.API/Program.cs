@@ -1,9 +1,9 @@
 ﻿using BlogApp.API.Extensions;
 using BlogApp.API.Middlewares;
-using BlogApp.Authentication;
-using BlogApp.Business;
-using BlogApp.DataAccess;
+using BlogApp.Authentication.Extensions;
+using BlogApp.Business.Extensions;
 using BlogApp.DataAccess.EFCore.Extensions;
+using BlogApp.DataAccess.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 

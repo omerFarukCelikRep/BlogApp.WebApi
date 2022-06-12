@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BlogApp.DataAccess\BlogApp.DataAccess.csproj" />
+    <ProjectReference Include="..\BlogApp.DataAccess.Interfaces\BlogApp.DataAccess.Interfaces.csproj" />
   </ItemGroup>
 
 </Project>

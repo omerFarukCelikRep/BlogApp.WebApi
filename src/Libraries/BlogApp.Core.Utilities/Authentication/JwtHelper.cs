@@ -3,11 +3,11 @@
 namespace BlogApp.Core.Utilities.Authentication;
 public class JwtHelper
 {
-    public static Guid GetUserIdByToken(string token)
+    public static string GetUserIdByToken(string token)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
 
         var decodedToken = tokenHandler.ReadJwtToken(token);
-        return Guid.Parse(decodedToken.Claims.FirstOrDefault(x => x.Type == "Id")?.Value);
+        return decodedToken.Claims.FirstOrDefault(x => x.Type == "Id")?.Value;
     }
 }

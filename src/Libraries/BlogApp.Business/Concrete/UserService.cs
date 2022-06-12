@@ -2,13 +2,13 @@
 using BlogApp.Authentication.Dtos.Incoming;
 using BlogApp.Authentication.Dtos.Outgoing;
 using BlogApp.Authentication.Services.Abstract;
-using BlogApp.Business.Abstract;
+using BlogApp.Business.Interfaces;
 using BlogApp.Business.Mappings.Mapper;
 using BlogApp.Core.Utilities.Constants;
 using BlogApp.Core.Utilities.Helpers;
 using BlogApp.Core.Utilities.Results.Abstract;
 using BlogApp.Core.Utilities.Results.Concrete;
-using BlogApp.DataAccess.Abstract;
+using BlogApp.DataAccess.Interfaces.Repositories;
 using BlogApp.Entities.Concrete;
 using Microsoft.AspNetCore.Identity;
 using System.Text;

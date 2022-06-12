@@ -1,6 +1,7 @@
-﻿using BlogApp.Business.Abstract;
+﻿using BlogApp.Business.Interfaces;
 using BlogApp.Entities.Dtos.Topics;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace BlogApp.API.Controllers.v1;
 public class TopicsController : BaseController
@@ -53,7 +54,7 @@ public class TopicsController : BaseController
             return BadRequest(result);
         }
 
-        return CreatedAtAction(string.Empty, new { id = result.Data.Id }, result);
+        return StatusCode((int)HttpStatusCode.Created, result);
     }
 
     [HttpPut("{id:guid}")]

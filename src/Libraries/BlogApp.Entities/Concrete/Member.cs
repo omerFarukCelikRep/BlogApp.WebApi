@@ -2,7 +2,7 @@
 
 namespace BlogApp.Entities.Concrete;
 
-public class Member : BaseEntity
+public class Member : AuditableEntity
 {
     public Member()
     {

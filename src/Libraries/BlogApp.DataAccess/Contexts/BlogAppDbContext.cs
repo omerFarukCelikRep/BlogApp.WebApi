@@ -60,7 +60,7 @@ public class BlogAppDbContext : IdentityDbContext<IdentityUser<Guid>, IdentityRo
 
         var token = _context.HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
-        var userId = Guid.Empty;
+        var userId = Guid.Empty.ToString();
 
         if (token != null)
         {
@@ -77,18 +77,23 @@ public class BlogAppDbContext : IdentityDbContext<IdentityUser<Guid>, IdentityRo
         }
     }
 
-    private void SetIfDeleted(EntityEntry<BaseEntity> entry, Guid userId)
+    private void SetIfDeleted(EntityEntry<BaseEntity> entry, string userId)
     {
-        if (entry.State == EntityState.Deleted)
+        if (entry.State != EntityState.Deleted)
+        {
+            return;
+        }
+
+        if (entry.Entity is AuditableEntity auditableEntity)
         {
             entry.State = EntityState.Modified;
             entry.Entity.Status = Core.Entities.Enums.Status.Deleted;
-            entry.Entity.DeletedDate = DateTime.Now;
-            entry.Entity.DeletedBy = userId;
+            auditableEntity.DeletedDate = DateTime.Now;
+            auditableEntity.DeletedBy = userId;
         }
     }
 
-    private void SetIfAdded(EntityEntry<BaseEntity> entry, Guid userId)
+    private void SetIfAdded(EntityEntry<BaseEntity> entry, string userId)
     {
         if (entry.State == EntityState.Added)
         {
@@ -98,7 +103,7 @@ public class BlogAppDbContext : IdentityDbContext<IdentityUser<Guid>, IdentityRo
         }
     }
 
-    private void SetIfModified(EntityEntry<BaseEntity> entry, Guid userId)
+    private void SetIfModified(EntityEntry<BaseEntity> entry, string userId)
     {
         if (entry.State == EntityState.Modified)
         {

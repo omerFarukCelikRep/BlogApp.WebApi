@@ -18,7 +18,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BlogApp.DataAccess.Mapping\BlogApp.DataAccess.Mapping.csproj" />
-    <ProjectReference Include="..\BlogApp.Entities\BlogApp.Entities.csproj" />
   </ItemGroup>
 
 </Project>

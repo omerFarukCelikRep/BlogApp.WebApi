@@ -1,9 +1,10 @@
-﻿using BlogApp.Business.Abstract;
+﻿using BlogApp.Business.Interfaces;
 using BlogApp.Business.Mappings.Mapper;
 using BlogApp.Core.Utilities.Results.Concrete;
-using BlogApp.DataAccess.Abstract;
+using BlogApp.DataAccess.Interfaces.Repositories;
 using BlogApp.Entities.Concrete;
 using BlogApp.Entities.Dtos.Topics;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace BlogApp.Business.Concrete;
@@ -17,14 +18,12 @@ public class TopicService : ITopicService
     }
     public async Task<DataResult<TopicDto>> AddAsync(CreateTopicDto createDto)
     {
-        if (await _topicRepository.AnyAsync(x => String.Compare(x.Name, createDto.Name, StringComparison.OrdinalIgnoreCase) == 0))
+        if (await _topicRepository.AnyAsync(x => string.Equals(x.Name, createDto.Name)))
         {
             return new ErrorDataResult<TopicDto>("Duplicate Name"); //TODO: Magic string
         }
 
         var topic = ObjectMapper.Mapper.Map<Topic>(createDto);
-
-        topic.CreatedBy = Guid.NewGuid(); //TODO: Düzeltilecek
 
         var addedTopic = await _topicRepository.AddAsync(topic);
 
@@ -53,7 +52,7 @@ public class TopicService : ITopicService
 
     public async Task<DataResult<IEnumerable<ListTopicDto>>> GetAllAsync(Expression<Func<Topic, bool>> expression)
     {
-        var dbTopicList = await _topicRepository.GetAllAsync(expression);
+        var dbTopicList = await _topicRepository.GetAllAsync(expression, false);
 
         //if (dbTopicList is not List<Topic> { Count: <= 0 }) null ve eleman sayısı kontrolü
         if (dbTopicList == null || dbTopicList.Count() <= 0)

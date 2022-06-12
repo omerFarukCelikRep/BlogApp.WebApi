@@ -1,7 +1,7 @@
 ﻿using BlogApp.Core.Entities.Base;
 
 namespace BlogApp.Entities.Concrete;
-public class PublishedArticle : BaseEntity
+public class PublishedArticle : AuditableEntity
 {
     public DateTime PublishDate { get; set; }
     public int ReadingCount { get; set; }

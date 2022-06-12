@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="BlogApp.Core.DataAccess.Base.EntityFramework.Mapping.AuditableEntityMap&lt;TEntity&gt;">
+    <Position X="6.5" Y="6.25" Width="3" />
+    <InheritanceLine Type="BlogApp.Core.DataAccess.Base.EntityFramework.Mapping.BaseEntityMap&lt;T&gt;" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="7.875" Y="4.853" />
+        <Point X="7.875" Y="6.25" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataAccess\Base\EntityFramework\Mapping\AuditableEntityMap.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BlogApp.Core.DataAccess.Base.EntityFramework.Mapping.BaseEntityMap&lt;T&gt;">
+    <Position X="6.5" Y="3.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataAccess\Base\EntityFramework\Mapping\BaseMap.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BlogApp.Core.DataAccess.Base.EntityFramework.Repositories.EfBaseRepository&lt;TEntity&gt;" BaseTypeListCollapsed="true">
+    <Position X="16.25" Y="6.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AEEAAAAAAAAABkAAAAAAAAEAIAAAAAgAAAAAIAAAIIA=</HashCode>
+      <FileName>DataAccess\Base\EntityFramework\Repositories\EfBaseRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BlogApp.Core.Entities.Base.AuditableEntity">
+    <Position X="3.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Base\AuditableEntity.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BlogApp.Core.Entities.Base.BaseEntity">
+    <Position X="3.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACCAAEAAAAAAAAAAAAAAAAAgAAAAAAAgAAAAAAAAE=</HashCode>
+      <FileName>Entities\Base\BaseEntity.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="BlogApp.Core.DataAccess.Interfaces.IDeleteableRepositoryAsync&lt;TEntity&gt;">
+    <Position X="14.75" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>DataAccess\Interfaces\IDeleteableRepositoryAsync.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="BlogApp.Core.DataAccess.Interfaces.IFindableRepositoryAsync&lt;TEntity&gt;">
+    <Position X="11.25" Y="6.75" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAIAA=</HashCode>
+      <FileName>DataAccess\Interfaces\IFindableRepositoryAsync.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="BlogApp.Core.DataAccess.Interfaces.IInsertableRepositoryAsync&lt;TEntity&gt;">
+    <Position X="9.75" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataAccess\Interfaces\IInsertableRepositoryAsync.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="BlogApp.Core.DataAccess.Interfaces.IOrderableRepositoryAsync&lt;TEntity&gt;">
+    <Position X="11.25" Y="4.75" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataAccess\Interfaces\IOrderableRepositoryAsync.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="BlogApp.Core.DataAccess.Interfaces.IQueryableRepositoryAsync&lt;TEntity&gt;">
+    <Position X="12.5" Y="3" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataAccess\Interfaces\IQueryableRepositoryAsync.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="BlogApp.Core.DataAccess.Interfaces.IRepositoryAsync">
+    <Position X="10.75" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DataAccess\Interfaces\IRepositoryAsync.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="BlogApp.Core.DataAccess.Interfaces.IUpdateableRepositoryAsync&lt;TEntity&gt;">
+    <Position X="17.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>DataAccess\Interfaces\IUpdateableRepositoryAsync.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="BlogApp.Core.Entities.Interfaces.ICreatableEntity">
+    <Position X="20" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAE=</HashCode>
+      <FileName>Entities\Interfaces\ICreatableEntity.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="BlogApp.Core.Entities.Interfaces.IEntity">
+    <Position X="21.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Interfaces\IEntity.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="BlogApp.Core.Entities.Interfaces.ISoftDeleteableEntity">
+    <Position X="20" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Interfaces\ISoftDeleteableEntity.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="BlogApp.Core.Entities.Interfaces.IUpdateableEntity">
+    <Position X="21.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Interfaces\IUpdateableEntity.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="BlogApp.Core.Entities.Enums.Status">
+    <Position X="20" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAABAAEEAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Enums\Status.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

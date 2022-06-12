@@ -12,7 +12,7 @@ public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<BlogAppDbC
     {
         DbContextOptionsBuilder<BlogAppDbContext> optionsBuilder = new();
 
-        optionsBuilder.UseSqlServer(Configuration.GetConnectionString(DatabaseContants.DefaultConnectionString));
+        optionsBuilder.UseSqlServer(Configuration.GetConnectionString(DatabaseConstants.DefaultConnectionString));
 
         return new(optionsBuilder.Options, new HttpContextAccessor());
     }

@@ -1,9 +1,9 @@
-﻿using BlogApp.Business.Abstract;
-using BlogApp.Business.Constants;
+﻿using BlogApp.Business.Constants;
+using BlogApp.Business.Interfaces;
 using BlogApp.Business.Mappings.Mapper;
 using BlogApp.Core.Utilities.Results.Abstract;
 using BlogApp.Core.Utilities.Results.Concrete;
-using BlogApp.DataAccess.Abstract;
+using BlogApp.DataAccess.Interfaces.Repositories;
 using BlogApp.Entities.Dtos.Members;
 
 namespace BlogApp.Business.Concrete;

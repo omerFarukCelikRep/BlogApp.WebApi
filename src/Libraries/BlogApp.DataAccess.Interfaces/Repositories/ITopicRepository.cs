@@ -2,6 +2,6 @@
 using BlogApp.Entities.Concrete;
 
 namespace BlogApp.DataAccess.Interfaces.Repositories;
-public interface ITopicRepository : IInsertableRepositoryAsync<Topic>, IUpdateableRepositoryAsync<Topic>, IDeleteableRepositoryAsync<Topic>, IQueryableRepositoryAsync<Topic>, IFindableRepositoryAsync<Topic>, IRepositoryAsync
+public interface ITopicRepository : IAsyncInsertableRepository<Topic>, IAsyncUpdateableRepository<Topic>, IAsyncDeleteableRepository<Topic>, IAsyncQueryableRepository<Topic>, IAsyncFindableRepository<Topic>, IAsyncRepository
 {
 }

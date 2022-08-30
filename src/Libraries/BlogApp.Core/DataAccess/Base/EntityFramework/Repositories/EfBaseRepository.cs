@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace BlogApp.Core.DataAccess.Base.EntityFramework.Repositories;
-public class EfBaseRepository<TEntity> : IAsyncFindableRepository<TEntity>, IOrderableRepositoryAsync<TEntity>, IQueryableRepositoryAsync<TEntity>, IInsertableRepositoryAsync<TEntity>, IUpdateableRepositoryAsync<TEntity>, IAsyncDeleteableRepository<TEntity>, IRepositoryAsync
+public class EfBaseRepository<TEntity> : IAsyncFindableRepository<TEntity>, IAsyncOrderableRepository<TEntity>, IAsyncQueryableRepository<TEntity>, IAsyncInsertableRepository<TEntity>, IAsyncUpdateableRepository<TEntity>, IAsyncDeleteableRepository<TEntity>, IAsyncRepository
     where TEntity : BaseEntity
 {
     protected readonly DbContext _context;

@@ -2,10 +2,10 @@
 using BlogApp.Authentication.Dtos.Incoming;
 using BlogApp.Authentication.Dtos.Outgoing;
 using BlogApp.Authentication.Services.Abstract;
+using BlogApp.Business.Constants;
 using BlogApp.Business.Interfaces;
 using BlogApp.Business.Mappings.Mapper;
 using BlogApp.Core.Utilities.Constants;
-using BlogApp.Core.Utilities.Helpers;
 using BlogApp.Core.Utilities.Results.Abstract;
 using BlogApp.Core.Utilities.Results.Concrete;
 using BlogApp.DataAccess.Interfaces.Repositories;
@@ -39,6 +39,8 @@ public class UserService : IUserService
 
         var jwtToken = _tokenService.GenerateJwtToken(identityCreateResult.Data);
         var refreshToken = await _tokenService.GenerateRefreshTokenAsync(identityCreateResult.Data, registrationRequestDto.IpAddress);
+
+        _ = await _memberRepository.SaveChangesAsync();
 
         var authResult = new AuthResult
         {
@@ -79,7 +81,7 @@ public class UserService : IUserService
     public async Task<IDataResult<IdentityUser<Guid>>> FindByEmailAsync(string email)
     {
         var user = await _userManager.FindByEmailAsync(email);
-        return user == null ? new ErrorDataResult<IdentityUser<Guid>>("Kullanıcı Bulunamadı") : new SuccessDataResult<IdentityUser<Guid>>(user); //TODO:Magic string
+        return user == null ? new ErrorDataResult<IdentityUser<Guid>>( ServiceMessages.UserNotFound) : new SuccessDataResult<IdentityUser<Guid>>(user); //TODO:Magic string
     }
 
     public async Task<AuthResult> RefreshTokenAsync(TokenRequestDto tokenRequestDto)
@@ -113,28 +115,38 @@ public class UserService : IUserService
         };
     }
 
+    public async Task<Guid> GetUserIdByIdentityId(Guid identityId)
+    {
+        return (await _memberRepository.GetByIdentityId(identityId)).Id;
+    }
+
     private async Task<Member> AddMember(UserRegistrationRequestDto registrationRequestDto, Guid identityId)
     {
         var member = ObjectMapper.Mapper.Map<Member>(registrationRequestDto);
 
         member.IdentityId = identityId;
-        member.ProfilePicture = UserHelper.EmptyImage();
 
         return await _memberRepository.AddAsync(member);
     }
 
     private async Task<IDataResult<IdentityUser<Guid>>> AddIdentityUser(UserRegistrationRequestDto registrationRequestDto)
     {
-        var newUser = ObjectMapper.Mapper.Map<IdentityUser<Guid>>(registrationRequestDto); //TODO: Build functionality to send user to confirm email
+        var identityUser = new IdentityUser<Guid>
+        {
+            Email = registrationRequestDto.Email,
+            EmailConfirmed = true, //TODO: EMail servisiyle beraber güncellenecek 
+            UserName = registrationRequestDto.Email,
 
-        var isCreated = await _userManager.CreateAsync(newUser, registrationRequestDto.Password);
+        };
+
+        var isCreated = await _userManager.CreateAsync(identityUser, registrationRequestDto.Password);
 
         if (!isCreated.Succeeded)
         {
             return new ErrorDataResult<IdentityUser<Guid>>(ConcatIdentityErrors(isCreated.Errors));
         }
 
-        return new SuccessDataResult<IdentityUser<Guid>>(newUser);
+        return new SuccessDataResult<IdentityUser<Guid>>(identityUser);
     }
 
     private string ConcatIdentityErrors(IEnumerable<IdentityError> identityErrors)

@@ -30,7 +30,6 @@ public class TokenService : ITokenService
     }
     public string GenerateJwtToken(IdentityUser<Guid> user)
     {
-        //The handler is going to be responsible for creating the token
         var jwtHandler = new JwtSecurityTokenHandler();
 
         //Get security key

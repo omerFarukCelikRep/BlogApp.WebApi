@@ -16,14 +16,9 @@ public class TopicsController : BaseController
     [HttpGet]
     public async Task<IActionResult> GetAllAsync()
     {
-        var result = await _topicService.GetAllAsync();
+        var result = await _topicService.GetAllAsync(tracking: false);
 
-        if (!result.IsSuccess)
-        {
-            return NotFound(result);
-        }
-
-        return Ok(result);
+        return GetDataResult(result);
     }
 
     [HttpGet("{id:guid}")]
@@ -31,12 +26,7 @@ public class TopicsController : BaseController
     {
         var result = await _topicService.GetByIdAsync(id);
 
-        if (!result.IsSuccess)
-        {
-            return NotFound(result);
-        }
-
-        return Ok(result);
+        return GetDataResult(result);
     }
 
     [HttpPost]
@@ -72,12 +62,7 @@ public class TopicsController : BaseController
 
         var result = await _topicService.UpdateAsync(updateTopicDto);
 
-        if (!result.IsSuccess)
-        {
-            return BadRequest(result);
-        }
-
-        return Ok(result);
+        return GetDataResult(result);
     }
 
     [HttpDelete("{id:guid}")]
@@ -85,11 +70,6 @@ public class TopicsController : BaseController
     {
         var result = await _topicService.DeleteAsync(id);
 
-        if (!result.IsSuccess)
-        {
-            return BadRequest(result);
-        }
-
-        return Ok(result);
+        return GetResult(result);
     }
 }

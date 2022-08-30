@@ -1,10 +1,10 @@
 ﻿using BlogApp.Business.Interfaces;
 using BlogApp.Business.Mappings.Mapper;
+using BlogApp.Core.Utilities.Results.Abstract;
 using BlogApp.Core.Utilities.Results.Concrete;
 using BlogApp.DataAccess.Interfaces.Repositories;
 using BlogApp.Entities.Concrete;
 using BlogApp.Entities.Dtos.Topics;
-using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace BlogApp.Business.Concrete;
@@ -16,7 +16,7 @@ public class TopicService : ITopicService
     {
         _topicRepository = topicRepository;
     }
-    public async Task<DataResult<TopicDto>> AddAsync(CreateTopicDto createDto)
+    public async Task<IDataResult<TopicDto>> AddAsync(CreateTopicDto createDto)
     {
         if (await _topicRepository.AnyAsync(x => string.Equals(x.Name, createDto.Name)))
         {
@@ -27,30 +27,34 @@ public class TopicService : ITopicService
 
         var addedTopic = await _topicRepository.AddAsync(topic);
 
+        _ = await _topicRepository.SaveChangesAsync();
+
         var topicDto = ObjectMapper.Mapper.Map<TopicDto>(addedTopic);
 
         return new SuccessDataResult<TopicDto>(topicDto, "Successfully Added");  //TODO:Magic string
     }
 
-    public async Task<Result> DeleteAsync(Guid id)
+    public async Task<IResult> DeleteAsync(Guid id)
     {
         var topic = await _topicRepository.GetByIdAsync(id);
 
         await _topicRepository.DeleteAsync(topic);
 
+        _ = await _topicRepository.SaveChangesAsync();
+
         return new SuccessResult("Successfully Deleted"); // TODO: Magic string
     }
 
-    public async Task<DataResult<IEnumerable<ListTopicDto>>> GetAllAsync()
+    public async Task<IDataResult<IEnumerable<ListTopicDto>>> GetAllAsync()
     {
-        var dbTopicList = await _topicRepository.GetAllAsync();
+        var dbTopicList = await _topicRepository.GetAllAsync(false);
 
         var topics = ObjectMapper.Mapper.Map<IEnumerable<ListTopicDto>>(dbTopicList);
 
         return new SuccessDataResult<IEnumerable<ListTopicDto>>(topics, "Topics Listed"); //TODO: Magic string
     }
 
-    public async Task<DataResult<IEnumerable<ListTopicDto>>> GetAllAsync(Expression<Func<Topic, bool>> expression)
+    public async Task<IDataResult<IEnumerable<ListTopicDto>>> GetAllAsync(Expression<Func<Topic, bool>> expression)
     {
         var dbTopicList = await _topicRepository.GetAllAsync(expression, false);
 
@@ -65,9 +69,9 @@ public class TopicService : ITopicService
         return new SuccessDataResult<IEnumerable<ListTopicDto>>(topics, "Topics Listed"); //TODO: Magic string
     }
 
-    public async Task<DataResult<TopicDto>> GetAsync(Expression<Func<Topic, bool>> expression)
+    public async Task<IDataResult<TopicDto>> GetAsync(Expression<Func<Topic, bool>> expression)
     {
-        var dbTopic = await _topicRepository.GetAsync(expression);
+        var dbTopic = await _topicRepository.GetAsync(expression, false);
 
         if (dbTopic == null)
         {
@@ -79,9 +83,9 @@ public class TopicService : ITopicService
         return new SuccessDataResult<TopicDto>(topic, "Successfully getted"); //TODO: Magic string
     }
 
-    public async Task<DataResult<TopicDto>> GetByIdAsync(Guid id)
+    public async Task<IDataResult<TopicDto>> GetByIdAsync(Guid id)
     {
-        var dbTopic = await _topicRepository.GetByIdAsync(id);
+        var dbTopic = await _topicRepository.GetByIdAsync(id, false);
 
         if (dbTopic == null)
         {
@@ -93,7 +97,7 @@ public class TopicService : ITopicService
         return new SuccessDataResult<TopicDto>(topic, "Topic Successfully getted"); //TODO: Magic string
     }
 
-    public async Task<DataResult<TopicDto>> UpdateAsync(UpdateTopicDto updateDto)
+    public async Task<IDataResult<TopicDto>> UpdateAsync(UpdateTopicDto updateDto)
     {
         var dbTopic = await _topicRepository.GetByIdAsync(updateDto.Id);
 
@@ -104,7 +108,9 @@ public class TopicService : ITopicService
 
         var updatedTopic = ObjectMapper.Mapper.Map(updateDto, dbTopic);
 
-        await _topicRepository.UpdateAsync(updatedTopic);
+        updatedTopic = await _topicRepository.UpdateAsync(updatedTopic);
+
+        _ = await _topicRepository.SaveChangesAsync();
 
         var topic = ObjectMapper.Mapper.Map<TopicDto>(updatedTopic);
 

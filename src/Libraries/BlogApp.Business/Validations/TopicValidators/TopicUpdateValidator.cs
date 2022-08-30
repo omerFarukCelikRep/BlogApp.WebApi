@@ -2,9 +2,9 @@
 using FluentValidation;
 
 namespace BlogApp.Business.Validations.TopicValidators;
-public class UpdateTopicValidator : AbstractValidator<UpdateTopicDto>
+public class TopicUpdateValidator : AbstractValidator<UpdateTopicDto>
 {
-    public UpdateTopicValidator()
+    public TopicUpdateValidator()
     {
         RuleFor(x => x.Name)
             .NotNull()

@@ -1,6 +1,7 @@
 ﻿using BlogApp.Authentication.Configurations;
 using BlogApp.Authentication.Services.Abstract;
 using BlogApp.Authentication.Services.Concrete;
+using BlogApp.Core.Utilities.Authentication;
 using BlogApp.Core.Utilities.Configurations;
 using BlogApp.DataAccess.Contexts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -10,9 +11,9 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 namespace BlogApp.Authentication.Extensions;
-public static class ServiceRegistration
+public static class DependencyInjection
 {
-    public static void AddAuthenticationServices(this IServiceCollection services)
+    public static IServiceCollection AddAuthenticationServices(this IServiceCollection services)
     {
         services.Configure<JwtConfig>(Configuration.GetSection("Jwt"));
 
@@ -53,5 +54,8 @@ public static class ServiceRegistration
             .AddDefaultTokenProviders();
 
         services.AddScoped<ITokenService, TokenService>();
+        services.AddSingleton<JwtHelper>();
+
+        return services;
     }
 }

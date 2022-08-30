@@ -28,9 +28,9 @@ public class MemberService : IMemberService
         return new SuccessDataResult<List<MemberDto>>(ObjectMapper.Mapper.Map<List<MemberDto>>(members), ServiceMessages.MembersListed);
     }
 
-    public async Task<IDataResult<MemberDto>> GetByIdAsync(Guid id, bool tracking = true)
+    public async Task<IDataResult<MemberDto>> GetByIdAsync(Guid id)
     {
-        var member = await _memberRepository.GetByIdAsync(id, tracking);
+        var member = await _memberRepository.GetByIdAsync(id, false);
 
         if (member is null)
         {
@@ -47,6 +47,8 @@ public class MemberService : IMemberService
         var mappedMember = ObjectMapper.Mapper.Map(updateMemberDto, member);
 
         var updatedMember = await _memberRepository.UpdateAsync(mappedMember);
+
+        _ = await _memberRepository.SaveChangesAsync();
 
         return new SuccessDataResult<MemberDto>(ObjectMapper.Mapper.Map<MemberDto>(updatedMember), ServiceMessages.MemberUpdateSuccess);
     }

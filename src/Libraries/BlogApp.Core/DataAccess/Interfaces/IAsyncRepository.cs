@@ -1,5 +1,5 @@
 ﻿namespace BlogApp.Core.DataAccess.Interfaces;
-public interface IRepositoryAsync
+public interface IAsyncRepository
 {
     Task<int> SaveChangesAsync();
 }

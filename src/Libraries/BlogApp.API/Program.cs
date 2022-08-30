@@ -7,15 +7,13 @@ using BlogApp.DataAccess.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDataAccessServices();
-builder.Services.AddDataAccessEFCoreServices();
+builder.Services
+            .AddDataAccessServices()
+            .AddDataAccessEFCoreServices()
+            .AddAuthenticationServices()
+            .AddBusinessServices();
 
-builder.Services.AddAuthenticationServices();
-
-builder.Services.AddBusinessServices();
-
-builder.Services.AddControllers()
-    .AddCustomValidation();
+builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 

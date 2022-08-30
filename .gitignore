@@ -364,3 +364,4 @@ FodyWeavers.xsd
 
 /src/Libraries/BlogApp.DataAccess/Migrations
 /src/Libraries/BlogApp.API/appsettings.Development.json
+/.vscode

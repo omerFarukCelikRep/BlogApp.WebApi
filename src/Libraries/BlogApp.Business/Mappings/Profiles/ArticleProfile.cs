@@ -8,5 +8,6 @@ public class ArticleProfile : Profile
     public ArticleProfile()
     {
         CreateMap<Article, ArticleDto>();
+        CreateMap<ArticleCreateDto, Article>();
     }
 }

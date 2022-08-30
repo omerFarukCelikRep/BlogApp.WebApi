@@ -16,27 +16,17 @@ public class MembersController : BaseController
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var result = await _memberService.GetAllAsync();
+        var result = await _memberService.GetAllAsync(tracking: false);
 
-        if (!result.IsSuccess)
-        {
-            return BadRequest(result);
-        }
-
-        return Ok(result);
+        return GetDataResult(result);
     }
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById([FromRoute] Guid id)
     {
-        var result = await _memberService.GetByIdAsync(id, false);
+        var result = await _memberService.GetByIdAsync(id: id, tracking: false);
 
-        if (!result.IsSuccess)
-        {
-            return BadRequest(result);
-        }
-
-        return Ok(result);
+        return GetDataResult(result);
     }
 
     [HttpPut]
@@ -44,11 +34,6 @@ public class MembersController : BaseController
     {
         var result = await _memberService.UpdateAsync(updateMember);
 
-        if (!result.IsSuccess)
-        {
-            return BadRequest(result);
-        }
-
-        return Ok(result);
+        return GetDataResult(result);
     }
 }

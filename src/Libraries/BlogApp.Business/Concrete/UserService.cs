@@ -115,7 +115,7 @@ public class UserService : IUserService
         };
     }
 
-    public async Task<Guid> GetUserIdByIdentityId(Guid identityId)
+    public async Task<Guid> GetUserIdByIdentityIdAsync(Guid identityId)
     {
         return (await _memberRepository.GetByIdentityId(identityId)).Id;
     }

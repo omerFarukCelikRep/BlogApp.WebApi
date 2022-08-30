@@ -11,10 +11,10 @@ public abstract class BaseEntityMap<T> : IEntityTypeConfiguration<T> where T : B
 
         builder.Property(x => x.Id).ValueGeneratedOnAdd();
 
-        builder.Property(x => x.Status).IsRequired(true);
+        builder.Property(x => x.Status).IsRequired();
 
-        builder.Property(x => x.CreatedBy).HasMaxLength(128).IsRequired(true);
-        builder.Property(x => x.CreatedDate).IsRequired(true);
+        builder.Property(x => x.CreatedBy).HasMaxLength(128).IsRequired();
+        builder.Property(x => x.CreatedDate).IsRequired();
         builder.Property(x => x.ModifiedBy).HasMaxLength(128).IsRequired(false);
         builder.Property(x => x.ModifiedDate).IsRequired(false);
     }

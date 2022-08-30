@@ -9,5 +9,6 @@ public interface IUserService
     Task<AuthResult> AddAsync(UserRegistrationRequestDto registrationRequestDto);
     Task<AuthResult> AuthenticateAsync(UserLoginRequestDto loginRequestDto, string ipAddress);
     Task<IDataResult<IdentityUser<Guid>>> FindByEmailAsync(string email);
+    Task<Guid> GetUserIdByIdentityId(Guid identityId);
     Task<AuthResult> RefreshTokenAsync(TokenRequestDto tokenRequestDto);
 }

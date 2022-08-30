@@ -1,4 +1,5 @@
 ﻿using BlogApp.Business.Constants;
+using BlogApp.Business.Helpers;
 using BlogApp.Business.Interfaces;
 using BlogApp.Business.Mappings.Mapper;
 using BlogApp.Core.Utilities.Results.Abstract;
@@ -6,6 +7,7 @@ using BlogApp.Core.Utilities.Results.Concrete;
 using BlogApp.DataAccess.Interfaces.Repositories;
 using BlogApp.Entities.Concrete;
 using BlogApp.Entities.Dtos.Articles;
+using System.Text.RegularExpressions;
 
 namespace BlogApp.Business.Concrete;
 public class ArticleService : IArticleService
@@ -35,7 +37,7 @@ public class ArticleService : IArticleService
 
     public async Task<IDataResult<ArticleDto>> GetByIdAsync(Guid id)
     {
-        var article = await _articleRepository.GetByIdAsync(id);
+        var article = await _articleRepository.GetByIdAsync(id, false);
 
         if (article is null)
         {
@@ -81,6 +83,26 @@ public class ArticleService : IArticleService
 
         _ = await _publishedArticleRepository.AddAsync(publishArticle);
 
+        _ = await _publishedArticleRepository.SaveChangesAsync();
+
         return new SuccessResult(ServiceMessages.ArticlePublished);
+    }
+
+    public async Task<IResult> AddAsync(ArticleCreateDto articleCreateDto)
+    {
+        var article = ObjectMapper.Mapper.Map<Article>(articleCreateDto);
+
+        article.ReadTime = ArticleHelper.CalculateReadTime(Regex.Replace(articleCreateDto.Content, "<.*?>", string.Empty));
+
+        article = await _articleRepository.AddAsync(article);
+
+        articleCreateDto.Topics.ForEach(x => article.ArticleTopics.Add(new() { ArticleId = article.Id, TopicId = x }));
+
+        if (await _articleRepository.SaveChangesAsync() <= 0)
+        {
+            return new ErrorResult("İşlem Başarısız");  //TODO:Magic string
+        }
+
+        return new SuccessResult("Ekleme Gerçekleşti"); //TODO: Magic string
     }
 }

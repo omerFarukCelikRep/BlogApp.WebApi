@@ -2,201 +2,86 @@
 using BlogApp.Core.Entities.Base;
 using BlogApp.Core.Entities.Enums;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
 
 namespace BlogApp.Core.DataAccess.Base.EntityFramework.Repositories;
-public class EfBaseRepository<TEntity> : IFindableRepositoryAsync<TEntity>, IOrderableRepositoryAsync<TEntity>, IQueryableRepositoryAsync<TEntity>, IInsertableRepositoryAsync<TEntity>, IUpdateableRepositoryAsync<TEntity>, IDeleteableRepositoryAsync<TEntity>, IRepositoryAsync
+public class EfBaseRepository<TEntity> : IAsyncFindableRepository<TEntity>, IOrderableRepositoryAsync<TEntity>, IQueryableRepositoryAsync<TEntity>, IInsertableRepositoryAsync<TEntity>, IUpdateableRepositoryAsync<TEntity>, IAsyncDeleteableRepository<TEntity>, IRepositoryAsync
     where TEntity : BaseEntity
 {
     protected readonly DbContext _context;
-    protected readonly ILogger<EfBaseRepository<TEntity>> _logger;
     protected readonly DbSet<TEntity> _table;
 
-    public EfBaseRepository(DbContext context, ILogger<EfBaseRepository<TEntity>> logger)
+    public EfBaseRepository(DbContext context)
     {
         _context = context;
-        _logger = logger;
         _table = _context.Set<TEntity>();
     }
     public async Task<TEntity> AddAsync(TEntity entity)
     {
-        try
-        {
-            await _table.AddAsync(entity);
-
-            await _context.SaveChangesAsync();
-            return entity;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex.InnerException, ex.Message);
-            throw;
-        }
+        await _table.AddAsync(entity);
+        return entity;
     }
 
-    public async Task<bool> AnyAsync(Expression<Func<TEntity, bool>>? expression)
+    public async Task<bool> AnyAsync(Expression<Func<TEntity, bool>>? expression = null)
     {
-        try
-        {
-            if (expression is null)
-            {
-                return await _table.AnyAsync();
-            }
-
-            return await _table.AnyAsync(expression);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex.InnerException, ex.Message);
-            throw;
-        }
+        return expression is null ? await _table.AnyAsync() : await _table.AnyAsync(expression);
     }
 
-    public async Task<bool> DeleteAsync(TEntity entity)
+    public Task DeleteAsync(TEntity entity)
     {
-        try
-        {
-            _table.Remove(entity);
-            return await _context.SaveChangesAsync() > 0;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex.InnerException, ex.Message);
-            throw;
-        }
+        return Task.FromResult(_table.Remove(entity));
     }
 
     public async Task<IEnumerable<TEntity>> GetAllAsync(bool tracking = true)
     {
-        try
-        {
-            return tracking ? await _table.Where(x => x.Status != Status.Deleted)
-                                          .ToListAsync() : await _table.Where(x => x.Status != Status.Deleted)
-                                                                       .AsNoTracking()
-                                                                       .ToListAsync();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex.InnerException, ex.Message);
-
-            throw;
-        }
+        var values = _table
+                                .Where(x => x.Status != Status.Deleted);
+        return tracking ? await values.ToListAsync() : await values.AsNoTracking().ToListAsync();
     }
 
     public async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> expression, bool tracking = true)
     {
-        try
-        {
-            return tracking ? await _table.Where(x => x.Status != Status.Deleted)
-                                          .Where(expression)
-                                          .ToListAsync() : await _table.Where(x => x.Status != Status.Deleted)
-                                                                       .Where(expression)
-                                                                       .AsNoTracking()
-                                                                       .ToListAsync();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex.InnerException, ex.Message);
+        var values = _table
+                             .Where(x => x.Status != Status.Deleted)
+                             .Where(expression);
 
-            throw;
-        }
+        return tracking ? await values.ToListAsync() : await values.AsNoTracking().ToListAsync();
     }
 
     public async Task<IEnumerable<TEntity>> GetAllAsync<TKey>(Expression<Func<TEntity, TKey>> orderby, bool orderDesc = false, bool tracking = true)
     {
-        try
-        {
-            var data = tracking ? _table.Where(x => x.Status != Status.Deleted)
-                                        : _table.Where(x => x.Status != Status.Deleted)
-                                                .AsNoTracking();
+        var values = _table
+                              .Where(x => x.Status != Status.Deleted);
 
-            if (orderDesc)
-            {
-                return await data.OrderByDescending(orderby)
-                                 .ToListAsync();
-            }
+        values = tracking ? values : values.AsNoTracking();
 
-            return await data.OrderBy(orderby)
-                             .ToListAsync();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex.InnerException, ex.Message);
-
-            throw;
-        }
+        return !orderDesc ? await values.OrderBy(orderby).ToListAsync() : await values.OrderByDescending(orderby).ToListAsync();
     }
 
     public async Task<IEnumerable<TEntity>> GetAllAsync<TKey>(Expression<Func<TEntity, bool>> expression, Expression<Func<TEntity, TKey>> orderby, bool orderDesc = false, bool tracking = true)
     {
-        try
-        {
-            var data = tracking ? _table.Where(x => x.Status != Status.Deleted)
-                                        .Where(expression) : _table.Where(x => x.Status != Status.Deleted)
-                                                                                        .Where(expression)
-                                                                                        .AsNoTracking();
-            if (orderDesc)
-            {
-                return await data.OrderByDescending(orderby)
-                                 .ToListAsync();
-            }
+        var values = _table
+                              .Where(x => x.Status != Status.Deleted)
+                              .Where(expression);
 
-            return await data.OrderBy(orderby)
-                             .ToListAsync();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex.InnerException, ex.Message);
+        values = tracking ? values : values.AsNoTracking();
 
-            throw;
-        }
+        return !orderDesc ? await values.OrderBy(orderby).ToListAsync() : await values.OrderByDescending(orderby).ToListAsync();
     }
 
     public async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> expression, bool tracking = true)
     {
-        try
-        {
-            return tracking ? await _table.FirstOrDefaultAsync(expression) : await _table.AsNoTracking().FirstOrDefaultAsync(expression);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex.InnerException, ex.Message);
-
-            throw;
-        }
+        return tracking ? await _table.FirstOrDefaultAsync(expression) : await _table.AsNoTracking().FirstOrDefaultAsync(expression);
     }
 
     public async Task<TEntity> GetByIdAsync(Guid id, bool tracking = true)
     {
-        try
-        {
-            return tracking ? await _table.FindAsync(id) : await _table.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex.InnerException, ex.Message);
-
-            throw;
-        }
+        return tracking ? await _table.FindAsync(id) : await _table.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public async Task<TEntity> UpdateAsync(TEntity entity)
+    public Task<TEntity> UpdateAsync(TEntity entity)
     {
-        try
-        {
-            _context.Entry(entity).State = EntityState.Modified;
-
-            await _context.SaveChangesAsync();
-
-            return entity;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex.InnerException, ex.Message);
-
-            throw;
-        }
+        return Task.FromResult(_table.Update(entity).Entity);
     }
 
     public async Task<int> SaveChangesAsync()

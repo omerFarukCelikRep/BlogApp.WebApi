@@ -60,11 +60,11 @@ public class BlogAppDbContext : IdentityDbContext<IdentityUser<Guid>, IdentityRo
 
         var token = _context.HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
-        var userId = Guid.Empty.ToString();
+        var userId = "UserNotFound";
 
         if (token != null)
         {
-            userId = JwtHelper.GetUserIdByToken(token);
+            userId = JwtHelper.GetUserIdByToken(token) ?? userId;
         }
 
         foreach (var entry in entries)

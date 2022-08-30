@@ -2,7 +2,7 @@
 using BlogApp.Entities.Concrete;
 
 namespace BlogApp.DataAccess.Interfaces.Repositories;
-public interface IMemberRepository : IInsertableRepositoryAsync<Member>, IUpdateableRepositoryAsync<Member>, IQueryableRepositoryAsync<Member>, IFindableRepositoryAsync<Member>, IRepositoryAsync
+public interface IMemberRepository : IAsyncInsertableRepository<Member>, IAsyncUpdateableRepository<Member>, IAsyncQueryableRepository<Member>, IAsyncFindableRepository<Member>, IAsyncRepository
 {
     Task<Member> GetByIdentityId(Guid identityId);
 }

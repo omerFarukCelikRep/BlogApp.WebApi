@@ -1,0 +1,81 @@
+﻿<footer class="footer-section">
+    <div class="container">
+        <div class="footer-wrapper">
+            <!--Footer Details Start-->
+            <div class="footer-details">
+                <div class="row">
+
+                    <!--Footer Widget 1 Start-->
+                    <div class="col-md-4">
+                        <div class="box">
+                            <aside class="widget widget_about_us">
+                                <div class="widget-detail">
+                                    <div class="widget-about-img img-div-cover">
+                                        <img src="images/logo-transparent.png" alt="logo" />
+                                    </div>
+                                    <div class="widget-about-detail">
+                                        <p>Vestibulum ante ipsum primis in faucibus luctus et ultrices posuere cubilia curae aliquam dignissim viverra dolor sit condimentum aenean sollicitudin justo eu pulvinar rutrum.</p>
+                                        <div class="widget-about-social">
+                                            <ul>
+                                                <li><a href="#" target="_blank"><i class="fa fa-facebook"></i></a></li>
+                                                <li><a href="#" target="_blank"><i class="fa fa-twitter"></i></a></li>
+                                                <li><a href="#" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+                                                <li><a href="#" target="_blank"><i class="fa fa-google"></i></a></li>
+                                                <li><a href="#" target="_blank"><i class="fa fa-pinterest-p"></i></a></li>
+                                                <li><a href="#" target="_blank"><i class="fa fa-dribbble"></i></a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </aside>
+                        </div>
+                    </div>
+                    <!--Footer Widget 1 End-->
+                    <!--Footer Widget 2 Start-->
+                    <div class="col-md-4">
+                        @await Component.InvokeAsync("FooterPopularTopics")
+                    </div>
+                    <!--Footer Widget 2 End-->
+                    <!--Footer Widget 3 Start-->
+                    <div class="col-md-4">
+                        <div class="box">
+                            <aside class="widget widget_follow_subscribe">
+                                <div class="widget-title">
+                                    <h3>Subscribe</h3>
+                                </div>
+                                <div class="widget-detail">
+                                    <p>Aenean et tortor vitae diam cursus ornare sit amet nec mi. In tempor libero nec.</p>
+                                    <div data-height="15"></div>
+                                    <form class="subscribe">
+                                        <input class="subscribe-email" type="text" name="email" placeholder="Your email address..." required />
+                                        <input class="subscribe-button" type="submit" value="Subscribe" />
+                                    </form>
+                                </div>
+                            </aside>
+                        </div>
+                    </div>
+                    <!--Footer Widget 3 End-->
+
+                </div>
+            </div>
+            <!--Footer Details End-->
+            <!--Footer Bottom Start-->
+            <div class="footer-bottom">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="bottom-text-left">
+                            Copyrights &copy; <span>@DateTime.Now.Year</span>&nbsp;<a href="/">BlogApp</a>. All Rights Reserved.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="bottom-text-right">
+                            <b><a class="text-decoration-none" href="/">BlogApp</a></b>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Footer Bottom ENd-->
+
+        </div>
+    </div>
+</footer>

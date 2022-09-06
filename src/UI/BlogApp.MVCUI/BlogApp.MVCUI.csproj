@@ -6,4 +6,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Libraries\BlogApp.Core.Utilities.LoggerServices\BlogApp.Core.Utilities.LoggerServices.csproj" />
+    <ProjectReference Include="..\..\Libraries\BlogApp.Core.Utilities\BlogApp.Core.Utilities.csproj" />
+    <ProjectReference Include="..\..\Libraries\BlogApp.Core\BlogApp.Core.csproj" />
+  </ItemGroup>
+
 </Project>

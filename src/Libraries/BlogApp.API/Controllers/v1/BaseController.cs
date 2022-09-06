@@ -14,8 +14,8 @@ public class BaseController : ControllerBase
 
     protected async Task<Guid> GetUserId([FromServices] IUserService userService)
     {
-        return await userService.GetUserIdByIdentityId(Guid.Parse(UserIdentityId));
-    }
+        return await userService.GetUserIdByIdentityIdAsync(Guid.Parse(UserIdentityId));
+    } 
 
     protected IActionResult GetResult(Core.Utilities.Results.Abstract.IResult result)
     {

@@ -16,7 +16,7 @@ public class ArticlesController : BaseController
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var result = await _articleService.GetAllAsync(tracking: false);
+        var result = await _articleService.GetAllAsync();
 
         return GetDataResult(result);
     }
@@ -24,7 +24,7 @@ public class ArticlesController : BaseController
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById([FromRoute] Guid id)
     {
-        var result = await _articleService.GetByIdAsync(id, tracking: false);
+        var result = await _articleService.GetByIdAsync(id);
 
         return GetDataResult(result);
     }

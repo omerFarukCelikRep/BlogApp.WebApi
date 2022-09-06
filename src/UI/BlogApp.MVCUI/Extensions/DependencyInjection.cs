@@ -12,6 +12,13 @@ public static class DependencyInjection
         })
         .AddHttpMessageHandler<AuthTokenHandler>();
 
+        services.AddScoped(serviceProvider =>
+        {
+            var clientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
+
+            return clientFactory.CreateClient("WebApiClient");
+        });
+
         services.AddControllersWithViews();
 
         return services;

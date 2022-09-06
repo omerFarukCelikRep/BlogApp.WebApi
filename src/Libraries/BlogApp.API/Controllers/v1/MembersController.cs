@@ -16,7 +16,7 @@ public class MembersController : BaseController
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var result = await _memberService.GetAllAsync(tracking: false);
+        var result = await _memberService.GetAllAsync();
 
         return GetDataResult(result);
     }
@@ -24,7 +24,7 @@ public class MembersController : BaseController
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById([FromRoute] Guid id)
     {
-        var result = await _memberService.GetByIdAsync(id: id, tracking: false);
+        var result = await _memberService.GetByIdAsync(id);
 
         return GetDataResult(result);
     }

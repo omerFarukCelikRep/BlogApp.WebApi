@@ -16,7 +16,7 @@ public class TopicsController : BaseController
     [HttpGet]
     public async Task<IActionResult> GetAllAsync()
     {
-        var result = await _topicService.GetAllAsync(tracking: false);
+        var result = await _topicService.GetAllAsync();
 
         return GetDataResult(result);
     }

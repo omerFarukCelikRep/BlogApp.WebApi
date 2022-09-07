@@ -1,10 +1,10 @@
-﻿using BlogApp.Core.Utilities.Results.Abstract;
-using BlogApp.Core.Utilities.Results.Concrete;
-using BlogApp.MVCUI.Models;
+﻿using BlogApp.Core.Utilities.Results.Concrete;
+using BlogApp.MVCUI.Models.Authentication;
 using BlogApp.MVCUI.Services.Interfaces;
 using BlogApp.MVCUI.Services.Results;
-using Microsoft.AspNetCore.Http;
 using System.Net;
+using System.Text;
+using IResult = BlogApp.Core.Utilities.Results.Abstract.IResult;
 
 namespace BlogApp.MVCUI.Services.Concretes;
 
@@ -26,23 +26,36 @@ public class IdentityService : IIdentityService
         return _httpContextAccessor.HttpContext.Session.GetString("Token");
     }
 
-    public async Task<Core.Utilities.Results.Abstract.IResult> LoginAsync(LoginVM loginVM)
+    public async Task<IResult> LoginAsync(LoginVM loginVM)
     {
-        var responseMessage = await _httpClient.PostAsJsonAsync("/api/v1/Authenticate", loginVM);
-        if (responseMessage is not null && !responseMessage.IsSuccessStatusCode)
+        var responseMessage = await _httpClient.PostAsJsonAsync("/api/v1/Accounts/Authenticate", loginVM);
+        if (responseMessage is null)
         {
-            var response = await responseMessage.Content.ReadFromJsonAsync<AuthResult>();
-            if (responseMessage.StatusCode == HttpStatusCode.BadRequest)
-            {
-                return new ErrorResult("Giriş Başarısız"); //TODO: Magic string
-            }
-
-            _httpContextAccessor.HttpContext?.Session.SetString("Token", response.Token);
-            _httpContextAccessor.HttpContext?.Response.Cookies.Append("RefreshToken", response.RefreshToken);
-
-            return new SuccessResult("Giriş Başarılı"); //TODO: Magic string
+            return new ErrorResult("Giriş Başarısız"); //TODO: Magic string
         }
 
-        return new ErrorResult("Giriş Başarısız"); //TODO: Magic string
+        var response = await responseMessage.Content.ReadFromJsonAsync<AuthResult>();
+        if (responseMessage.StatusCode == HttpStatusCode.BadRequest || !responseMessage.IsSuccessStatusCode)
+        {
+            return new ErrorResult(ConcatErrors(response.Errors)); //TODO: Magic string
+        }
+
+        _httpContextAccessor.HttpContext?.Session.SetString("Token", response.Token);
+        _httpContextAccessor.HttpContext?.Response.Cookies.Append("RefreshToken", response.RefreshToken);
+
+        return new SuccessResult("Giriş Başarılı"); //TODO: Magic string
+    }
+
+    private string ConcatErrors(List<string> errors)
+    {
+        StringBuilder stringBuilder = new();
+
+        foreach (var error in errors)
+        {
+            stringBuilder.Append("**");
+            stringBuilder.Append(error);
+        }
+
+        return stringBuilder.ToString();
     }
 }

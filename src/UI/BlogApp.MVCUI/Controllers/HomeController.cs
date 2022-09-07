@@ -1,30 +1,47 @@
-﻿using BlogApp.MVCUI.Models;
+﻿using BlogApp.MVCUI.Models.Authentication;
+using BlogApp.MVCUI.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 
 namespace BlogApp.MVCUI.Controllers;
 public class HomeController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
+    private readonly IIdentityService _identityService;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(IIdentityService identityService)
     {
-        _logger = logger;
+        _identityService = identityService;
     }
 
+    [HttpGet]
     public IActionResult Index()
     {
         return View();
     }
 
-    public IActionResult Privacy()
+    [HttpGet]
+    [Route("Login")]
+    public IActionResult Login()
     {
         return View();
     }
 
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
+    [HttpPost]
+    [Route("Login")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Login(LoginVM loginVM)
     {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        if (!ModelState.IsValid)
+        {
+            return View(loginVM);
+        }
+
+        var result = await _identityService.LoginAsync(loginVM);
+        if (!result.IsSuccess)
+        {
+            //TODO:Notification result message 
+            return View(loginVM);
+        }
+
+        return RedirectToAction(nameof(Index));
     }
 }

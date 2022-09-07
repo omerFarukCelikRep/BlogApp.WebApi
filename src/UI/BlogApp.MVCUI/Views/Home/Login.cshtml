@@ -1,0 +1,38 @@
+﻿@model LoginVM
+
+<div class="row section-wrapper">
+    <div class="col-xs-12 nopadding">
+        <div class="box">
+            <div class="content-body">
+                <!--Content Details Body Start-->
+                <div class="content-details-body">
+                    <div class="page-title title-center">
+                        <h1>Giriş Yap</h1>
+                    </div>
+                    <!--Contact Form Start-->
+                    <form class="contact-form" asp-action="Login">
+                        <div class="row">
+                            <div class="box">
+                                <label asp-for="Email"></label>
+                                <input asp-for="Email" required />
+                            </div>
+                            <div class="box">
+                                <label asp-for="Password"></label>
+                                <input asp-for="Password" required />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="box">
+                                <button type="submit" class="w-100 text-dark">Giriş Yap</button>
+                            </div>
+                        </div>
+                    </form>
+                    <!--Contact Form End-->
+                </div>
+                <!--Content Details Body End-->
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="layout-divider"></div>

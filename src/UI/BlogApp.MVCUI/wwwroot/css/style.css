@@ -2470,7 +2470,7 @@ article.post-blog-list {
 /********************************************
 14.0 Form input
 *********************************************/
-.contact-form input[type=text],
+.contact-form input,
 .contact-form textarea {
     width: 100%;
     border-radius: 4px;
@@ -2480,7 +2480,7 @@ article.post-blog-list {
     background-color: transparent;
 }
 
-.contact-form input[type=text] {
+.contact-form input {
     height: 45px;
     padding: 0 20px;
 }
@@ -2490,7 +2490,7 @@ article.post-blog-list {
     padding: 11px 20px;
 }
 
-    .contact-form input[type=text]:focus,
+    .contact-form input:focus,
     .contact-form textarea:focus {
         outline: 0;
     }

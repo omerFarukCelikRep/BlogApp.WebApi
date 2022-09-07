@@ -81,7 +81,7 @@ public class UserService : IUserService
     public async Task<IDataResult<IdentityUser<Guid>>> FindByEmailAsync(string email)
     {
         var user = await _userManager.FindByEmailAsync(email);
-        return user == null ? new ErrorDataResult<IdentityUser<Guid>>( ServiceMessages.UserNotFound) : new SuccessDataResult<IdentityUser<Guid>>(user); //TODO:Magic string
+        return user == null ? new ErrorDataResult<IdentityUser<Guid>>(ServiceMessages.UserNotFound) : new SuccessDataResult<IdentityUser<Guid>>(user); //TODO:Magic string
     }
 
     public async Task<AuthResult> RefreshTokenAsync(TokenRequestDto tokenRequestDto)

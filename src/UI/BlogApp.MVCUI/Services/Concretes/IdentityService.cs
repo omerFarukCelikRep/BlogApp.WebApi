@@ -37,13 +37,30 @@ public class IdentityService : IIdentityService
         var response = await responseMessage.Content.ReadFromJsonAsync<AuthResult>();
         if (responseMessage.StatusCode == HttpStatusCode.BadRequest || !responseMessage.IsSuccessStatusCode)
         {
-            return new ErrorResult(ConcatErrors(response.Errors)); //TODO: Magic string
+            return new ErrorResult(ConcatErrors(response.Errors.ToList())); //TODO: Magic string
         }
 
         _httpContextAccessor.HttpContext?.Session.SetString("Token", response.Token);
         _httpContextAccessor.HttpContext?.Response.Cookies.Append("RefreshToken", response.RefreshToken);
 
         return new SuccessResult("Giriş Başarılı"); //TODO: Magic string
+    }
+
+    public async Task<IResult> RegisterAsync(RegisterVM registerVM)
+    {
+        var responseMessage = await _httpClient.PostAsJsonAsync("/api/v1/Accounts/Register", registerVM);
+        if (responseMessage is null || !(responseMessage.Content.Headers.ContentLength > 0))
+        {
+            return new ErrorResult($"Kayıt İşlemi Başarısız - {responseMessage?.ReasonPhrase}"); //TODO: Magic string
+        }
+
+        var response = await responseMessage.Content.ReadFromJsonAsync<AuthResult>();
+        if (responseMessage.StatusCode == HttpStatusCode.BadRequest || !responseMessage.IsSuccessStatusCode)
+        {
+            return new ErrorResult(ConcatErrors(response.Errors.ToList())); //TODO: Magic string
+        }
+
+        return new SuccessResult("Kayıt İşlemi Başarılı"); //TODO: Magic string
     }
 
     private string ConcatErrors(List<string> errors)

@@ -17,9 +17,10 @@ public class AuthTokenHandler : DelegatingHandler
         {
             string token = _httpContextAccessor.HttpContext.Session.GetString("Token");
 
-            if (string.IsNullOrEmpty(token))
+            if (!string.IsNullOrEmpty(token))
             {
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                request.Headers.Add("X-Forwarded-For", _httpContextAccessor.HttpContext.Connection.RemoteIpAddress?.ToString());
             }
         }
 

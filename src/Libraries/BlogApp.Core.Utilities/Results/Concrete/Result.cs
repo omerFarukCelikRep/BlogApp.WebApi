@@ -6,7 +6,6 @@ public class Result : IResult
     public bool IsSuccess { get; set; }
 
     public string? Message { get; set; }
-
     public Result()
     {
         IsSuccess = false;

@@ -2,6 +2,7 @@
 using BlogApp.Authentication.Dtos.Incoming;
 using BlogApp.Authentication.Dtos.Outgoing;
 using BlogApp.Business.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlogApp.API.Controllers.v1;
@@ -16,6 +17,7 @@ public class AccountsController : BaseController
 
     [HttpPost]
     [Route("Register")]
+    [AllowAnonymous]
     public async Task<IActionResult> Register([FromBody] UserRegistrationRequestDto registrationRequestDto)
     {
         if (!ModelState.IsValid)
@@ -43,6 +45,7 @@ public class AccountsController : BaseController
 
     [HttpPost]
     [Route("Authenticate")]
+    [AllowAnonymous]
     public async Task<IActionResult> Authenticate([FromBody] UserLoginRequestDto loginRequestDto)
     {
         if (!ModelState.IsValid)

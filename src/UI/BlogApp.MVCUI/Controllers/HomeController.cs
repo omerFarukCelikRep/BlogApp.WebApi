@@ -22,6 +22,10 @@ public class HomeController : Controller
     [Route("Login")]
     public IActionResult Login()
     {
+        if (_identityService.IsLoggedIn)
+        {
+            return RedirectToAction(nameof(Index));
+        }
         return View();
     }
 
@@ -38,10 +42,37 @@ public class HomeController : Controller
         var result = await _identityService.LoginAsync(loginVM);
         if (!result.IsSuccess)
         {
-            //TODO:Notification result message 
+            ModelState.AddModelError(string.Empty, result.Message);
             return View(loginVM);
         }
 
         return RedirectToAction(nameof(Index));
+    }
+
+    [HttpGet]
+    [Route("Register")]
+    public IActionResult Register()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    [Route("Register")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Register(RegisterVM registerVM)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(registerVM);
+        }
+
+        var result = await _identityService.RegisterAsync(registerVM);
+        if (!result.IsSuccess)
+        {
+            ModelState.AddModelError(string.Empty, result.Message);
+            return View(registerVM);
+        }
+
+        return RedirectToAction(nameof(Login));
     }
 }

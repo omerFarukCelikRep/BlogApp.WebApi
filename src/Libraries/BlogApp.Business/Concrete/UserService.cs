@@ -29,27 +29,23 @@ public class UserService : IUserService
     public async Task<AuthResult> AddAsync(UserRegistrationRequestDto registrationRequestDto)
     {
         var identityCreateResult = await AddIdentityUser(registrationRequestDto);
-
         if (!identityCreateResult.IsSuccess)
         {
             return new AuthResult(false, identityCreateResult.Message);
         }
 
-        _ = await AddMember(registrationRequestDto, identityCreateResult.Data.Id);
+        await AddMember(registrationRequestDto, identityCreateResult.Data.Id);
 
         var jwtToken = _tokenService.GenerateJwtToken(identityCreateResult.Data);
         var refreshToken = await _tokenService.GenerateRefreshTokenAsync(identityCreateResult.Data, registrationRequestDto.IpAddress);
+        await _memberRepository.SaveChangesAsync();
 
-        _ = await _memberRepository.SaveChangesAsync();
-
-        var authResult = new AuthResult
+        return new AuthResult
         {
             Success = true,
             Token = jwtToken,
             RefreshToken = refreshToken.Token
         };
-
-        return authResult;
     }
 
     public async Task<AuthResult> AuthenticateAsync(UserLoginRequestDto loginRequestDto, string ipAddress)

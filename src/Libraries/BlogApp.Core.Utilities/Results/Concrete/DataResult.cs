@@ -1,4 +1,5 @@
 ﻿using BlogApp.Core.Utilities.Results.Abstract;
+using System.Text.Json.Serialization;
 
 namespace BlogApp.Core.Utilities.Results.Concrete;
 public class DataResult<T> : Result, IDataResult<T>
@@ -9,6 +10,7 @@ public class DataResult<T> : Result, IDataResult<T>
         Data = data;
     }
 
+    [JsonConstructor]
     public DataResult(T data, bool isSuccess, string message) : base(isSuccess, message)
     {
         Data = data;

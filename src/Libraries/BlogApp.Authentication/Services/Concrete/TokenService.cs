@@ -131,7 +131,7 @@ public class TokenService : ITokenService
     {
         var refreshTokens = await _refreshTokenRepository.GetAllAsync(x => x.UserId == user.Id, false);
 
-        return refreshTokens.Single(x => x.IsActive);
+        return refreshTokens.FirstOrDefault(x => x.IsActive);
     }
 
     public async Task<Guid?> ValidateJwtTokenAsync(string token)

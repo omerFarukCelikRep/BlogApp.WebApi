@@ -1,4 +1,5 @@
 using BlogApp.MVCUI.Extensions;
+using BlogApp.MVCUI.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,8 +19,10 @@ app.UseStaticFiles();
 app.UseSession();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseMiddleware<UserClaimsMiddleware>();
 
 app.MapControllerRoute(
     name: "default",

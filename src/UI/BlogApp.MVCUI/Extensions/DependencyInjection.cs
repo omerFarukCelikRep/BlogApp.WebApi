@@ -17,6 +17,9 @@ public static class DependencyInjection
         .AddHttpMessageHandler<AuthTokenHandler>();
         services.AddHttpContextAccessor();
 
+        services.AddAuthentication();
+        services.AddAuthorization();
+
         services.AddScoped(serviceProvider =>
         {
             var clientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
@@ -24,8 +27,9 @@ public static class DependencyInjection
             return clientFactory.CreateClient("WebApiClient");
         });
         services.AddScoped<IIdentityService, IdentityService>();
+        services.AddScoped<ITopicService, TopicService>();
 
-        services.AddControllersWithViews();
+        services.AddControllersWithViews(/*options => options.Filters.Add<AuthorizationFilter>()*/);
 
 
 

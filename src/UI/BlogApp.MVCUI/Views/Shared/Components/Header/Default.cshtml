@@ -4,7 +4,7 @@
         <!--Logo Start-->
         <div class="logo">
             <a href="/">
-                <img src="images/logo-transparent.png" alt="logo" />
+                <img src="~/images/logo-transparent.png" alt="logo" />
             </a>
         </div>
         <!--Logo End-->
@@ -15,7 +15,7 @@
             <div class="burger-menu"><i class="fa fa-bars"></i></div>
 
             <!--Search Icon-->
-            <div id="trigger-overlay" class="search-open"><i class="fa fa-search"></i></div>
+            <div id="trigger-overlay" class="search-open"><i class="fa-solid fa-magnifying-glass"></i></div>
 
             <!--Menu Start-->
             <ul>
@@ -39,48 +39,36 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="#">Category</a>
+                    <a href="#">Topic</a>
                     <ul>
-                        <li><a href="category-page.html">Standard</a></li>
-                        <li><a href="category-page-fullwidth.html">Standard fullwidth</a></li>
-                        <li><a href="category-page-list.html">Blog list</a></li>
-                        <li><a href="category-page-list-fullwidth.html">Blog list fullwidth</a></li>
-                        <li><a href="category-page-masonry.html">Masonry</a></li>
-                        <li><a href="category-page-masonry-fullwidth.html">Masonry fullwidth</a></li>
+                        <li><a asp-controller="Topic" asp-action="Add">Add Topic</a></li>
+                        <li><a asp-controller="Topic" asp-action="Index">List Topic</a></li>
                     </ul>
                 </li>
                 <li>
-                    <a href="#">Features</a>
+                    <a href="#">Article</a>
                     <ul>
-                        <li><a href="post-standard.html">Standard post</a></li>
-                        <li><a href="post-gallery-one.html">Gallery post one</a></li>
-                        <li><a href="post-gallery-two.html">Gallery post two</a></li>
-                        <li><a href="post-video-youtube.html">Video post youtube</a></li>
-                        <li><a href="post-video-vimeo.html">Video post vimeo</a></li>
-                        <li><a href="post-audio.html">Audio post</a></li>
-                        <li>
-                            <a href="#">Post fullwidth</a>
-                            <ul>
-                                <li><a href="post-standard-fullwidth.html">Standard post</a></li>
-                                <li><a href="post-gallery-one-fullwidth.html">Gallery post one</a></li>
-                                <li><a href="post-gallery-two-fullwidth.html">Gallery post two</a></li>
-                                <li><a href="post-video-youtube-fullwidth.html">Video post youtube</a></li>
-                                <li><a href="post-video-vimeo-fullwidth.html">Video post vimeo</a></li>
-                                <li><a href="post-audio-fullwidth.html">Audio post</a></li>
-                            </ul>
-                        </li>
-                        <li><a href="color-widget.html">Color widget</a></li>
+                        <li><a asp-action="Add" asp-controller="Article">Add Article</a></li>
+                        <li><a asp-action="Index" asp-controller="Article">List Article</a></li>
                     </ul>
                 </li>
                 <li><a href="about-me.html">About me</a></li>
                 <li><a href="contact.html">Contact</a></li>
                 <li><a href="elements.html">Elements</a></li>
-                <li><a asp-action="Login">Giriş Yap</a></li>
+                <li class="float-end">
+                    <a href="#"><i class="fa-regular fa-user"></i></a>
+                    <ul>
+                        <li>
+                            <a asp-controller="Home" asp-action="Login">Giriş Yap</a>
+                        </li>
+                        <li>
+                            <a asp-controller="Home" asp-action="Register">Kayıt Ol</a>
+                        </li>
+                    </ul>
+                </li>
             </ul>
             <!--Menu End-->
-
         </div>
         <!--Navigation Menu End-->
-
     </div>
 </header>

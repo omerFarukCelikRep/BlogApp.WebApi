@@ -1,10 +1,14 @@
-﻿namespace BlogApp.Authentication.Dtos.Incoming;
+﻿using System.Text.Json.Serialization;
+
+namespace BlogApp.Authentication.Dtos.Incoming;
 public class UserRegistrationRequestDto
 {
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public string Email { get; set; }
-    public string Password { get; set; }
-    public string ConfirmedPassword { get; set; }
-    public string IpAddress { get; set; }
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public string Password { get; set; } = string.Empty;
+    public string ConfirmedPassword { get; set; } = string.Empty;
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
+    public string IpAddress { get; set; } = string.Empty;
 }

@@ -11,7 +11,7 @@ public class Article : AuditableEntity
     public string? Title { get; set; }
     public string? Content { get; set; }
     public int ReadTime { get; set; }
-    public byte[]? Thumbnail { get; set; }
+    public string? Thumbnail { get; set; }
 
     //Navigation Prop.
     public Guid MemberId { get; set; }

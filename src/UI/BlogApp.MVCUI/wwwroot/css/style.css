@@ -175,7 +175,7 @@ a:focus {
 .bgimage-cover,
 .fit-img {
     background-repeat: no-repeat;
-    background-size: cover;
+    background-size: contain;
     background-position: center center;
 }
 
@@ -3933,6 +3933,7 @@ form.subscribe input::-moz-placeholder { /* Mozilla Firefox 19+ */
         }
 
             .nav-menu ul li:after {
+                border-radius:10%;
                 position: absolute;
                 display: block;
                 content: '';
@@ -4029,16 +4030,6 @@ form.subscribe input::-moz-placeholder { /* Mozilla Firefox 19+ */
                 color: #aeaeae;
                 padding: 15px 17px 14px 17px !important;
             }
-
-            /* ===== Submenu border radius start ===== */
-            .nav-menu ul ul,
-            .nav-menu ul ul li:last-child:after {
-                border-radius: 0 0 4px 4px;
-            }
-
-                .nav-menu ul ul ul {
-                    border-radius: 0 4px 4px 4px;
-                }
 
         .nav-menu > ul > li > ul.submenuRight > li ul,
         .nav-menu > ul > li > ul ul.nextmenuRight,

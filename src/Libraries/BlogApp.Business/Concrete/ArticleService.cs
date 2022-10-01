@@ -7,6 +7,7 @@ using BlogApp.Core.Utilities.Results.Concrete;
 using BlogApp.DataAccess.Interfaces.Repositories;
 using BlogApp.Entities.Concrete;
 using BlogApp.Entities.Dtos.Articles;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace BlogApp.Business.Concrete;
@@ -21,18 +22,22 @@ public class ArticleService : IArticleService
         _publishedArticleRepository = publishedArticleRepository;
     }
 
-    public async Task<IDataResult<List<ArticleDto>>> GetAllAsync()
+    public async Task<IDataResult<List<ArticlePublishedListDto>>> GetAllPublishedAsync()
     {
         var articles = await _publishedArticleRepository.GetAllAsync(false);
+        var mappedArticles = ObjectMapper.Mapper.Map<List<ArticlePublishedListDto>>(articles);
 
-        if (!articles.Any())
-        {
-            return new ErrorDataResult<List<ArticleDto>>(ServiceMessages.ArticleNotFound);
-        }
+        return new SuccessDataResult<List<ArticlePublishedListDto>>(mappedArticles, ServiceMessages.ArticlesListed);
+    }
 
-        var mappedArticles = ObjectMapper.Mapper.Map<List<ArticleDto>>(articles);
+    public async Task<IDataResult<ArticleUnpublishedListDto>> GetAllUnpublishedByUserIdAsync(Guid userId)
+    {
+        var publishedArticleIds = (await _publishedArticleRepository.GetAllAsync(x => x.Article.MemberId == userId, false)).Select(x => x.Id).ToList();
+        var articles = await _articleRepository.GetAllAsync(x => x.MemberId == userId, false);
+        var unpublishedArticles = articles.Where(article => publishedArticleIds.Any(publishedArticleId => publishedArticleId != article.Id)).ToList();
 
-        return new SuccessDataResult<List<ArticleDto>>(mappedArticles, ServiceMessages.ArticlesListed);
+        var mappedArticles = ObjectMapper.Mapper.Map<ArticleUnpublishedListDto>(unpublishedArticles);
+        return new SuccessDataResult<ArticleUnpublishedListDto>(mappedArticles, ServiceMessages.ArticlesListed);
     }
 
     public async Task<IDataResult<ArticleDto>> GetByIdAsync(Guid id)
@@ -81,9 +86,11 @@ public class ArticleService : IArticleService
             PublishDate = DateTime.Now
         };
 
-        _ = await _publishedArticleRepository.AddAsync(publishArticle);
-
-        _ = await _publishedArticleRepository.SaveChangesAsync();
+        await _publishedArticleRepository.AddAsync(publishArticle);
+        if (await _publishedArticleRepository.SaveChangesAsync() <= 0)
+        {
+            return new ErrorResult("İşlem Başarısız");  //TODO:Magic string
+        }
 
         return new SuccessResult(ServiceMessages.ArticlePublished);
     }
@@ -92,12 +99,10 @@ public class ArticleService : IArticleService
     {
         var article = ObjectMapper.Mapper.Map<Article>(articleCreateDto);
 
-        article.ReadTime = ArticleHelper.CalculateReadTime(Regex.Replace(articleCreateDto.Content, "<.*?>", string.Empty));
+        article.ReadTime = ArticleHelper.CalculateReadTime(articleCreateDto.Content);
+        articleCreateDto.Topics.ForEach(topicId => article.ArticleTopics.Add(new() { ArticleId = article.Id, TopicId = topicId }));
 
         article = await _articleRepository.AddAsync(article);
-
-        articleCreateDto.Topics.ForEach(x => article.ArticleTopics.Add(new() { ArticleId = article.Id, TopicId = x }));
-
         if (await _articleRepository.SaveChangesAsync() <= 0)
         {
             return new ErrorResult("İşlem Başarısız");  //TODO:Magic string

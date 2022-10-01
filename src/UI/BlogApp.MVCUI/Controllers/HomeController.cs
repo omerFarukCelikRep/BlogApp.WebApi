@@ -3,7 +3,7 @@ using BlogApp.MVCUI.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlogApp.MVCUI.Controllers;
-public class HomeController : Controller
+public class HomeController : BaseController
 {
     private readonly IIdentityService _identityService;
 

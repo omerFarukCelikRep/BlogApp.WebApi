@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 namespace BlogApp.Authentication.Services.Abstract;
 public interface ITokenService
 {
-    string GenerateJwtToken(IdentityUser<Guid> user);
+    string GenerateJwtToken(IdentityUser<Guid> identityUser, Guid userId);
     Task<RefreshToken> GenerateRefreshTokenAsync(IdentityUser<Guid> user, string ipAddress);
     Task<RefreshToken> GetActiveRefreshTokenAsync(IdentityUser<Guid> user);
     Task<bool> UpdateRefreshTokenAsUsedAsync(string token);

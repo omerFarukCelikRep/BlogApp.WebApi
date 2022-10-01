@@ -13,10 +13,18 @@ public class ArticlesController : BaseController
         _articleService = articleService;
     }
 
-    [HttpGet]
-    public async Task<IActionResult> GetAll()
+    [HttpGet("Published")]
+    public async Task<IActionResult> GetAllPublished()
     {
-        var result = await _articleService.GetAllAsync();
+        var result = await _articleService.GetAllPublishedAsync();
+
+        return GetDataResult(result);
+    }
+
+    [HttpGet("Unpublished")]
+    public async Task<IActionResult> GetAllUnpublished()
+    {
+        var result = await _articleService.GetAllUnpublishedByUserIdAsync(UserId);
 
         return GetDataResult(result);
     }
@@ -45,9 +53,10 @@ public class ArticlesController : BaseController
             return BadRequest(ModelState);
         }
 
+        createArticleDto.MemberId = UserId;
         var result = await _articleService.AddAsync(createArticleDto);
 
-        return Ok();
+        return Ok(result);
     }
 
     [HttpPost("Publish")]

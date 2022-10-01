@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BlogApp.MVCUI.Controllers;
 [AuthorizationFilter]
-public class TopicController : Controller
+public class TopicController : BaseController
 {
     private readonly ITopicService _topicService;
     public TopicController(ITopicService topicService)

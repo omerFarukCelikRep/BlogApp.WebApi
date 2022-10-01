@@ -28,7 +28,7 @@ public class TokenService : ITokenService
         _refreshTokenRepository = refreshTokenRepository;
         _tokenValidationParameters = tokenValidationParameters;
     }
-    public string GenerateJwtToken(IdentityUser<Guid> user)
+    public string GenerateJwtToken(IdentityUser<Guid> identityUser, Guid userId)
     {
         var jwtHandler = new JwtSecurityTokenHandler();
 
@@ -39,13 +39,13 @@ public class TokenService : ITokenService
         {
             Subject = new ClaimsIdentity(new[]
             {
-                    new Claim("Id", user.Id.ToString()),
-                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                    new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-                    new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                    new Claim("Id", userId.ToString()),
+                    new Claim(ClaimTypes.NameIdentifier, identityUser.Id.ToString()),
+                    new Claim(JwtRegisteredClaimNames.Sub, identityUser.Email),
+                    new Claim(JwtRegisteredClaimNames.Email, identityUser.Email),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()) //Used by the refreshed token
 
-                }),
+            }),
             Expires = DateTime.Now.Add(_jwtConfig.ExpiryTimeFrame), //TODO: Update expiration time
             SigningCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature //TODO: Review the algorithm

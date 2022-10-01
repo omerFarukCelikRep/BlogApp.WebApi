@@ -11,6 +11,7 @@ public static class ObjectMapper
             config.AddProfile<TopicMappingProfile>();
             config.AddProfile<UserMappingProfile>();
             config.AddProfile<MemberProfile>();
+            config.AddProfile<ArticleProfile>();
         });
 
         return configuration.CreateMapper();

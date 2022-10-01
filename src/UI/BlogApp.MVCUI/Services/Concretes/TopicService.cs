@@ -1,5 +1,6 @@
 ﻿using BlogApp.Core.Utilities.Results.Abstract;
 using BlogApp.Core.Utilities.Results.Concrete;
+using BlogApp.MVCUI.Models.Articles;
 using BlogApp.MVCUI.Models.Topics;
 using BlogApp.MVCUI.Services.Interfaces;
 using System.Net;
@@ -31,9 +32,10 @@ public class TopicService : ITopicService
             return new ErrorResult("Giriş Başarısız"); //TODO: Magic string
         }
 
+        var response = await responseMessage.Content.ReadFromJsonAsync<DataResult<TopicAddVM>>();
         if (responseMessage.StatusCode == HttpStatusCode.BadRequest || !responseMessage.IsSuccessStatusCode)
         {
-            return new ErrorResult(responseMessage.ReasonPhrase);
+            return new ErrorResult($"{responseMessage.ReasonPhrase} - {response.Message}");
         }
 
         return new SuccessResult();

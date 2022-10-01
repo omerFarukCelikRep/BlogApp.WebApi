@@ -1,5 +1,4 @@
-﻿using BlogApp.Business.Interfaces;
-using BlogApp.Core.Utilities.Results.Abstract;
+﻿using BlogApp.Core.Utilities.Results.Abstract;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +13,7 @@ namespace BlogApp.API.Controllers.v1;
 public class BaseController : ControllerBase
 {
     protected string UserIdentityId => User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-    protected async Task<Guid?> GetUserId([FromServices] IUserService userService)
-    {
-        return await userService.GetUserIdByIdentityIdAsync(Guid.Parse(UserIdentityId));
-    }
+    protected Guid UserId => Guid.Parse(User.FindFirstValue("Id"));
 
     protected IActionResult GetResult(Core.Utilities.Results.Abstract.IResult result)
     {

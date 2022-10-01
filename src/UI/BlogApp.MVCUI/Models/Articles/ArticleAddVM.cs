@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using BlogApp.MVCUI.Extensions;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
@@ -14,7 +15,17 @@ public class ArticleAddVM
     [Required]
     [Display(Name = "İçerik")]
     public string Content { get; set; }
-    public string Thumbnail { get; set; }
+    public string Thumbnail
+    {
+        get
+        {
+            if (ThumbnailFile is null)
+            {
+                return string.Empty;
+            }
+            return ThumbnailFile.FileToString().GetAwaiter().GetResult();
+        }
+    }
 
     [Required]
     [Display(Name = "Resim")]
@@ -25,5 +36,6 @@ public class ArticleAddVM
     [Display(Name = "Konular")]
     public List<Guid> TopicIds { get; set; }
 
-    public List<SelectListItem> Topics { get; set; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
+    public List<SelectListItem>? Topics { get; set; }
 }

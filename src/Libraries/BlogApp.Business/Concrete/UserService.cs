@@ -34,9 +34,9 @@ public class UserService : IUserService
             return new AuthResult(false, identityCreateResult.Message);
         }
 
-        await AddMember(registrationRequestDto, identityCreateResult.Data.Id);
+        var member = await AddMember(registrationRequestDto, identityCreateResult.Data.Id);
 
-        var jwtToken = _tokenService.GenerateJwtToken(identityCreateResult.Data);
+        var jwtToken = _tokenService.GenerateJwtToken(identityCreateResult.Data, member.Id);
         var refreshToken = await _tokenService.GenerateRefreshTokenAsync(identityCreateResult.Data, registrationRequestDto.IpAddress);
         await _memberRepository.SaveChangesAsync();
 
@@ -62,7 +62,9 @@ public class UserService : IUserService
             return new AuthResult(false, AuthenticationMessages.InvalidRequest);
         }
 
-        var jwtToken = _tokenService.GenerateJwtToken(findUserResult.Data);
+        var member = await _memberRepository.GetByIdentityId(findUserResult.Data.Id);
+
+        var jwtToken = _tokenService.GenerateJwtToken(findUserResult.Data, member.Id);
         var refreshToken = await _tokenService.GetActiveRefreshTokenAsync(findUserResult.Data)
                            ?? await _tokenService.GenerateRefreshTokenAsync(findUserResult.Data, ipAddress);
 
@@ -82,25 +84,22 @@ public class UserService : IUserService
 
     public async Task<AuthResult> RefreshTokenAsync(TokenRequestDto tokenRequestDto)
     {
-        var userId = await _tokenService.ValidateJwtTokenAsync(tokenRequestDto.Token);
-
+        var identityUserId = await _tokenService.ValidateJwtTokenAsync(tokenRequestDto.Token);
         var verifyResult = await _tokenService.VerifyTokenAsync(tokenRequestDto);
-
         if (!verifyResult.Success)
         {
             return verifyResult;
         }
 
         bool markedAsUsed = await _tokenService.UpdateRefreshTokenAsUsedAsync(tokenRequestDto.RefreshToken);
-
         if (!markedAsUsed)
         {
             return new AuthResult(false, ExceptionMessages.SomethingWentWrong);
         }
 
-        var user = await _userManager.FindByIdAsync(userId.ToString());
-
-        var jwtToken = _tokenService.GenerateJwtToken(user);
+        var user = await _userManager.FindByIdAsync(identityUserId.ToString());
+        var member = await _memberRepository.GetByIdentityId(identityUserId.Value);
+        var jwtToken = _tokenService.GenerateJwtToken(user, member.Id);
         var refreshToken = await _tokenService.GenerateRefreshTokenAsync(user, tokenRequestDto.IpAddress);
 
         return new AuthResult

@@ -17,6 +17,10 @@
     {
       "library": "select2@4.0.13",
       "destination": "wwwroot/lib/select2/"
+    },
+    {
+      "library": "ckeditor@4.20.0",
+      "destination": "wwwroot/lib/ckeditor/"
     }
   ]
 }

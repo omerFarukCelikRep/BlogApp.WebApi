@@ -2,6 +2,7 @@
 
 @section Styles{
     <link href="~/lib/select2/css/select2.min.css" rel="stylesheet" />
+    <link href="~/lib/ckeditor/contents.min.css" rel="stylesheet" />
 }
 
 <div class="row section-wrapper">
@@ -61,6 +62,9 @@
 
     @section Scripts{
     <script src="~/lib/select2/js/select2.full.min.js"></script>
+    <script src="~/lib/ckeditor/ckeditor.js"></script>
+    <script src="~/lib/ckeditor/config.js"></script>
+    <script src="~/lib/ckeditor/lang/tr.js"></script>
     <script type="text/javascript">
         $(document).ready(() => {
             $("#ThumbnailFile").change(() => {
@@ -71,6 +75,8 @@
                 placeholder: 'Select a Topic',
                 width: '100%'
             });
+
         });
+            CKEDITOR.replace('Content');
     </script>
 }

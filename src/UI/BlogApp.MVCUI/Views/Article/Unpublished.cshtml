@@ -1,1 +1,55 @@
-﻿@model ArticleUnpublishedListVM
+﻿@model IEnumerable<ArticleUnpublishedListVM>
+
+<div class="row section-wrapper">
+    <!--Content Start-->
+    <div class="col-md-8 content-section-body">
+        <div class="box">
+            <!--Archive Title Start-->
+            <div class="archive-title">
+                <span>Articles</span>
+                <h1>Unpublished</h1>
+            </div>
+            <!--Archive Title End-->
+            <div class="post-list">
+                @foreach (var article in Model)
+                {
+                    <!--Post Entry Start-->
+                    <article class="post-blog-list">
+                        <div class="blog-list-box">
+                            <!--Post Image-->
+                            <div class="blog-list-img">
+                                <a asp-controller="Article" asp-action="Details" asp-route-id="@article.Id">
+                                    <figure class="fit-img">
+                                        <div class="overlay-hover"></div>
+                                        <img src="data:image/*;base64,@article.Thumbnail" alt="@article.Title" />
+                                    </figure>
+                                </a>
+                            </div>
+                            <!--Post Entry-->
+                            <div class="post-entry">
+                                <div class="blog-list-details">
+                                    <h2><a asp-controller="Article" asp-action="Details"
+                                        asp-route-id="@article.Id">@article.Title</a></h2>
+                                    <div class="post-description">
+                                        <p>@Html.Raw(article.Content.Take(250))<span>...</span></p>
+                                    </div>
+                                    <div class="post-meta">
+                                        <ul>
+                                            <li>@article.CreatedDate.ToString("dd MM YYYY")</li>
+                                            <li>@article.Topics</li>
+                                            <li>@article.AuthorName</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                    <!--Post Entry End-->
+                }
+            </div>
+        </div>
+    </div>
+    <!--Content End-->
+</div>
+
+<div class="layout-divider"></div>

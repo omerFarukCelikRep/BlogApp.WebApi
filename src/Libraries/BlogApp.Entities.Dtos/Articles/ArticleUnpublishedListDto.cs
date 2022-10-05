@@ -6,4 +6,7 @@ public class ArticleUnpublishedListDto
     public string Content { get; set; }
     public int ReadTime { get; set; }
     public string? Thumbnail { get; set; }
+    public DateOnly CreatedDate { get; set; }
+    public string Topics { get; set; }
+    public string AuthorName { get; set; }
 }

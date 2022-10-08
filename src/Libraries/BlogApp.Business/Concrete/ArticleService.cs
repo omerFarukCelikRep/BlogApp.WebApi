@@ -30,20 +30,31 @@ public class ArticleService : IArticleService
         return new SuccessDataResult<List<ArticlePublishedListDto>>(mappedArticles, ServiceMessages.ArticlesListed);
     }
 
-    public async Task<IDataResult<ArticleUnpublishedListDto>> GetAllUnpublishedByUserIdAsync(Guid userId)
+    public async Task<IDataResult<List<ArticleUnpublishedListDto>>> GetAllUnpublishedByUserIdAsync(Guid userId)
     {
         var publishedArticleIds = (await _publishedArticleRepository.GetAllAsync(x => x.Article.MemberId == userId, false)).Select(x => x.Id).ToList();
-        var articles = await _articleRepository.GetAllAsync(x => x.MemberId == userId, false);
-        var unpublishedArticles = articles.Where(article => publishedArticleIds.Any(publishedArticleId => publishedArticleId != article.Id)).ToList();
+        var articles = await _articleRepository.GetAllAsync(x => x.MemberId == userId, true);
+        var unpublishedArticles = articles.Where(article => !publishedArticleIds.Any(publishedArticleId => publishedArticleId == article.Id)).ToList();
 
-        var mappedArticles = ObjectMapper.Mapper.Map<ArticleUnpublishedListDto>(unpublishedArticles);
-        return new SuccessDataResult<ArticleUnpublishedListDto>(mappedArticles, ServiceMessages.ArticlesListed);
+        var mappedArticles = ObjectMapper.Mapper.Map<List<ArticleUnpublishedListDto>>(unpublishedArticles);
+        return new SuccessDataResult<List<ArticleUnpublishedListDto>>(mappedArticles, ServiceMessages.ArticlesListed);
+    }
+
+    public async Task<IDataResult<ArticleUnpublishedDetailsDto>> GetUnpublishedById(Guid id)
+    {
+        var article = await _articleRepository.GetByIdAsync(id, false);
+        if (article is null)
+        {
+            return new ErrorDataResult<ArticleUnpublishedDetailsDto>(ServiceMessages.ArticleNotFound);
+        }
+
+        var mappedArticle = ObjectMapper.Mapper.Map<ArticleUnpublishedDetailsDto>(article);
+        return new SuccessDataResult<ArticleUnpublishedDetailsDto>(mappedArticle, ServiceMessages.ArticlesListed);
     }
 
     public async Task<IDataResult<ArticleDto>> GetByIdAsync(Guid id)
     {
         var article = await _articleRepository.GetByIdAsync(id, false);
-
         if (article is null)
         {
             return new ErrorDataResult<ArticleDto>(ServiceMessages.ArticleNotFound);

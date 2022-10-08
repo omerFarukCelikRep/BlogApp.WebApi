@@ -15,7 +15,7 @@ public class Article : AuditableEntity
 
     //Navigation Prop.
     public Guid MemberId { get; set; }
-    public virtual Member? Member { get; set; }
+    public virtual Member Member { get; set; }
 
     public virtual ICollection<ArticleTopic> ArticleTopics { get; set; }
 }

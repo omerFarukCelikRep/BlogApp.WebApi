@@ -61,7 +61,20 @@ public class ArticleController : BaseController
         return View(result.Data);
     }
 
-    public async Task<List<SelectListItem>> GetTopics(Guid? selectedId = null)
+    [HttpGet]
+    public async Task<IActionResult> UnpublishedDetails(Guid id)
+    {
+        var result = await _articleService.GetUnpublishedById(id);
+        if (!result.IsSuccess)
+        {
+            ModelState.AddModelError(string.Empty, result.Message);
+            return RedirectToAction(nameof(Index));
+        }
+
+        return View(result.Data);
+    }
+
+    private async Task<List<SelectListItem>> GetTopics(Guid? selectedId = null)
     {
         var topics = (await _topicService.GetAll()).Data;
         return topics.ConvertAll(topic => new SelectListItem

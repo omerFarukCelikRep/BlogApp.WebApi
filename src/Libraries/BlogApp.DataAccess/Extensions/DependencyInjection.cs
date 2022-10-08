@@ -12,6 +12,8 @@ public static class DependencyInjection
         services.AddDbContext<BlogAppDbContext>(options =>
         {
             options.UseSqlServer(Configuration.GetConnectionString(DatabaseConstants.DefaultConnectionString), builder => builder.MigrationsAssembly(typeof(BlogAppDbContext).Assembly.FullName));
+
+            options.UseLazyLoadingProxies();
         });
 
         return services;

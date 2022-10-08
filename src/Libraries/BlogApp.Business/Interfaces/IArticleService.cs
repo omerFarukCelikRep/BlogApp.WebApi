@@ -9,5 +9,6 @@ public interface IArticleService
     Task<IDataResult<ArticleDto>> GetByIdAsync(Guid id);
     Task<IResult> PublishAsync(Guid articleId);
     Task<IResult> AddAsync(ArticleCreateDto createArticleDto);
-    Task<IDataResult<ArticleUnpublishedListDto>> GetAllUnpublishedByUserIdAsync(Guid userId);
+    Task<IDataResult<List<ArticleUnpublishedListDto>>> GetAllUnpublishedByUserIdAsync(Guid userId);
+    Task<IDataResult<ArticleUnpublishedDetailsDto>> GetUnpublishedById(Guid id);
 }

@@ -29,6 +29,14 @@ public class ArticlesController : BaseController
         return GetDataResult(result);
     }
 
+    [HttpGet("Unpublished/{id:guid}")]
+    public async Task<IActionResult> GetUnpublishedById([FromRoute] Guid id)
+    {
+        var result = await _articleService.GetByIdAsync(id);
+
+        return GetDataResult(result);
+    }
+
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById([FromRoute] Guid id)
     {

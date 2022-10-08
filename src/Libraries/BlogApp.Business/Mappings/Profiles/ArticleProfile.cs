@@ -12,10 +12,15 @@ public class ArticleProfile : Profile
         CreateMap<PublishedArticle, ArticlePublishedListDto>();
         CreateMap<Article, ArticleUnpublishedListDto>()
                 .ForMember(
-                    dest => dest.CreatedDate,
-                    config => config.MapFrom(src => DateOnly.FromDateTime(src.CreatedDate))
+                    dest => dest.AuthorName,
+                    config => config.MapFrom(src => $"{src.Member.FirstName} {src.Member.LastName}")
                 )
                 .ForMember(
+                    dest => dest.Topics,
+                    config => config.MapFrom(src => string.Join(", ", src.ArticleTopics.Select(x => x.Topic.Name)))
+                );
+        CreateMap<Article, ArticleUnpublishedDetailsDto>()
+            .ForMember(
                     dest => dest.AuthorName,
                     config => config.MapFrom(src => $"{src.Member.FirstName} {src.Member.LastName}")
                 )

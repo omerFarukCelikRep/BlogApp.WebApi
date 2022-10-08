@@ -2,7 +2,7 @@
 
 <div class="row section-wrapper">
     <!--Content Start-->
-    <div class="col-md-8 content-section-body">
+    <div class="col content-section-body">
         <div class="box">
             <!--Archive Title Start-->
             <div class="archive-title">
@@ -19,7 +19,7 @@
                             <!--Post Image-->
                             <div class="blog-list-img">
                                 <a asp-controller="Article" asp-action="Details" asp-route-id="@article.Id">
-                                    <figure class="fit-img">
+                                    <figure class="fit-img" style="background-size:cover;">
                                         <div class="overlay-hover"></div>
                                         <img src="data:image/*;base64,@article.Thumbnail" alt="@article.Title" />
                                     </figure>
@@ -31,13 +31,14 @@
                                     <h2><a asp-controller="Article" asp-action="Details"
                                         asp-route-id="@article.Id">@article.Title</a></h2>
                                     <div class="post-description">
-                                        <p>@Html.Raw(article.Content.Take(250))<span>...</span></p>
+                                        @Html.Raw(article.Content.Substring(0,article.Content.Length > 230 ? 230 : article.Content.Length))<span>...</span>
                                     </div>
                                     <div class="post-meta">
                                         <ul>
-                                            <li>@article.CreatedDate.ToString("dd MM YYYY")</li>
+                                            <li>@article.CreatedDate.ToString("dd MM yyyy")</li>
                                             <li>@article.Topics</li>
                                             <li>@article.AuthorName</li>
+                                            <li>@article.ReadTime <span>dk.</span></li>
                                         </ul>
                                     </div>
                                 </div>

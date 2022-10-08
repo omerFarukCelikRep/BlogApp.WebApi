@@ -27,13 +27,6 @@ public class BlogAppDbContext : IdentityDbContext<IdentityUser<Guid>, IdentityRo
     public DbSet<RefreshToken>? RefreshTokens { get; set; }
     public DbSet<Topic>? Topics { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseLazyLoadingProxies();
-
-        base.OnConfiguring(optionsBuilder);
-    }
-
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.ApplyConfigurationsFromAssembly(typeof(IMappingMaker).Assembly);
@@ -57,11 +50,8 @@ public class BlogAppDbContext : IdentityDbContext<IdentityUser<Guid>, IdentityRo
     private void AssignBaseProperties()
     {
         var entries = ChangeTracker.Entries<BaseEntity>();
-
         var token = _context.HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-
         var userId = "UserNotFound";
-
         if (token != null)
         {
             userId = JwtHelper.GetUserIdByToken(token) ?? userId;

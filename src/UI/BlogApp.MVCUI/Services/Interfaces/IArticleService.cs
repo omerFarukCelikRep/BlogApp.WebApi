@@ -7,4 +7,5 @@ public interface IArticleService
 {
     Task<Core.Utilities.Results.Abstract.IResult> AddAsync(ArticleAddVM articleAddVM);
     Task<IDataResult<List<ArticleUnpublishedListVM>>> GetAllUnpublished();
+    Task<IDataResult<ArticleUnpublishedDetailsVM>> GetUnpublishedById(Guid articleId);
 }

@@ -1,9 +1,9 @@
-﻿using BlogApp.Core.Entities.Mapping;
+﻿using BlogApp.Core.Entities.Configurations;
 using BlogApp.Entities.Concrete;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace BlogApp.DataAccess.Mapping;
-public class MemberFollowedTopicMap : BaseEntityMap<MemberFollowedTopic>
+namespace BlogApp.Entities.Configurations;
+public class MemberFollowedTopicConfiguration : BaseEntityConfiguration<MemberFollowedTopic>
 {
     public override void Configure(EntityTypeBuilder<MemberFollowedTopic> builder)
     {

@@ -1,9 +1,10 @@
-﻿using BlogApp.Core.Entities.Mapping;
+﻿using BlogApp.Core.Entities.Configurations;
 using BlogApp.Entities.Concrete;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace BlogApp.DataAccess.Mapping;
-public class RefreshTokenMap : BaseEntityMap<RefreshToken>
+namespace BlogApp.Entities.Configurations;
+
+public class RefreshTokenConfiguration : BaseEntityConfiguration<RefreshToken>
 {
     public override void Configure(EntityTypeBuilder<RefreshToken> builder)
     {

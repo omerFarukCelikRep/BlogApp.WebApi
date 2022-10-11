@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BlogApp.DataAccess.Mapping\BlogApp.DataAccess.Mapping.csproj" />
+    <ProjectReference Include="..\BlogApp.Entities.Configurations\BlogApp.Entities.Configurations.csproj" />
   </ItemGroup>
 
 </Project>

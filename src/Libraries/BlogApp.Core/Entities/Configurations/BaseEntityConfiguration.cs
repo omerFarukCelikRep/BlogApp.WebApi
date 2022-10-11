@@ -2,8 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace BlogApp.Core.Entities.Mapping;
-public abstract class BaseEntityMap<T> : IEntityTypeConfiguration<T> where T : BaseEntity
+namespace BlogApp.Core.Entities.Configurations;
+public abstract class BaseEntityConfiguration<T> : IEntityTypeConfiguration<T> where T : BaseEntity
 {
     public virtual void Configure(EntityTypeBuilder<T> builder)
     {

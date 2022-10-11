@@ -1,7 +1,7 @@
 ﻿using BlogApp.Core.Entities.Base;
 using BlogApp.Core.Utilities.Authentication;
-using BlogApp.DataAccess.Mapping;
 using BlogApp.Entities.Concrete;
+using BlogApp.Entities.Configurations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -29,7 +29,7 @@ public class BlogAppDbContext : IdentityDbContext<IdentityUser<Guid>, IdentityRo
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        builder.ApplyConfigurationsFromAssembly(typeof(IMappingMaker).Assembly);
+        builder.ApplyConfigurationsFromAssembly(typeof(IConfigurationMaker).Assembly);
 
         base.OnModelCreating(builder);
     }

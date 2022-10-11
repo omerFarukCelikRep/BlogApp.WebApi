@@ -1,9 +1,10 @@
-﻿using BlogApp.Core.Entities.Mapping;
+﻿using BlogApp.Core.Entities.Configurations;
 using BlogApp.Entities.Concrete;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace BlogApp.DataAccess.Mapping;
-public class MemberMap : AuditableEntityMap<Member>
+namespace BlogApp.Entities.Configurations;
+
+public class MemberConfiguration : AuditableEntityConfiguration<Member>
 {
     public override void Configure(EntityTypeBuilder<Member> builder)
     {

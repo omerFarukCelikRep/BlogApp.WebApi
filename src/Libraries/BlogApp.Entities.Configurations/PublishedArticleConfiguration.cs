@@ -1,10 +1,11 @@
-﻿using BlogApp.Core.Entities.Mapping;
+﻿using BlogApp.Core.Entities.Configurations;
 using BlogApp.Entities.Concrete;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace BlogApp.DataAccess.Mapping;
-public class PublishedArticleMap : AuditableEntityMap<PublishedArticle>
+namespace BlogApp.Entities.Configurations;
+
+public class PublishedArticleConfiguration : AuditableEntityConfiguration<PublishedArticle>
 {
     public override void Configure(EntityTypeBuilder<PublishedArticle> builder)
     {

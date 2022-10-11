@@ -1,9 +1,10 @@
-﻿using BlogApp.Core.Entities.Mapping;
+﻿using BlogApp.Core.Entities.Configurations;
 using BlogApp.Entities.Concrete;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace BlogApp.DataAccess.Mapping;
-public class ArticleMap : AuditableEntityMap<Article>
+namespace BlogApp.Entities.Configurations;
+
+public class ArticleConfiguration : AuditableEntityConfiguration<Article>
 {
     public override void Configure(EntityTypeBuilder<Article> builder)
     {

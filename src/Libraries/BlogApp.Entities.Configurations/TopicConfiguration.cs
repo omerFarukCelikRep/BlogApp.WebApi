@@ -1,9 +1,9 @@
-﻿using BlogApp.Core.Entities.Mapping;
+﻿using BlogApp.Core.Entities.Configurations;
 using BlogApp.Entities.Concrete;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace BlogApp.DataAccess.Mapping;
-public class TopicMap : BaseEntityMap<Topic>
+namespace BlogApp.Entities.Configurations;
+public class TopicConfiguration : BaseEntityConfiguration<Topic>
 {
     public override void Configure(EntityTypeBuilder<Topic> builder)
     {

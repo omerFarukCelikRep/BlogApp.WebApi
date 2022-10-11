@@ -1,10 +1,9 @@
-﻿using BlogApp.Core.Utilities.Results.Abstract;
-using BlogApp.Core.Utilities.Results.Concrete;
+﻿using BlogApp.Core.Utilities.Results.Concrete;
+using BlogApp.Core.Utilities.Results.Interfaces;
 using BlogApp.MVCUI.Models.Articles;
-using BlogApp.MVCUI.Models.Topics;
 using BlogApp.MVCUI.Services.Interfaces;
 using System.Net;
-using IResult = BlogApp.Core.Utilities.Results.Abstract.IResult;
+using IResult = BlogApp.Core.Utilities.Results.Interfaces.IResult;
 
 namespace BlogApp.MVCUI.Services.Concretes;
 

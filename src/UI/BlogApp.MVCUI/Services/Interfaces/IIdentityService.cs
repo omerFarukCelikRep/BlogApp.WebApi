@@ -1,5 +1,5 @@
 ﻿using BlogApp.MVCUI.Models.Authentication;
-using IResult = BlogApp.Core.Utilities.Results.Abstract.IResult;
+using IResult = BlogApp.Core.Utilities.Results.Interfaces.IResult;
 
 namespace BlogApp.MVCUI.Services.Interfaces;
 

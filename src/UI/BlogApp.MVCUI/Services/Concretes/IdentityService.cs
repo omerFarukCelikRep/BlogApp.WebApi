@@ -4,7 +4,7 @@ using BlogApp.MVCUI.Services.Interfaces;
 using BlogApp.MVCUI.Services.Results;
 using System.Net;
 using System.Text;
-using IResult = BlogApp.Core.Utilities.Results.Abstract.IResult;
+using IResult = BlogApp.Core.Utilities.Results.Interfaces.IResult;
 
 namespace BlogApp.MVCUI.Services.Concretes;
 

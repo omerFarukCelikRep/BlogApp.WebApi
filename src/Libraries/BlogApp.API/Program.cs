@@ -11,20 +11,8 @@ builder.Services
             .AddDataAccessServices()
             .AddDataAccessEFCoreServices()
             .AddAuthenticationServices()
-            .AddBusinessServices();
-
-builder.Services.AddControllers();
-
-builder.Services.AddEndpointsApiExplorer();
-
-builder.Services.AddCustomSwagger();
-
-builder.Services.AddCustomVersioning();
-//TODO: Özel ayarlara bakılacak
-builder.Services.AddHealthChecks();
-
-builder.Services.AddHttpContextAccessor();
-
+            .AddBusinessServices()
+            .AddApiServices(builder.Configuration);
 
 var app = builder.Build();
 
@@ -35,6 +23,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.MapHealthChecks("/healthz");
+
 app.UseMiddleware<ErrorHandlerMiddleware>();
 
 app.UseHttpsRedirection();
@@ -42,8 +32,6 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 
 app.UseAuthorization();
-
-app.UseHealthChecks("/health");
 
 app.MapControllers();
 

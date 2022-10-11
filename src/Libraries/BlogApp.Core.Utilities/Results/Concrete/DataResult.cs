@@ -1,4 +1,4 @@
-﻿using BlogApp.Core.Utilities.Results.Abstract;
+﻿using BlogApp.Core.Utilities.Results.Interfaces;
 using System.Text.Json.Serialization;
 
 namespace BlogApp.Core.Utilities.Results.Concrete;

@@ -1,4 +1,4 @@
-﻿using BlogApp.Core.Utilities.Results.Abstract;
+﻿using BlogApp.Core.Utilities.Results.Interfaces;
 
 namespace BlogApp.Core.Utilities.Results.Concrete;
 public class Result : IResult

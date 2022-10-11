@@ -1,4 +1,4 @@
-﻿using BlogApp.Core.DataAccess.Base.EntityFramework.Mapping;
+﻿using BlogApp.Core.Entities.Mapping;
 using BlogApp.Entities.Concrete;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

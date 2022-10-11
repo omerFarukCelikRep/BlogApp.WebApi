@@ -1,8 +1,4 @@
-﻿using BlogApp.Core.Entities.Base;
-using BlogApp.MVCUI.Services.Interfaces;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Dynamic;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace BlogApp.MVCUI.Controllers;
 public class BaseController : Controller

@@ -1,7 +1,8 @@
 ﻿using BlogApp.Core.Entities.Base;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace BlogApp.Core.DataAccess.Base.EntityFramework.Mapping;
+namespace BlogApp.Core.Entities.Mapping;
+
 public class AuditableEntityMap<TEntity> : BaseEntityMap<TEntity> where TEntity : AuditableEntity
 {
     public override void Configure(EntityTypeBuilder<TEntity> builder)

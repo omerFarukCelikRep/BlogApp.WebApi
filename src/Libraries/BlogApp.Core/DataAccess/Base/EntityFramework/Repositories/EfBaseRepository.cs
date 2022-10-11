@@ -22,9 +22,9 @@ public class EfBaseRepository<TEntity> : IAsyncFindableRepository<TEntity>, IAsy
         return entity;
     }
 
-    public async Task<bool> AnyAsync(Expression<Func<TEntity, bool>>? expression = null)
+    public Task<bool> AnyAsync(Expression<Func<TEntity, bool>>? expression = null)
     {
-        return expression is null ? await _table.AnyAsync() : await _table.AnyAsync(expression);
+        return expression is null ? _table.AnyAsync() : _table.AnyAsync(expression);
     }
 
     public Task DeleteAsync(TEntity entity)
@@ -69,14 +69,14 @@ public class EfBaseRepository<TEntity> : IAsyncFindableRepository<TEntity>, IAsy
         return !orderDesc ? await values.OrderBy(orderby).ToListAsync() : await values.OrderByDescending(orderby).ToListAsync();
     }
 
-    public async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> expression, bool tracking = true)
+    public Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> expression, bool tracking = true)
     {
-        return tracking ? await _table.FirstOrDefaultAsync(expression) : await _table.AsNoTracking().FirstOrDefaultAsync(expression);
+        return tracking ? _table.FirstOrDefaultAsync(expression) : _table.AsNoTracking().FirstOrDefaultAsync(expression);
     }
 
-    public async Task<TEntity> GetByIdAsync(Guid id, bool tracking = true)
+    public Task<TEntity?> GetByIdAsync(Guid id, bool tracking = true)
     {
-        return tracking ? await _table.FindAsync(id) : await _table.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+        return tracking ? _table.FindAsync(id).AsTask() : _table.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public Task<TEntity> UpdateAsync(TEntity entity)
@@ -84,8 +84,8 @@ public class EfBaseRepository<TEntity> : IAsyncFindableRepository<TEntity>, IAsy
         return Task.FromResult(_table.Update(entity).Entity);
     }
 
-    public async Task<int> SaveChangesAsync()
+    public Task<int> SaveChangesAsync()
     {
-        return await _context.SaveChangesAsync();
+        return _context.SaveChangesAsync();
     }
 }

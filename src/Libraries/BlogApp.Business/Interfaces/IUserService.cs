@@ -1,6 +1,6 @@
 ﻿using BlogApp.Authentication.Dtos.Incoming;
 using BlogApp.Authentication.Dtos.Outgoing;
-using BlogApp.Core.Utilities.Results.Abstract;
+using BlogApp.Core.Utilities.Results.Interfaces;
 using Microsoft.AspNetCore.Identity;
 
 namespace BlogApp.Business.Interfaces;

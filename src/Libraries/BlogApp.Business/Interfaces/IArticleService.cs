@@ -1,4 +1,4 @@
-﻿using BlogApp.Core.Utilities.Results.Abstract;
+﻿using BlogApp.Core.Utilities.Results.Interfaces;
 using BlogApp.Entities.Dtos.Articles;
 
 namespace BlogApp.Business.Interfaces;

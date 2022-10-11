@@ -1,4 +1,4 @@
-﻿using BlogApp.Core.Utilities.Results.Abstract;
+﻿using BlogApp.Core.Utilities.Results.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,7 +15,7 @@ public class BaseController : ControllerBase
     protected string UserIdentityId => User.FindFirstValue(ClaimTypes.NameIdentifier);
     protected Guid UserId => Guid.Parse(User.FindFirstValue("Id"));
 
-    protected IActionResult GetResult(Core.Utilities.Results.Abstract.IResult result)
+    protected IActionResult GetResult(Core.Utilities.Results.Interfaces.IResult result)
     {
         return result.IsSuccess ? Ok(result) : BadRequest(result);
     }

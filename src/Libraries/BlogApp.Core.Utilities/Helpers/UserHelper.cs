@@ -5,8 +5,6 @@ public static class UserHelper
 
     public static byte[] EmptyImage()
     {
-        byte[] image = Convert.FromBase64String(imageString);
-
-        return image;
+        return Convert.FromBase64String(imageString); ;
     }
 }

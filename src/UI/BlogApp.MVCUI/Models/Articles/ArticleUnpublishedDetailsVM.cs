@@ -7,6 +7,7 @@ public class ArticleUnpublishedDetailsVM
     public string Content { get; set; }
     public int ReadTime { get; set; }
     public string? Thumbnail { get; set; }
-    public Guid AuthorId { get; set; }
+    public DateTime CreatedDate { get; set; }
+    public List<string> Topics { get; set; }
     public string AuthorName { get; set; }
 }

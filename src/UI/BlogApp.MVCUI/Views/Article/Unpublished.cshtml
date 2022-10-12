@@ -18,7 +18,7 @@
                         <div class="blog-list-box">
                             <!--Post Image-->
                             <div class="blog-list-img">
-                                <a asp-controller="Article" asp-action="Details" asp-route-id="@article.Id">
+                                <a asp-controller="Article" asp-action="UnpublishedDetails" asp-route-id="@article.Id">
                                     <figure class="fit-img" style="background-size:cover;">
                                         <div class="overlay-hover"></div>
                                         <img src="data:image/*;base64,@article.Thumbnail" alt="@article.Title" />
@@ -28,8 +28,8 @@
                             <!--Post Entry-->
                             <div class="post-entry">
                                 <div class="blog-list-details">
-                                    <h2><a asp-controller="Article" asp-action="Details"
-                                        asp-route-id="@article.Id">@article.Title</a></h2>
+                                    <h2>
+                                        <a asp-controller="Article" asp-action="UnpublishedDetails" asp-route-id="@article.Id">@article.Title</a></h2>
                                     <div class="post-description">
                                         @Html.Raw(article.Content.Substring(0,article.Content.Length > 230 ? 230 : article.Content.Length))<span>...</span>
                                     </div>

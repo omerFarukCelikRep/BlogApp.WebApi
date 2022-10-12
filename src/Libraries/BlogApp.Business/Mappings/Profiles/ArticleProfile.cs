@@ -26,7 +26,7 @@ public class ArticleProfile : Profile
                 )
                 .ForMember(
                     dest => dest.Topics,
-                    config => config.MapFrom(src => string.Join(", ", src.ArticleTopics.Select(x => x.Topic.Name)))
+                    config => config.MapFrom(src => src.ArticleTopics.Select(x => x.Topic.Name).ToList())
                 );
         CreateMap<Article, ArticleDto>();
         CreateMap<ArticleCreateDto, Article>().ForSourceMember(member => member.Topics, opt => opt.DoNotValidate());

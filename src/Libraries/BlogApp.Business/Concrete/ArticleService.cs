@@ -40,7 +40,7 @@ public class ArticleService : IArticleService
 
     public async Task<IDataResult<ArticleUnpublishedDetailsDto>> GetUnpublishedById(Guid id)
     {
-        var article = await _articleRepository.GetByIdAsync(id, false);
+        var article = await _articleRepository.GetByIdAsync(id, true);
         if (article is null)
         {
             return new ErrorDataResult<ArticleUnpublishedDetailsDto>(ServiceMessages.ArticleNotFound);

@@ -18,9 +18,7 @@ public class TopicService : ITopicService
 
     public async Task<IDataResult<List<TopicListVM>>> GetAll()
     {
-        var result = await _httpClient.GetFromJsonAsync<DataResult<List<TopicListVM>>>("/api/v1/Topics");
-
-        return result;
+        return await _httpClient.GetFromJsonAsync<DataResult<List<TopicListVM>>>("/api/v1/Topics");
     }
 
     public async Task<IResult> AddAsync(TopicAddVM topicAddVM)

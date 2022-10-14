@@ -37,7 +37,7 @@ public class IdentityService : IIdentityService
         var response = await responseMessage.Content.ReadFromJsonAsync<AuthResult>();
         if (responseMessage.StatusCode == HttpStatusCode.BadRequest || !responseMessage.IsSuccessStatusCode)
         {
-            return new ErrorResult(ConcatErrors(response.Errors.ToList())); //TODO: Magic string
+            return new ErrorResult(response.ToString());
         }
 
         _httpContextAccessor.HttpContext?.Session.SetString("Token", response.Token);
@@ -57,22 +57,9 @@ public class IdentityService : IIdentityService
         var response = await responseMessage.Content.ReadFromJsonAsync<AuthResult>();
         if (responseMessage.StatusCode == HttpStatusCode.BadRequest || !responseMessage.IsSuccessStatusCode)
         {
-            return new ErrorResult(ConcatErrors(response.Errors.ToList())); //TODO: Magic string
+            return new ErrorResult(response.ToString());
         }
 
         return new SuccessResult("Kayıt İşlemi Başarılı"); //TODO: Magic string
-    }
-
-    private string ConcatErrors(List<string> errors)
-    {
-        StringBuilder stringBuilder = new();
-
-        foreach (var error in errors)
-        {
-            stringBuilder.Append("**");
-            stringBuilder.Append(error);
-        }
-
-        return stringBuilder.ToString();
     }
 }

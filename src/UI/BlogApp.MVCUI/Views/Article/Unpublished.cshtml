@@ -44,27 +44,27 @@
                                     </div>
                                 </div>
                                 <div class="blog-list-share share-tooltip-animate">
-                                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                                    <i class="fa-solid fa-ellipsis-vertical" data-bs-toggle="tooltip" data-bs-title="Options"></i>
                                 </div>
                                 <div class="share-tooltip" style="display: none; margin-top: 0px;">
                                     <ul>
                                         <li>
-                                            <a asp-controller="Article" asp-action="Publish" asp-route-id="@article.Id">
+                                            <a asp-controller="Article" asp-action="Publish" asp-route-id="@article.Id" data-bs-toggle="tooltip" data-bs-title="Publish">
                                                 <i class="fa-solid fa-share-nodes"></i>
                                             </a>
                                         </li>
                                         <li>
-                                            <a asp-controller="Article" asp-action="UnpublishedDetails" asp-route-id="@article.Id">
+                                            <a asp-controller="Article" asp-action="UnpublishedDetails" asp-route-id="@article.Id" data-bs-toggle="tooltip" data-bs-title="Details">
                                                 <i class="fa-solid fa-file-lines"></i>
                                             </a>
                                         </li>
                                         <li>
-                                            <a asp-controller="Article" asp-action="Update" asp-route-id="@article.Id">
+                                            <a asp-controller="Article" asp-action="Update" asp-route-id="@article.Id" data-bs-toggle="tooltip" data-bs-title="Update">
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                             </a>
                                         </li>
                                         <li>
-                                            <a asp-controller="Article" asp-action="Delete" asp-route-id="@article.Id">
+                                            <a asp-controller="Article" asp-action="Delete" asp-route-id="@article.Id" data-bs-toggle="tooltip" data-bs-title="Delete">
                                                 <i class="fa-solid fa-trash"></i>
                                             </a>
                                         </li>
@@ -82,3 +82,10 @@
 </div>
 
 <div class="layout-divider"></div>
+
+@section Scripts{
+    <script>
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    </script>
+}

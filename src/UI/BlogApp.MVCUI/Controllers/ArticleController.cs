@@ -68,10 +68,18 @@ public class ArticleController : BaseController
         if (!result.IsSuccess)
         {
             ModelState.AddModelError(string.Empty, result.Message);
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Unpublished));
         }
 
         return View(result.Data);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Publish(Guid id)
+    {
+        var result = await _articleService.Publish(id);
+
+        return RedirectToAction(result.IsSuccess ? nameof(Index) : nameof(Unpublished));
     }
 
     private async Task<List<SelectListItem>> GetTopics(Guid? selectedId = null)

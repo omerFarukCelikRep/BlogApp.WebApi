@@ -68,7 +68,7 @@ public class ArticlesController : BaseController
     }
 
     [HttpPost("Publish")]
-    public async Task<IActionResult> Publish([FromQuery] Guid id)
+    public async Task<IActionResult> Publish([FromBody] Guid id)
     {
         var result = await _articleService.PublishAsync(id);
 

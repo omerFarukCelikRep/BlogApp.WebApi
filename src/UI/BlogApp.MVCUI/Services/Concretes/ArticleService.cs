@@ -34,15 +34,23 @@ public class ArticleService : IArticleService
 
     public async Task<IDataResult<List<ArticleUnpublishedListVM>>> GetAllUnpublished()
     {
-        var result = await _httpClient.GetFromJsonAsync<DataResult<List<ArticleUnpublishedListVM>>>("/api/v1/Articles/Unpublished");
-
-        return result;
+        return await _httpClient.GetFromJsonAsync<DataResult<List<ArticleUnpublishedListVM>>>("/api/v1/Articles/Unpublished");
     }
 
     public async Task<IDataResult<ArticleUnpublishedDetailsVM>> GetUnpublishedById(Guid articleId)
     {
-        var result = await _httpClient.GetFromJsonAsync<DataResult<ArticleUnpublishedDetailsVM>>($"/api/v1/Articles/Unpublished/{articleId}");
+        return await _httpClient.GetFromJsonAsync<DataResult<ArticleUnpublishedDetailsVM>>($"/api/v1/Articles/Unpublished/{articleId}");
+    }
 
-        return result;
+    public async Task<IResult> Publish(Guid articleId)
+    {
+        var responseMessage = await _httpClient.PostAsJsonAsync("/api/v1/Articles/Publish", articleId);
+        var response = await responseMessage.Content.ReadFromJsonAsync<Result>();
+        if (!responseMessage.IsSuccessStatusCode)
+        {
+            return new ErrorResult($"{responseMessage.ReasonPhrase} - {response.Message}");
+        }
+
+        return new SuccessResult();
     }
 }

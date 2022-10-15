@@ -5,6 +5,7 @@ namespace BlogApp.Business.Interfaces;
 public interface IArticleService
 {
     Task<IDataResult<List<ArticlePublishedListDto>>> GetAllPublishedAsync();
+    Task<IDataResult<List<ArticlePublishedListDto>>> GetAllPublishedByUserIdAsync(Guid userId);
     Task<IDataResult<List<ArticleDto>>> GetTrendsAsync();
     Task<IDataResult<ArticleDto>> GetByIdAsync(Guid id);
     Task<IResult> PublishAsync(Guid articleId);

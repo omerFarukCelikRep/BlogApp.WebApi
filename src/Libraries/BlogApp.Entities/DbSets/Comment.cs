@@ -9,5 +9,5 @@ public class Comment : AuditableEntity
     //Navigation Prop.
     public Guid? MemberId { get; set; }
     public Guid ArticleId { get; set; }
-    public virtual Article Article { get; set; }
+    public virtual PublishedArticle Article { get; set; }
 }

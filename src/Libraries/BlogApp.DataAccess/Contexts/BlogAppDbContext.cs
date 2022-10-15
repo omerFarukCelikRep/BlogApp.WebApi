@@ -19,13 +19,14 @@ public class BlogAppDbContext : IdentityDbContext<IdentityUser<Guid>, IdentityRo
         _context = context;
     }
 
-    public DbSet<Article>? Articles { get; set; }
-    public DbSet<ArticleTopic>? ArticleTopics { get; set; }
-    public DbSet<Member>? Members { get; set; }
-    public DbSet<MemberFollowedTopic>? MemberFollowedTopics { get; set; }
-    public DbSet<PublishedArticle>? PublishedArticles { get; set; }
-    public DbSet<RefreshToken>? RefreshTokens { get; set; }
-    public DbSet<Topic>? Topics { get; set; }
+    public DbSet<Article> Articles { get; set; }
+    public DbSet<Comment> Comments { get; set; }
+    public DbSet<ArticleTopic> ArticleTopics { get; set; }
+    public DbSet<Member> Members { get; set; }
+    public DbSet<MemberFollowedTopic> MemberFollowedTopics { get; set; }
+    public DbSet<PublishedArticle> PublishedArticles { get; set; }
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
+    public DbSet<Topic> Topics { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

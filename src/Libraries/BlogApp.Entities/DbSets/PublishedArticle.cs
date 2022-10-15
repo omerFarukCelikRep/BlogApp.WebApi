@@ -1,6 +1,6 @@
 ﻿using BlogApp.Core.Entities.Base;
 
-namespace BlogApp.Entities.Concrete;
+namespace BlogApp.Entities.DbSets;
 public class PublishedArticle : AuditableEntity
 {
     public DateTime PublishDate { get; set; }

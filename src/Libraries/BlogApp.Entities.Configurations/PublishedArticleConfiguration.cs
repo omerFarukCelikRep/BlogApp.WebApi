@@ -1,5 +1,5 @@
 ﻿using BlogApp.Core.Entities.Configurations;
-using BlogApp.Entities.Concrete;
+using BlogApp.Entities.DbSets;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

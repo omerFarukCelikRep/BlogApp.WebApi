@@ -1,7 +1,7 @@
 ﻿using BlogApp.Core.Entities.Base;
 using Microsoft.AspNetCore.Identity;
 
-namespace BlogApp.Entities.Concrete;
+namespace BlogApp.Entities.DbSets;
 
 public class RefreshToken : BaseEntity
 {

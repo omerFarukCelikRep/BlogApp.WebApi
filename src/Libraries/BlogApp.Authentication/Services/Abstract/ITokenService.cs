@@ -1,6 +1,6 @@
 ﻿using BlogApp.Authentication.Dtos.Incoming;
 using BlogApp.Authentication.Dtos.Outgoing;
-using BlogApp.Entities.Concrete;
+using BlogApp.Entities.DbSets;
 using Microsoft.AspNetCore.Identity;
 
 namespace BlogApp.Authentication.Services.Abstract;

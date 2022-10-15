@@ -5,7 +5,7 @@ using BlogApp.Authentication.Dtos.Outgoing;
 using BlogApp.Authentication.Services.Abstract;
 using BlogApp.Core.Utilities.Constants;
 using BlogApp.DataAccess.Interfaces.Repositories;
-using BlogApp.Entities.Concrete;
+using BlogApp.Entities.DbSets;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;

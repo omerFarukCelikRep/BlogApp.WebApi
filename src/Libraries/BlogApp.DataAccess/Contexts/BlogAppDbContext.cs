@@ -1,7 +1,7 @@
 ﻿using BlogApp.Core.Entities.Base;
 using BlogApp.Core.Utilities.Authentication;
-using BlogApp.Entities.Concrete;
 using BlogApp.Entities.Configurations;
+using BlogApp.Entities.DbSets;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;

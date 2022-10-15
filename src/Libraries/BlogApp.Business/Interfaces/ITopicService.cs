@@ -1,5 +1,5 @@
 ﻿using BlogApp.Core.Utilities.Results.Interfaces;
-using BlogApp.Entities.Concrete;
+using BlogApp.Entities.DbSets;
 using BlogApp.Entities.Dtos.Topics;
 using System.Linq.Expressions;
 

@@ -1,6 +1,6 @@
 ﻿using BlogApp.Core.Entities.Base;
 
-namespace BlogApp.Entities.Concrete;
+namespace BlogApp.Entities.DbSets;
 
 public class Topic : BaseEntity
 {
@@ -9,8 +9,8 @@ public class Topic : BaseEntity
         ArticleTopics = new HashSet<ArticleTopic>();
         MemberFollowedTopics = new HashSet<MemberFollowedTopic>();
     }
-    public string? Name { get; set; }
-    public byte[]? Thumbnail { get; set; }
+    public string Name { get; set; }
+    public string Thumbnail { get; set; }
 
     //Navigation Prop.
     public virtual ICollection<ArticleTopic> ArticleTopics { get; set; }

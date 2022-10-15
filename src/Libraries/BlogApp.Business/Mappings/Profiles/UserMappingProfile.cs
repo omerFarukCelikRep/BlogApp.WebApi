@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using BlogApp.Authentication.Dtos.Incoming;
-using BlogApp.Entities.Concrete;
+using BlogApp.Entities.DbSets;
 using Microsoft.AspNetCore.Identity;
 
 namespace BlogApp.Business.Mappings.Profiles;

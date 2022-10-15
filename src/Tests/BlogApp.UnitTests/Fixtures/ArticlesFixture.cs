@@ -1,4 +1,4 @@
-﻿using BlogApp.Entities.Concrete;
+﻿using BlogApp.Entities.DbSets;
 using System;
 using System.Collections.Generic;
 

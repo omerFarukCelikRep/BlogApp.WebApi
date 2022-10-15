@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using BlogApp.Entities.Concrete;
+using BlogApp.Entities.DbSets;
 using BlogApp.Entities.Dtos.Topics;
 
 namespace BlogApp.Business.Mappings.Profiles;

@@ -1,4 +1,4 @@
-﻿using BlogApp.Entities.Concrete;
+﻿using BlogApp.Entities.DbSets;
 using BlogApp.UnitTests.Fixtures;
 using BlogApp.UnitTests.Helpers;
 using Microsoft.Extensions.Options;

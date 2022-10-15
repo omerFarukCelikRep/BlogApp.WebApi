@@ -9,7 +9,7 @@ using BlogApp.Core.Utilities.Constants;
 using BlogApp.Core.Utilities.Results.Concrete;
 using BlogApp.Core.Utilities.Results.Interfaces;
 using BlogApp.DataAccess.Interfaces.Repositories;
-using BlogApp.Entities.Concrete;
+using BlogApp.Entities.DbSets;
 using Microsoft.AspNetCore.Identity;
 using System.Text;
 

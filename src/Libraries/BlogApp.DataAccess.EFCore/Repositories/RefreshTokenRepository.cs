@@ -1,7 +1,7 @@
 ﻿using BlogApp.Core.DataAccess.Base.EntityFramework.Repositories;
 using BlogApp.DataAccess.Contexts;
 using BlogApp.DataAccess.Interfaces.Repositories;
-using BlogApp.Entities.Concrete;
+using BlogApp.Entities.DbSets;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlogApp.DataAccess.EFCore.Repositories;

@@ -3,7 +3,7 @@ using BlogApp.Business.Mappings.Mapper;
 using BlogApp.Core.Utilities.Results.Concrete;
 using BlogApp.Core.Utilities.Results.Interfaces;
 using BlogApp.DataAccess.Interfaces.Repositories;
-using BlogApp.Entities.Concrete;
+using BlogApp.Entities.DbSets;
 using BlogApp.Entities.Dtos.Topics;
 using System.Linq.Expressions;
 

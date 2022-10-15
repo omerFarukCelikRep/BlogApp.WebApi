@@ -1,0 +1,88 @@
+﻿@model IEnumerable<ArticlePublishedListVM>
+
+<div class="row section-wrapper">
+    <!--Content Start-->
+    <div class="col-xs-12 nopadding">
+        <div class="box">
+
+            <!--Archive Title Start-->
+            <div class="archive-title">
+                <span>Article</span>
+                <h1>Published</h1>
+            </div>
+            <!--Archive Title End-->
+
+            <div class="post-list post-list-fullwidth">
+                @foreach (var article in Model)
+                {
+                    <article class="post-type-standard">
+                        <!--Post Image-->
+                        <div class="post-img img-div-cover">
+                            <figure>
+                                <div class="overlay-hover"></div>
+                                <img src="data:image/*;base64,@article.Thumbnail" alt="@article.Title" />
+                            </figure>
+                        </div>
+                        <!--Post Entry-->
+                        <div class="post-entry">
+                            <h2>@article.Title</h2>
+                            <div class="post-description">
+                                <p>@Html.Raw(article.Content.Substring(0, article.Content.Length > 390 ? 390 : article.Content.Length))</p>
+                            </div>
+                            <div class="post-meta">
+                                <ul>
+                                    <li>
+                                        <i class="fa-solid fa-calendar-check"></i>
+                                        @article.PublishDate.ToString("dd MM yyyy")
+                                    </li>
+                                    <li>
+                                        <i class="fa-solid fa-user-tie"></i>
+                                        @article.AuthorName
+                                    </li>
+                                    <li>
+                                        @foreach (var topic in article.Topics)
+                                        {
+                                            <i class="fa-solid fa-hashtag"></i>
+                                            @topic
+                                        }
+                                    </li>
+                                    <li>
+                                        <i class="fa-solid fa-clock"></i>
+                                        @article.ReadTime <span>dk.</span>
+                                    </li>
+                                    <li>
+                                        <i class="fa-solid fa-book-open-reader"></i>
+                                        @article.ReadingCount
+                                    </li>
+                                    <li>
+                                        <i class="fa-solid fa-comment-dots"></i>
+                                        Comments <span>@article.CommentCount</span>
+                                    </li>
+                                    <li>
+                                        <i class="fa-solid fa-thumbs-up"></i>
+                                        @article.LikeCount
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!--Post Share-->
+                        <div class="post-share">
+                            <div class="read-more-btn"><a asp-controller="Article" asp-action="Details" asp-route-id="@article.Id">Read more</a></div>
+                            <div class="share-btn">Share</div>
+                            <ul class="share-standard">
+                                <li><a href="#"><i class="fa-brands fa-facebook"></i></a></li>
+                                <li><a href="#"><i class="fa-brands fa-twitter"></i></a></li>
+                                <li><a href="#"><i class="fa-brands fa-google"></i></a></li>
+                                <li><a href="#"><i class="fa-brands fa-instagram"></i></a></li>
+                            </ul>
+                        </div>
+
+                    </article>
+                }
+            </div>
+        </div>
+    </div>
+    <!--Content End-->
+</div>
+
+<div class="layout-divider"></div>

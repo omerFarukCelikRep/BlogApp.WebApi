@@ -13,10 +13,18 @@ public class ArticlesController : BaseController
         _articleService = articleService;
     }
 
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        var result = await _articleService.GetAllPublishedAsync();
+
+        return GetDataResult(result);
+    }
+
     [HttpGet("Published")]
     public async Task<IActionResult> GetAllPublished()
     {
-        var result = await _articleService.GetAllPublishedAsync();
+        var result = await _articleService.GetAllPublishedByUserIdAsync(UserId);
 
         return GetDataResult(result);
     }

@@ -15,9 +15,16 @@ public class ArticleController : BaseController
     }
 
     [HttpGet]
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        return View();
+        var result = await _articleService.GetAllPublished();
+        if (!result.IsSuccess)
+        {
+            ModelState.AddModelError(string.Empty, result.Message);
+            return RedirectToAction(nameof(Index));
+        }
+
+        return View(result.Data);
     }
 
     [HttpGet]
@@ -80,6 +87,12 @@ public class ArticleController : BaseController
         var result = await _articleService.Publish(id);
 
         return RedirectToAction(result.IsSuccess ? nameof(Index) : nameof(Unpublished));
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Details(Guid id)
+    {
+        var result = await _articleService.GetPublishedById(id);
     }
 
     private async Task<List<SelectListItem>> GetTopics(Guid? selectedId = null)

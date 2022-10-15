@@ -5,7 +5,7 @@ using BlogApp.Business.Mappings.Mapper;
 using BlogApp.Core.Utilities.Results.Concrete;
 using BlogApp.Core.Utilities.Results.Interfaces;
 using BlogApp.DataAccess.Interfaces.Repositories;
-using BlogApp.Entities.Concrete;
+using BlogApp.Entities.DbSets;
 using BlogApp.Entities.Dtos.Articles;
 
 namespace BlogApp.Business.Concrete;
@@ -22,7 +22,15 @@ public class ArticleService : IArticleService
 
     public async Task<IDataResult<List<ArticlePublishedListDto>>> GetAllPublishedAsync()
     {
-        var articles = await _publishedArticleRepository.GetAllAsync(false);
+        var articles = await _publishedArticleRepository.GetAllAsync();
+        var mappedArticles = ObjectMapper.Mapper.Map<List<ArticlePublishedListDto>>(articles);
+
+        return new SuccessDataResult<List<ArticlePublishedListDto>>(mappedArticles, ServiceMessages.ArticlesListed);
+    }
+
+    public async Task<IDataResult<List<ArticlePublishedListDto>>> GetAllPublishedByUserIdAsync(Guid userId)
+    {
+        var articles = await _publishedArticleRepository.GetAllAsync(x => x.Article.MemberId == userId,true);
         var mappedArticles = ObjectMapper.Mapper.Map<List<ArticlePublishedListDto>>(articles);
 
         return new SuccessDataResult<List<ArticlePublishedListDto>>(mappedArticles, ServiceMessages.ArticlesListed);
@@ -31,7 +39,7 @@ public class ArticleService : IArticleService
     public async Task<IDataResult<List<ArticleUnpublishedListDto>>> GetAllUnpublishedByUserIdAsync(Guid userId)
     {
         var publishedArticleIds = (await _publishedArticleRepository.GetAllAsync(x => x.Article.MemberId == userId, false)).Select(x => x.Id).ToList();
-        var articles = await _articleRepository.GetAllAsync(x => x.MemberId == userId, true);
+        var articles = await _articleRepository.GetAllAsync(x => x.MemberId == userId);
         var unpublishedArticles = articles.Where(article => !publishedArticleIds.Any(publishedArticleId => publishedArticleId == article.Id)).ToList();
 
         var mappedArticles = ObjectMapper.Mapper.Map<List<ArticleUnpublishedListDto>>(unpublishedArticles);
@@ -40,7 +48,7 @@ public class ArticleService : IArticleService
 
     public async Task<IDataResult<ArticleUnpublishedDetailsDto>> GetUnpublishedById(Guid id)
     {
-        var article = await _articleRepository.GetByIdAsync(id, true);
+        var article = await _articleRepository.GetByIdAsync(id);
         if (article is null)
         {
             return new ErrorDataResult<ArticleUnpublishedDetailsDto>(ServiceMessages.ArticleNotFound);

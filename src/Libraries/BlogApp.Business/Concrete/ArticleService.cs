@@ -7,6 +7,7 @@ using BlogApp.Core.Utilities.Results.Interfaces;
 using BlogApp.DataAccess.Interfaces.Repositories;
 using BlogApp.Entities.DbSets;
 using BlogApp.Entities.Dtos.Articles;
+using BlogApp.Entities.Dtos.PublishedArticles;
 
 namespace BlogApp.Business.Concrete;
 public class ArticleService : IArticleService
@@ -20,20 +21,20 @@ public class ArticleService : IArticleService
         _publishedArticleRepository = publishedArticleRepository;
     }
 
-    public async Task<IDataResult<List<ArticlePublishedListDto>>> GetAllPublishedAsync()
+    public async Task<IDataResult<List<PublishedArticleByUserListDto>>> GetAllPublishedAsync()
     {
         var articles = await _publishedArticleRepository.GetAllAsync();
-        var mappedArticles = ObjectMapper.Mapper.Map<List<ArticlePublishedListDto>>(articles);
+        var mappedArticles = ObjectMapper.Mapper.Map<List<PublishedArticleByUserListDto>>(articles);
 
-        return new SuccessDataResult<List<ArticlePublishedListDto>>(mappedArticles, ServiceMessages.ArticlesListed);
+        return new SuccessDataResult<List<PublishedArticleByUserListDto>>(mappedArticles, ServiceMessages.ArticlesListed);
     }
 
-    public async Task<IDataResult<List<ArticlePublishedListDto>>> GetAllPublishedByUserIdAsync(Guid userId)
+    public async Task<IDataResult<List<PublishedArticleByUserListDto>>> GetAllPublishedByUserIdAsync(Guid userId)
     {
         var articles = await _publishedArticleRepository.GetAllAsync(x => x.Article.MemberId == userId,true);
-        var mappedArticles = ObjectMapper.Mapper.Map<List<ArticlePublishedListDto>>(articles);
+        var mappedArticles = ObjectMapper.Mapper.Map<List<PublishedArticleByUserListDto>>(articles);
 
-        return new SuccessDataResult<List<ArticlePublishedListDto>>(mappedArticles, ServiceMessages.ArticlesListed);
+        return new SuccessDataResult<List<PublishedArticleByUserListDto>>(mappedArticles, ServiceMessages.ArticlesListed);
     }
 
     public async Task<IDataResult<List<ArticleUnpublishedListDto>>> GetAllUnpublishedByUserIdAsync(Guid userId)
@@ -46,7 +47,7 @@ public class ArticleService : IArticleService
         return new SuccessDataResult<List<ArticleUnpublishedListDto>>(mappedArticles, ServiceMessages.ArticlesListed);
     }
 
-    public async Task<IDataResult<ArticleUnpublishedDetailsDto>> GetUnpublishedById(Guid id)
+    public async Task<IDataResult<ArticleUnpublishedDetailsDto>> GetUnpublishedByIdAsync(Guid id)
     {
         var article = await _articleRepository.GetByIdAsync(id);
         if (article is null)
@@ -58,17 +59,17 @@ public class ArticleService : IArticleService
         return new SuccessDataResult<ArticleUnpublishedDetailsDto>(mappedArticle, ServiceMessages.ArticlesListed);
     }
 
-    public async Task<IDataResult<ArticleDto>> GetByIdAsync(Guid id)
+    public async Task<IDataResult<PublishedArticleDetailsDto>> GetByIdAsync(Guid id)
     {
-        var article = await _articleRepository.GetByIdAsync(id, false);
+        var article = await _articleRepository.GetByIdAsync(id);
         if (article is null)
         {
-            return new ErrorDataResult<ArticleDto>(ServiceMessages.ArticleNotFound);
+            return new ErrorDataResult<PublishedArticleDetailsDto>(ServiceMessages.ArticleNotFound);
         }
 
-        var mappedArticle = ObjectMapper.Mapper.Map<ArticleDto>(article);
+        var mappedArticle = ObjectMapper.Mapper.Map<PublishedArticleDetailsDto>(article);
 
-        return new SuccessDataResult<ArticleDto>(mappedArticle, ServiceMessages.ArticlesListed);
+        return new SuccessDataResult<PublishedArticleDetailsDto>(mappedArticle, ServiceMessages.ArticlesListed);
     }
 
     public async Task<IDataResult<List<ArticleDto>>> GetTrendsAsync()

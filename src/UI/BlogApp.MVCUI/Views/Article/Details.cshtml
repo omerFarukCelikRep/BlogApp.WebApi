@@ -1,5 +1,114 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model ArticlePublishedDetailsVM
+
+<div class="row section-wrapper">
+    <!--Content Start-->
+    <div class="col-md-8 content-section-body">
+        <div class="box">
+            <div class="post-single-content-body">
+                <!--Featured Image Start-->
+                <div class="featured-image img-div-cover">
+                    <img src="data:image/*;base64,@Model.Thumbnail" alt="@Model.Title" />
+                </div>
+                <!--Featured Image End-->
+                <!--Post Single Details Top Start-->
+                <div class="post-single-details-body">
+                    <!--Post Title Start-->
+                    <div class="page-title">
+                        <h1>@Model.Title</h1>
+                    </div>
+                    <!--Post Title End-->
+                    <!--Post Meta Start-->
+                    <div class="post-meta">
+                        <ul>
+                            <li>
+                                <i class="fa-solid fa-calendar-check"></i>
+                                @Model.PublishDate.ToString("dd MM yyyy")
+                            </li>
+                            <li>
+                                <i class="fa-solid fa-user-tie"></i>
+                                <a asp-controller="User" asp-action="About" asp-route-id="@Model.UserId">
+                                    @Model.AuthorName
+                                </a>
+                            </li>
+                            @foreach (var topic in Model.Topics)
+                            {
+                                <li>
+                                    <a asp-controller="Article" asp-action="Index" asp-route-topicName="@topic">
+                                        <i class="fa-solid fa-hashtag"></i>
+                                        @topic
+                                    </a>
+                                </li>
+                            }
+                            <li>
+                                <i class="fa-solid fa-clock"></i>
+                                @Model.ReadTime <span>dk.</span>
+                            </li>
+                            <li>
+                                <i class="fa-solid fa-book-open-reader"></i>
+                                @Model.ReadingCount
+                            </li>
+                            <li>
+                                <i class="fa-solid fa-comment-dots"></i>
+                                Comments <span>@Model.CommentCount</span>
+                            </li>
+                            <li>
+                                <i class="fa-solid fa-thumbs-up"></i>
+                                @Model.LikeCount
+                            </li>
+                        </ul>
+                    </div>
+                    <!--Post Meta End-->
+                    <!--Post Text Content Start-->
+                    @Html.Raw(Model.Content)
+                    <!--Post Text Content End-->
+                    <div data-height="17"></div>
+
+                    <!--Post Tags Start-->
+                    <div class="post-single-tags">
+                        <h5>Topics</h5>
+                        @foreach (var topic in Model.Topics)
+                        {
+                            <a asp-controller="Article" asp-action="Index" asp-route-topicName="@topic">
+                                <i class="fa-solid fa-hashtag"></i>
+                                @topic
+                            </a>
+                        }
+                    </div>
+                    <!--Post Tags End-->
+                    <!--Social Media Share Start-->
+                    <div class="social-media-share2">
+                        <ul>
+                            <li><a href="javascript:facebookShare('https://studio.envato.com/', 550, 350)" target="_blank"><i class="fa fa-facebook"></i></a></li>
+                            <li><a href="javascript:twitterShare('https://studio.envato.com/', 550, 350)" target="_blank"><i class="fa fa-twitter"></i></a></li>
+                            <li><a href="javascript:googleShare('https://studio.envato.com/', 550, 350)" target="_blank"><i class="fa fa-google"></i></a></li>
+                            <li><a href="javascript:pinterestShare('https://studio.envato.com/', 550, 350)" target="_blank"><i class="fa fa-pinterest-p"></i></a></li>
+                            <li><a href="javascript:linkedinShare('https://studio.envato.com/', 550, 350)" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+                        </ul>
+                    </div>
+                    <!--Social Media Share End-->
+                </div>
+                <!--Post Single Details Top End-->
+                <!--About Author Start-->
+                @await Component.InvokeAsync("ArticleAuthorInfo", new { userId = Model.UserId })
+                <!--About Author End-->
+                <!--Post Single Details Bottom Start-->
+                <div class="post-single-details-body">
+                    @await Component.InvokeAsync("ArticleComments", new { articleId = Model.Id })
+                    <!--Leave a Comment Start-->
+                    @await Component.InvokeAsync("ArticleAddComment", new { articleId = Model.Id })
+                    <!--Leave a Comment End-->
+                </div>
+                <!--Post Single Details Bottom End-->
+            </div>
+        </div>
+    </div>
+    <!--Content End-->
+    <!--Sidebar Start-->
+    <div class="col-md-4 sidebar-section-body sidebar-sticky">
+        @await Component.InvokeAsync("ArticleSidebar")
+    </div>
+    <!--Sidebar End-->
+
+</div>
+
+<div class="layout-divider"></div>

@@ -1,5 +1,5 @@
-﻿namespace BlogApp.Entities.Dtos.Articles;
-public class ArticlePublishedListDto
+﻿namespace BlogApp.Entities.Dtos.PublishedArticles;
+public class PublishedArticleByUserListDto
 {
     public Guid Id { get; set; }
     public string Title { get; set; }

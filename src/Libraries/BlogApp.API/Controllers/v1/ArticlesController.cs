@@ -40,7 +40,7 @@ public class ArticlesController : BaseController
     [HttpGet("Unpublished/{id:guid}")]
     public async Task<IActionResult> GetUnpublishedById([FromRoute] Guid id)
     {
-        var result = await _articleService.GetUnpublishedById(id);
+        var result = await _articleService.GetUnpublishedByIdAsync(id);
 
         return GetDataResult(result);
     }

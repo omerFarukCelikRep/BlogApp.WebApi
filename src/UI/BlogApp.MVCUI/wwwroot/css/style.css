@@ -3907,7 +3907,7 @@ form.subscribe input::-moz-placeholder { /* Mozilla Firefox 19+ */
     }
 }
 
-@media (min-width: 992px) {
+@media (min-width: 991px) {
     .content-section-body {
         padding-right: 15px;
     }
@@ -4141,7 +4141,7 @@ form.subscribe input::-moz-placeholder { /* Mozilla Firefox 19+ */
     }
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 1199px) {
     .home-slider .home-slide-nav .slide-prev,
     .post-gallery-slide .home-slide-nav .slide-prev {
         left: -30px;

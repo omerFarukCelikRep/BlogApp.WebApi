@@ -1,0 +1,33 @@
+﻿@model IEnumerable<ArticleCommentListVM>
+
+<div class="post-comments">
+    <div class="page-title subtitle">
+        <h2>Comments <span>@Model.Count()</span></h2>
+    </div>
+    <ul class="comment-list">
+        @foreach (var comment in Model)
+        {
+            <!--Comment Start-->
+            <li>
+                <div class="comment-wrapper">
+                    <div class="comment-avatar">
+                        <figure>
+                            <img src="images/upload/comment-avatar02.jpg" alt="avatar" />
+                        </figure>
+                    </div>
+                    <div class="comment-details">
+                        <div class="comment-name">
+                            <a href="#">John Moser</a>
+                            <span class="comment-date">20 November 2015</span>
+                        </div>
+                        <div class="comment-description">
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut mauris magna, lacinia ac purus quis, rutrum bibendum leo sit amet.</p>
+                        </div>
+                        <div class="comment-reply"><a href="#">Reply</a></div>
+                    </div>
+                </div>
+            </li>
+            <!--Comment End-->
+        }
+    </ul>
+</div>

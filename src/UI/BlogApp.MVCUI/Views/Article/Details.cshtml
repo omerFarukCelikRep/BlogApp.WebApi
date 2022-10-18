@@ -30,15 +30,6 @@
                                     @Model.AuthorName
                                 </a>
                             </li>
-                            @foreach (var topic in Model.Topics)
-                            {
-                                <li>
-                                    <a asp-controller="Article" asp-action="Index" asp-route-topicName="@topic">
-                                        <i class="fa-solid fa-hashtag"></i>
-                                        @topic
-                                    </a>
-                                </li>
-                            }
                             <li>
                                 <i class="fa-solid fa-clock"></i>
                                 @Model.ReadTime <span>dk.</span>

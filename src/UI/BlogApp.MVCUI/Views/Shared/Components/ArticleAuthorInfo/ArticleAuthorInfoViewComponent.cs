@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BlogApp.MVCUI.Models.Articles;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BlogApp.MVCUI.Views.Shared.Components.ArticleAuthorInfo;
 
@@ -6,6 +7,6 @@ public class ArticleAuthorInfoViewComponent : ViewComponent
 {
     public async Task<IViewComponentResult> InvokeAsync(Guid userId)
     {
-        return View();
+        return View(new ArticleAuthorInfoVM());
     }
 }

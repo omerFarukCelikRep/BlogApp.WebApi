@@ -39,7 +39,7 @@ public class ArticleService : IArticleService
 
     public async Task<IDataResult<ArticlePublishedDetailsVM>> GetPublishedById(Guid articleId)
     {
-        return await _httpClient.GetFromJsonAsync<DataResult<ArticlePublishedDetailsVM>>($"/api/v1/Articles/Unpublished/{articleId}");
+        return await _httpClient.GetFromJsonAsync<DataResult<ArticlePublishedDetailsVM>>($"/api/v1/Articles/{articleId}");
     }
 
     public async Task<IDataResult<List<ArticleUnpublishedListVM>>> GetAllUnpublished()

@@ -61,14 +61,13 @@ public class ArticleService : IArticleService
 
     public async Task<IDataResult<PublishedArticleDetailsDto>> GetByIdAsync(Guid id)
     {
-        var article = await _articleRepository.GetByIdAsync(id);
+        var article = await _publishedArticleRepository.GetByIdAsync(id);
         if (article is null)
         {
             return new ErrorDataResult<PublishedArticleDetailsDto>(ServiceMessages.ArticleNotFound);
         }
 
         var mappedArticle = ObjectMapper.Mapper.Map<PublishedArticleDetailsDto>(article);
-
         return new SuccessDataResult<PublishedArticleDetailsDto>(mappedArticle, ServiceMessages.ArticlesListed);
     }
 

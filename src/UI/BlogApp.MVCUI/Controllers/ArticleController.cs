@@ -93,6 +93,8 @@ public class ArticleController : BaseController
     public async Task<IActionResult> Details(Guid id)
     {
         var result = await _articleService.GetPublishedById(id);
+
+        return View(result.Data);
     }
 
     private async Task<List<SelectListItem>> GetTopics(Guid? selectedId = null)

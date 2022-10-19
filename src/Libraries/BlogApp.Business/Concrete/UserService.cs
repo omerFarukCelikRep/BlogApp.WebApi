@@ -17,10 +17,10 @@ namespace BlogApp.Business.Concrete;
 public class UserService : IUserService
 {
     private readonly UserManager<IdentityUser<Guid>> _userManager;
-    private readonly IMemberRepository _memberRepository;
+    private readonly IUserRepository _memberRepository;
     private readonly ITokenService _tokenService;
 
-    public UserService(UserManager<IdentityUser<Guid>> userManager, IMemberRepository memberRepository, ITokenService tokenService)
+    public UserService(UserManager<IdentityUser<Guid>> userManager, IUserRepository memberRepository, ITokenService tokenService)
     {
         _userManager = userManager;
         _memberRepository = memberRepository;
@@ -115,9 +115,9 @@ public class UserService : IUserService
         return (await _memberRepository.GetByIdentityId(identityId)).Id;
     }
 
-    private async Task<Member> AddMember(UserRegistrationRequestDto registrationRequestDto, Guid identityId)
+    private async Task<User> AddMember(UserRegistrationRequestDto registrationRequestDto, Guid identityId)
     {
-        var member = ObjectMapper.Mapper.Map<Member>(registrationRequestDto);
+        var member = ObjectMapper.Mapper.Map<User>(registrationRequestDto);
 
         member.IdentityId = identityId;
 

@@ -1,6 +1,6 @@
 ﻿using BlogApp.Authentication.Configurations;
-using BlogApp.Authentication.Services.Abstract;
 using BlogApp.Authentication.Services.Concrete;
+using BlogApp.Authentication.Services.Interfaces;
 using BlogApp.Core.Utilities.Authentication;
 using BlogApp.Core.Utilities.Configurations;
 using BlogApp.DataAccess.Contexts;

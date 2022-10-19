@@ -2,6 +2,7 @@
 using BlogApp.API.Middlewares;
 using BlogApp.Authentication.Extensions;
 using BlogApp.Business.Extensions;
+using BlogApp.Core.Utilities.LoggerServices.Serilog.Extensions;
 using BlogApp.DataAccess.EFCore.Extensions;
 using BlogApp.DataAccess.Extensions;
 
@@ -13,6 +14,8 @@ builder.Services
             .AddAuthenticationServices()
             .AddBusinessServices()
             .AddApiServices(builder.Configuration);
+
+builder.Host.UseCustomSerilog();
 
 var app = builder.Build();
 

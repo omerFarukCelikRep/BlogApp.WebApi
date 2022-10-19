@@ -4,19 +4,19 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BlogApp.API.Controllers.v1;
 
-public class MembersController : BaseController
+public class UsersController : BaseController
 {
-    private readonly IMemberService _memberService;
+    private readonly IUserService _userService;
 
-    public MembersController(IMemberService memberService)
+    public UsersController(IUserService userService)
     {
-        _memberService = memberService;
+        _userService = userService;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var result = await _memberService.GetAllAsync();
+        var result = await _userService.GetAllAsync();
 
         return GetDataResult(result);
     }
@@ -24,7 +24,7 @@ public class MembersController : BaseController
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById([FromRoute] Guid id)
     {
-        var result = await _memberService.GetByIdAsync(id);
+        var result = await _userService.GetByIdAsync(id);
 
         return GetDataResult(result);
     }
@@ -32,7 +32,7 @@ public class MembersController : BaseController
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] UserUpdateDto updateMember)
     {
-        var result = await _memberService.UpdateAsync(updateMember);
+        var result = await _userService.UpdateAsync(updateMember);
 
         return GetDataResult(result);
     }

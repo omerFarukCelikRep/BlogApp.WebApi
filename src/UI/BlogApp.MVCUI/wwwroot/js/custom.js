@@ -98,7 +98,7 @@ jQuery(document).ready(function() {
 	
 	/* ===== Submenu Visible Setting ===== */
 	$(window).on("load resize", function() {
-		if ($(window).width() >= 992) {
+		if ($(window).width() >= 990) {
 			$(".nav-menu ul li > ul").each(function(){
 				$(this).addClass("dropdown-menu");
 				$(this).hide();

@@ -7,7 +7,7 @@ public class Comment : AuditableEntity
     public string UserIpAdress { get; set; }
 
     //Navigation Prop.
-    public Guid? MemberId { get; set; }
+    public Guid? UserId { get; set; }
     public Guid ArticleId { get; set; }
     public virtual PublishedArticle Article { get; set; }
 }

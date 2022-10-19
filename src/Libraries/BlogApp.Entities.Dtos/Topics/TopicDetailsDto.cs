@@ -1,5 +1,5 @@
 ﻿namespace BlogApp.Entities.Dtos.Topics;
-public class TopicDto
+public class TopicDetailsDto
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;

@@ -2,11 +2,11 @@
 
 namespace BlogApp.Entities.DbSets;
 
-public class ArticleTopic : BaseEntity
+public class UserFollowedTopic : BaseEntity
 {
     //Navigation Prop.
-    public Guid ArticleId { get; set; }
-    public virtual Article Article { get; set; }
+    public Guid UserId { get; set; }
+    public virtual User User { get; set; }
     public Guid TopicId { get; set; }
     public virtual Topic Topic { get; set; }
 }

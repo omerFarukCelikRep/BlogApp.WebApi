@@ -1,17 +1,20 @@
 ﻿using AutoMapper;
 using BlogApp.Authentication.Dtos.Incoming;
 using BlogApp.Entities.DbSets;
+using BlogApp.Entities.Dtos.Users;
 using Microsoft.AspNetCore.Identity;
 
 namespace BlogApp.Business.Mappings.Profiles;
-public class UserMappingProfile : Profile
+public class UserProfile : Profile
 {
-    public UserMappingProfile()
+    public UserProfile()
     {
         CreateMap<UserRegistrationRequestDto, IdentityUser<Guid>>()
             .AfterMap((s, d) => d.EmailConfirmed = true)
             .AfterMap((s, d) => d.UserName = s.Email);
 
-        CreateMap<UserRegistrationRequestDto, Member>();
+        CreateMap<UserRegistrationRequestDto, User>();
+
+        CreateMap<User, UserDto>();
     }
 }

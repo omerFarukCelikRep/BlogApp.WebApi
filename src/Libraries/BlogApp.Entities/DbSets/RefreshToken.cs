@@ -33,5 +33,5 @@ public class RefreshToken : BaseEntity
 
     //Navigation Prop.
     public Guid UserId { get; set; }
-    public virtual IdentityUser<Guid>? User { get; set; }
+    public virtual IdentityUser<Guid> User { get; set; }
 }

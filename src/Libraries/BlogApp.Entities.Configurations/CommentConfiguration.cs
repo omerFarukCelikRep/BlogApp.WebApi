@@ -12,7 +12,7 @@ public class CommentConfiguration : AuditableEntityConfiguration<Comment>
         builder.Property(x => x.UserName).IsRequired();
         builder.Property(x => x.UserIpAdress).IsRequired();
         builder.Property(x => x.ArticleId).IsRequired();
-        builder.Property(x => x.MemberId).IsRequired(false);
+        builder.Property(x => x.UserId).IsRequired(false);
 
         builder.HasOne(x => x.Article).WithMany(x => x.Comments).HasForeignKey(x => x.ArticleId);
     }

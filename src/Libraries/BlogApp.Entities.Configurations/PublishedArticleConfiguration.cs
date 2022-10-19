@@ -9,12 +9,12 @@ public class PublishedArticleConfiguration : AuditableEntityConfiguration<Publis
 {
     public override void Configure(EntityTypeBuilder<PublishedArticle> builder)
     {
+        base.Configure(builder);
+
         builder.Property(x => x.PublishDate).IsRequired();
         builder.Property(x => x.ReadingCount).HasDefaultValue(0);
         builder.Property(x => x.LikeCount).HasDefaultValue(0);
 
         builder.HasOne(x => x.Article).WithMany().HasForeignKey(x => x.Id);
-
-        base.Configure(builder);
     }
 }

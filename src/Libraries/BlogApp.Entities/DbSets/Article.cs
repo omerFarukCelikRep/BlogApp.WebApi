@@ -8,14 +8,14 @@ public class Article : AuditableEntity
     {
         ArticleTopics = new HashSet<ArticleTopic>();
     }
-    public string? Title { get; set; }
-    public string? Content { get; set; }
+    public string Title { get; set; } = null!;
+    public string Content { get; set; } = null!;
     public int ReadTime { get; set; }
     public string? Thumbnail { get; set; }
 
     //Navigation Prop.
-    public Guid MemberId { get; set; }
-    public virtual Member Member { get; set; }
+    public Guid UserId { get; set; }
+    public virtual User User { get; set; }
 
     public virtual ICollection<ArticleTopic> ArticleTopics { get; set; }
 }

@@ -2,7 +2,7 @@
 using FluentValidation;
 
 namespace BlogApp.Business.Validations.TopicValidators;
-public class TopicUpdateValidator : AbstractValidator<UpdateTopicDto>
+public class TopicUpdateValidator : AbstractValidator<TopicUpdateDto>
 {
     public TopicUpdateValidator()
     {

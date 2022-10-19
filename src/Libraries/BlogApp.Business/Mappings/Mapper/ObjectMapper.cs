@@ -8,9 +8,8 @@ public static class ObjectMapper
     {
         var configuration = new MapperConfiguration(config =>
         {
-            config.AddProfile<TopicMappingProfile>();
-            config.AddProfile<UserMappingProfile>();
-            config.AddProfile<MemberProfile>();
+            config.AddProfile<TopicProfile>();
+            config.AddProfile<UserProfile>();
             config.AddProfile<ArticleProfile>();
             config.AddProfile<PublishedArticleProfile>();
         });

@@ -8,7 +8,7 @@ public static class DependencyInjection
     public static IServiceCollection AddDataAccessEFCoreServices(this IServiceCollection services)
     {
         services.AddTransient<ITopicRepository, TopicRepository>();
-        services.AddTransient<IMemberRepository, MemberRepository>();
+        services.AddTransient<IUserRepository, MemberRepository>();
         services.AddTransient<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddTransient<IArticleRepository, ArticleRepository>();
         services.AddTransient<IPublishedArticleRepository, PublishedArticleRepository>();

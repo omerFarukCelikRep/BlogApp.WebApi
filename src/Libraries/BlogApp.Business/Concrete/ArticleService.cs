@@ -31,7 +31,7 @@ public class ArticleService : IArticleService
 
     public async Task<IDataResult<List<PublishedArticleByUserListDto>>> GetAllPublishedByUserIdAsync(Guid userId)
     {
-        var articles = await _publishedArticleRepository.GetAllAsync(x => x.Article.MemberId == userId,true);
+        var articles = await _publishedArticleRepository.GetAllAsync(x => x.Article.UserId == userId,true);
         var mappedArticles = ObjectMapper.Mapper.Map<List<PublishedArticleByUserListDto>>(articles);
 
         return new SuccessDataResult<List<PublishedArticleByUserListDto>>(mappedArticles, ServiceMessages.ArticlesListed);
@@ -39,8 +39,8 @@ public class ArticleService : IArticleService
 
     public async Task<IDataResult<List<ArticleUnpublishedListDto>>> GetAllUnpublishedByUserIdAsync(Guid userId)
     {
-        var publishedArticleIds = (await _publishedArticleRepository.GetAllAsync(x => x.Article.MemberId == userId, false)).Select(x => x.Id).ToList();
-        var articles = await _articleRepository.GetAllAsync(x => x.MemberId == userId);
+        var publishedArticleIds = (await _publishedArticleRepository.GetAllAsync(x => x.Article.UserId == userId, false)).Select(x => x.Id).ToList();
+        var articles = await _articleRepository.GetAllAsync(x => x.UserId == userId);
         var unpublishedArticles = articles.Where(article => !publishedArticleIds.Any(publishedArticleId => publishedArticleId == article.Id)).ToList();
 
         var mappedArticles = ObjectMapper.Mapper.Map<List<ArticleUnpublishedListDto>>(unpublishedArticles);

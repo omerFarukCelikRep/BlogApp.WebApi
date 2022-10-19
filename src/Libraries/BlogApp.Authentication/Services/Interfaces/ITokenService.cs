@@ -3,7 +3,7 @@ using BlogApp.Authentication.Dtos.Outgoing;
 using BlogApp.Entities.DbSets;
 using Microsoft.AspNetCore.Identity;
 
-namespace BlogApp.Authentication.Services.Abstract;
+namespace BlogApp.Authentication.Services.Interfaces;
 public interface ITokenService
 {
     string GenerateJwtToken(IdentityUser<Guid> identityUser, Guid userId);

@@ -10,7 +10,7 @@ public class PublishedArticleProfile : Profile
         CreateMap<PublishedArticle, PublishedArticleByUserListDto>()
             .ForMember(
                 dest => dest.AuthorName,
-                config => config.MapFrom(src => $"{src.Article.Member.FirstName} {src.Article.Member.LastName}")
+                config => config.MapFrom(src => $"{src.Article.User.FirstName} {src.Article.User.LastName}")
             )
            .ForMember(
                     dest => dest.Topics,
@@ -56,11 +56,11 @@ public class PublishedArticleProfile : Profile
             )
             .ForMember(
                 dest => dest.AuthorName,
-                config => config.MapFrom(src => $"{src.Article.Member.FirstName} {src.Article.Member.LastName}")
+                config => config.MapFrom(src => $"{src.Article.User.FirstName} {src.Article.User.LastName}")
             )
             .ForMember(
                 dest => dest.UserId,
-                config => config.MapFrom(src => src.Article.MemberId)
+                config => config.MapFrom(src => src.Article.UserId)
             )
             .ForMember(
                 dest => dest.CommentCount,

@@ -16,7 +16,7 @@ public class TopicService : ITopicService
     {
         _topicRepository = topicRepository;
     }
-    public async Task<IDataResult<TopicDto>> AddAsync(CreateTopicDto createDto)
+    public async Task<IDataResult<TopicDto>> AddAsync(TopicCreateDto createDto)
     {
         if (await _topicRepository.AnyAsync(x => string.Equals(x.Name, createDto.Name)))
         {
@@ -45,28 +45,28 @@ public class TopicService : ITopicService
         return new SuccessResult("Successfully Deleted"); // TODO: Magic string
     }
 
-    public async Task<IDataResult<IEnumerable<ListTopicDto>>> GetAllAsync()
+    public async Task<IDataResult<IEnumerable<TopicListDto>>> GetAllAsync()
     {
         var dbTopicList = await _topicRepository.GetAllAsync(false);
 
-        var topics = ObjectMapper.Mapper.Map<IEnumerable<ListTopicDto>>(dbTopicList);
+        var topics = ObjectMapper.Mapper.Map<IEnumerable<TopicListDto>>(dbTopicList);
 
-        return new SuccessDataResult<IEnumerable<ListTopicDto>>(topics, "Topics Listed"); //TODO: Magic string
+        return new SuccessDataResult<IEnumerable<TopicListDto>>(topics, "Topics Listed"); //TODO: Magic string
     }
 
-    public async Task<IDataResult<IEnumerable<ListTopicDto>>> GetAllAsync(Expression<Func<Topic, bool>> expression)
+    public async Task<IDataResult<IEnumerable<TopicListDto>>> GetAllAsync(Expression<Func<Topic, bool>> expression)
     {
         var dbTopicList = await _topicRepository.GetAllAsync(expression, false);
 
         //if (dbTopicList is not List<Topic> { Count: <= 0 }) null ve eleman sayısı kontrolü
         if (dbTopicList == null || dbTopicList.Count() <= 0)
         {
-            return new ErrorDataResult<IEnumerable<ListTopicDto>>("Topics couldn't find"); //TODO: Magic string
+            return new ErrorDataResult<IEnumerable<TopicListDto>>("Topics couldn't find"); //TODO: Magic string
         }
 
-        var topics = ObjectMapper.Mapper.Map<IEnumerable<ListTopicDto>>(dbTopicList);
+        var topics = ObjectMapper.Mapper.Map<IEnumerable<TopicListDto>>(dbTopicList);
 
-        return new SuccessDataResult<IEnumerable<ListTopicDto>>(topics, "Topics Listed"); //TODO: Magic string
+        return new SuccessDataResult<IEnumerable<TopicListDto>>(topics, "Topics Listed"); //TODO: Magic string
     }
 
     public async Task<IDataResult<TopicDto>> GetAsync(Expression<Func<Topic, bool>> expression)
@@ -97,7 +97,7 @@ public class TopicService : ITopicService
         return new SuccessDataResult<TopicDto>(topic, "Topic Successfully getted"); //TODO: Magic string
     }
 
-    public async Task<IDataResult<TopicDto>> UpdateAsync(UpdateTopicDto updateDto)
+    public async Task<IDataResult<TopicDto>> UpdateAsync(TopicUpdateDto updateDto)
     {
         var dbTopic = await _topicRepository.GetByIdAsync(updateDto.Id);
 

@@ -30,7 +30,7 @@ public class TopicsController : BaseController
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateAsync([FromBody] CreateTopicDto createTopicDto)
+    public async Task<IActionResult> CreateAsync([FromBody] TopicCreateDto createTopicDto)
     {
         if (!ModelState.IsValid)
         {
@@ -48,7 +48,7 @@ public class TopicsController : BaseController
     }
 
     [HttpPut("{id:guid}")]
-    public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] UpdateTopicDto updateTopicDto)
+    public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] TopicUpdateDto updateTopicDto)
     {
         if (id != updateTopicDto.Id)
         {

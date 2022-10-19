@@ -1,14 +1,10 @@
-﻿using BlogApp.Authentication.Dtos.Incoming;
-using BlogApp.Authentication.Dtos.Outgoing;
-using BlogApp.Core.Utilities.Results.Interfaces;
-using Microsoft.AspNetCore.Identity;
+﻿using BlogApp.Core.Utilities.Results.Interfaces;
+using BlogApp.Entities.Dtos.Users;
 
 namespace BlogApp.Business.Interfaces;
 public interface IUserService
 {
-    Task<AuthResult> AddAsync(UserRegistrationRequestDto registrationRequestDto);
-    Task<AuthResult> AuthenticateAsync(UserLoginRequestDto loginRequestDto, string ipAddress);
-    Task<IDataResult<IdentityUser<Guid>>> FindByEmailAsync(string email);
-    Task<Guid> GetUserIdByIdentityIdAsync(Guid identityId);
-    Task<AuthResult> RefreshTokenAsync(TokenRequestDto tokenRequestDto);
+    Task<IDataResult<List<UserDto>>> GetAllAsync();
+    Task<IDataResult<UserDto>> GetByIdAsync(Guid id);
+    Task<IDataResult<UserDto>> UpdateAsync(UserUpdateDto updateMemberDto);
 }

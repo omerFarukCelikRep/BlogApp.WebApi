@@ -11,9 +11,9 @@ public static class DependencyInjection
     {
         services.AddCustomValidation();
 
-        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IAccountService, AccountService>();
         services.AddScoped<ITopicService, TopicService>();
-        services.AddScoped<IMemberService, MemberService>();
+        services.AddScoped<IUserService, UserService>();
         services.AddScoped<IArticleService, ArticleService>();
 
         return services;

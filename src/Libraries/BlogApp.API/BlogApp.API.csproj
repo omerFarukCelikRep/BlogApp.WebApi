@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BlogApp.Business\BlogApp.Business.csproj" />
+    <ProjectReference Include="..\BlogApp.Core.Utilities.LoggerServices\BlogApp.Core.Utilities.LoggerServices.csproj" />
     <ProjectReference Include="..\BlogApp.DataAccess.EFCore\BlogApp.DataAccess.EFCore.csproj" />
   </ItemGroup>
 

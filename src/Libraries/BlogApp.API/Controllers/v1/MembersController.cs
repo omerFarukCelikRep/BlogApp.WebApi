@@ -1,5 +1,5 @@
 ﻿using BlogApp.Business.Interfaces;
-using BlogApp.Entities.Dtos.Members;
+using BlogApp.Entities.Dtos.Users;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlogApp.API.Controllers.v1;
@@ -30,7 +30,7 @@ public class MembersController : BaseController
     }
 
     [HttpPut]
-    public async Task<IActionResult> Update([FromBody] UpdateMemberDto updateMember)
+    public async Task<IActionResult> Update([FromBody] UserUpdateDto updateMember)
     {
         var result = await _memberService.UpdateAsync(updateMember);
 

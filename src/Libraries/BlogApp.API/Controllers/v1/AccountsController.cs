@@ -8,11 +8,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace BlogApp.API.Controllers.v1;
 public class AccountsController : BaseController
 {
-    private readonly IUserService _userService;
+    private readonly IAccountService _accountService;
 
-    public AccountsController(IUserService userService)
+    public AccountsController(IAccountService accountService)
     {
-        _userService = userService;
+        _accountService = accountService;
     }
 
     [HttpPost]
@@ -24,7 +24,7 @@ public class AccountsController : BaseController
         {
             return BadRequest(ModelState);
         }
-        var userExistingResult = await _userService.FindByEmailAsync(registrationRequestDto.Email);
+        var userExistingResult = await _accountService.FindByEmailAsync(registrationRequestDto.Email);
 
         if (userExistingResult.IsSuccess)
         {
@@ -33,7 +33,7 @@ public class AccountsController : BaseController
 
         registrationRequestDto.IpAddress = GetIpAddress();
 
-        var registerResult = await _userService.AddAsync(registrationRequestDto);
+        var registerResult = await _accountService.AddAsync(registrationRequestDto);
 
         if (!registerResult.Success)
         {
@@ -53,7 +53,7 @@ public class AccountsController : BaseController
             return BadRequest(ModelState);
         }
 
-        var authenticationResult = await _userService.AuthenticateAsync(loginRequestDto, GetIpAddress());
+        var authenticationResult = await _accountService.AuthenticateAsync(loginRequestDto, GetIpAddress());
 
         if (!authenticationResult.Success)
         {
@@ -74,7 +74,7 @@ public class AccountsController : BaseController
 
         tokenRequestDto.IpAddress = GetIpAddress();
 
-        var result = await _userService.RefreshTokenAsync(tokenRequestDto);
+        var result = await _accountService.RefreshTokenAsync(tokenRequestDto);
 
         if (!result.Success)
         {

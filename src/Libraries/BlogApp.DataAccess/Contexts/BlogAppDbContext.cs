@@ -14,7 +14,9 @@ public class BlogAppDbContext : IdentityDbContext<IdentityUser<Guid>, IdentityRo
 {
     private readonly IHttpContextAccessor _context;
 
-    public BlogAppDbContext(DbContextOptions<BlogAppDbContext> options, IHttpContextAccessor context) : base(options)
+    public BlogAppDbContext(DbContextOptions<BlogAppDbContext> options) : base(options) { }
+
+    internal BlogAppDbContext(DbContextOptions<BlogAppDbContext> options, IHttpContextAccessor context) : base(options)
     {
         _context = context;
     }
@@ -23,7 +25,7 @@ public class BlogAppDbContext : IdentityDbContext<IdentityUser<Guid>, IdentityRo
     public DbSet<Comment> Comments { get; set; }
     public DbSet<ArticleTopic> ArticleTopics { get; set; }
     public DbSet<User> AppUsers { get; set; }
-    public DbSet<UserFollowedTopic> MemberFollowedTopics { get; set; }
+    public DbSet<UserFollowedTopic> UserFollowedTopics { get; set; }
     public DbSet<PublishedArticle> PublishedArticles { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<Topic> Topics { get; set; }

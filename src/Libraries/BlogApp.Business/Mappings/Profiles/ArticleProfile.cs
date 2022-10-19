@@ -10,7 +10,7 @@ public class ArticleProfile : Profile
         CreateMap<Article, ArticleUnpublishedListDto>()
             .ForMember(
                 dest => dest.AuthorName,
-                config => config.MapFrom(src => $"{src.Member.FirstName} {src.Member.LastName}")
+                config => config.MapFrom(src => $"{src.User.FirstName} {src.User.LastName}")
             )
             .ForMember(
                 dest => dest.Topics,
@@ -20,7 +20,7 @@ public class ArticleProfile : Profile
         CreateMap<Article, ArticleUnpublishedDetailsDto>()
             .ForMember(
                     dest => dest.AuthorName,
-                    config => config.MapFrom(src => $"{src.Member.FirstName} {src.Member.LastName}")
+                    config => config.MapFrom(src => $"{src.User.FirstName} {src.User.LastName}")
                 )
                 .ForMember(
                     dest => dest.Topics,

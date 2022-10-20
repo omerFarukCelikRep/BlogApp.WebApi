@@ -13,10 +13,7 @@ namespace BlogApp.DataAccess.Contexts;
 public class BlogAppDbContext : IdentityDbContext<IdentityUser<Guid>, IdentityRole<Guid>, Guid>
 {
     private readonly IHttpContextAccessor _context;
-
-    public BlogAppDbContext(DbContextOptions<BlogAppDbContext> options) : base(options) { }
-
-    internal BlogAppDbContext(DbContextOptions<BlogAppDbContext> options, IHttpContextAccessor context) : base(options)
+    public BlogAppDbContext(DbContextOptions<BlogAppDbContext> options, IHttpContextAccessor context) : base(options)
     {
         _context = context;
     }
@@ -53,7 +50,7 @@ public class BlogAppDbContext : IdentityDbContext<IdentityUser<Guid>, IdentityRo
     private void AssignBaseProperties()
     {
         var entries = ChangeTracker.Entries<BaseEntity>();
-        var token = _context.HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+        var token = _context.HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").LastOrDefault();
         var userId = "UserNotFound";
         if (token != null)
         {

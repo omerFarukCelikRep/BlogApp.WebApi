@@ -29,6 +29,7 @@ public static class DependencyInjection
         services.AddScoped<IIdentityService, IdentityService>();
         services.AddScoped<ITopicService, TopicService>();
         services.AddScoped<IArticleService, ArticleService>();
+        services.AddScoped<IUserService, UserService>();
 
         services.AddControllersWithViews(/*options => options.Filters.Add<AuthorizationFilter>()*/);
 

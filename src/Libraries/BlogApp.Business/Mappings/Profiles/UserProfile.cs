@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BlogApp.Authentication.Dtos.Incoming;
 using BlogApp.Entities.DbSets;
+using BlogApp.Entities.Dtos.PublishedArticles;
 using BlogApp.Entities.Dtos.Users;
 using Microsoft.AspNetCore.Identity;
 
@@ -16,5 +17,15 @@ public class UserProfile : Profile
         CreateMap<UserRegistrationRequestDto, User>();
 
         CreateMap<User, UserDto>();
+
+        CreateMap<User, PublishedArticleUserInfoDto>()
+            .ForMember(
+                dest => dest.AuthorName,
+                config => config.MapFrom(src => $"{src.FirstName} {src.LastName}")
+            )
+            .ForMember(
+                dest => dest.Image,
+                config => config.MapFrom(src => src.ProfilePicture)
+            );
     }
 }

@@ -4,6 +4,7 @@ using BlogApp.Business.Mappings.Mapper;
 using BlogApp.Core.Utilities.Results.Concrete;
 using BlogApp.Core.Utilities.Results.Interfaces;
 using BlogApp.DataAccess.Interfaces.Repositories;
+using BlogApp.Entities.Dtos.PublishedArticles;
 using BlogApp.Entities.Dtos.Users;
 
 namespace BlogApp.Business.Concrete;
@@ -18,38 +19,49 @@ public class UserService : IUserService
 
     public async Task<IDataResult<List<UserDto>>> GetAllAsync()
     {
-        var members = await _userRepository.GetAllAsync(false);
+        var users = await _userRepository.GetAllAsync(false);
 
-        if (!members.Any())
+        if (!users.Any())
         {
             return new ErrorDataResult<List<UserDto>>(ServiceMessages.UserNotFound);
         }
 
-        return new SuccessDataResult<List<UserDto>>(ObjectMapper.Mapper.Map<List<UserDto>>(members), ServiceMessages.UsersListed);
+        return new SuccessDataResult<List<UserDto>>(ObjectMapper.Mapper.Map<List<UserDto>>(users), ServiceMessages.UsersListed);
     }
 
     public async Task<IDataResult<UserDto>> GetByIdAsync(Guid id)
     {
-        var member = await _userRepository.GetByIdAsync(id, false);
+        var user = await _userRepository.GetByIdAsync(id, false);
 
-        if (member is null)
+        if (user is null)
         {
             return new ErrorDataResult<UserDto>(ServiceMessages.UserNotFound);
         }
 
-        return new SuccessDataResult<UserDto>(ObjectMapper.Mapper.Map<UserDto>(member), ServiceMessages.UserGetted);
+        return new SuccessDataResult<UserDto>(ObjectMapper.Mapper.Map<UserDto>(user), ServiceMessages.UserGetted);
     }
 
-    public async Task<IDataResult<UserDto>> UpdateAsync(UserUpdateDto updateMemberDto)
+    public async Task<IDataResult<PublishedArticleUserInfoDto>> GetArticleUserInfoById(Guid userId)
     {
-        var member = await _userRepository.GetByIdAsync(updateMemberDto.Id);
+        var user = await _userRepository.GetByIdAsync(userId, false);
+        if (user is null)
+        {
+            return new ErrorDataResult<PublishedArticleUserInfoDto>(ServiceMessages.UserNotFound);
+        }
 
-        var mappedMember = ObjectMapper.Mapper.Map(updateMemberDto, member);
+        return new SuccessDataResult<PublishedArticleUserInfoDto>(ObjectMapper.Mapper.Map<PublishedArticleUserInfoDto>(user), ServiceMessages.UserGetted);
+    }
 
-        var updatedMember = await _userRepository.UpdateAsync(mappedMember);
+    public async Task<IDataResult<UserDto>> UpdateAsync(UserUpdateDto userUpdateDto)
+    {
+        var user = await _userRepository.GetByIdAsync(userUpdateDto.Id);
+
+        var mappedUser = ObjectMapper.Mapper.Map(userUpdateDto, user);
+
+        var updatedUser = await _userRepository.UpdateAsync(mappedUser);
 
         _ = await _userRepository.SaveChangesAsync();
 
-        return new SuccessDataResult<UserDto>(ObjectMapper.Mapper.Map<UserDto>(updatedMember), ServiceMessages.UserUpdateSuccess);
+        return new SuccessDataResult<UserDto>(ObjectMapper.Mapper.Map<UserDto>(updatedUser), ServiceMessages.UserUpdateSuccess);
     }
 }

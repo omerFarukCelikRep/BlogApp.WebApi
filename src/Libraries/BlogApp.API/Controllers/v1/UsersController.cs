@@ -29,6 +29,14 @@ public class UsersController : BaseController
         return GetDataResult(result);
     }
 
+    [HttpGet("GetUserInfo")]
+    public async Task<IActionResult> GetUserInfoById([FromQuery] Guid userId)
+    {
+        var result = await _userService.GetArticleUserInfoById(userId);
+
+        return GetDataResult(result);
+    }
+
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] UserUpdateDto updateMember)
     {

@@ -9,7 +9,7 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddDataAccessServices(this IServiceCollection services)
     {
-        services.AddDbContextPool<BlogAppDbContext>(options =>
+        services.AddDbContext<BlogAppDbContext>(options =>
         {
             options.UseSqlServer(Configuration.GetConnectionString(DatabaseConstants.DefaultConnectionString), builder => builder.MigrationsAssembly(typeof(BlogAppDbContext).Assembly.FullName));
 

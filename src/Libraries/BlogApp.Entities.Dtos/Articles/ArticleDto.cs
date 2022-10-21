@@ -6,7 +6,7 @@ public class ArticleDto
     public string Content { get; set; }
     public int ReadTime { get; set; }
     public string? Thumbnail { get; set; }
-    public Guid AuthorId { get; set; }
+    public Guid UserId { get; set; }
     public string AuthorName { get; set; }
     public bool IsPublished { get; set; }
     public DateTime? PublishedDate { get; set; }

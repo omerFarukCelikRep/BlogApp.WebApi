@@ -24,17 +24,15 @@ public class AccountsController : BaseController
         {
             return BadRequest(ModelState);
         }
-        var userExistingResult = await _accountService.FindByEmailAsync(registrationRequestDto.Email);
 
+        var userExistingResult = await _accountService.FindByEmailAsync(registrationRequestDto.Email);
         if (userExistingResult.IsSuccess)
         {
             return BadRequest(new AuthResult(false, AuthenticationMessages.EmailAlredyTaken));
         }
 
         registrationRequestDto.IpAddress = GetIpAddress();
-
         var registerResult = await _accountService.AddAsync(registrationRequestDto);
-
         if (!registerResult.Success)
         {
             return BadRequest(registerResult);
@@ -54,7 +52,6 @@ public class AccountsController : BaseController
         }
 
         var authenticationResult = await _accountService.AuthenticateAsync(loginRequestDto, GetIpAddress());
-
         if (!authenticationResult.Success)
         {
             return Unauthorized(authenticationResult);
@@ -73,9 +70,7 @@ public class AccountsController : BaseController
         }
 
         tokenRequestDto.IpAddress = GetIpAddress();
-
         var result = await _accountService.RefreshTokenAsync(tokenRequestDto);
-
         if (!result.Success)
         {
             return BadRequest(result);

@@ -69,7 +69,7 @@ public class ArticlesController : BaseController
             return BadRequest(ModelState);
         }
 
-        createArticleDto.MemberId = UserId;
+        createArticleDto.UserId = UserId;
         var result = await _articleService.AddAsync(createArticleDto);
 
         return Ok(result);

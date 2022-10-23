@@ -3,11 +3,11 @@
 <div class="post-author bgimage-cover" data-image-src="images/upload/about-author-bg-image.jpg">
     <div class="post-author-details text-center">
         <figure>
-            <img src="images/upload/post-author-img.jpg" alt="author" />
+            <img src="data:image/*;base64,@Model.Image" alt="@Model.AuthorName" />
         </figure>
-        <h3>About Author</h3>
+        <h3>@Model.AuthorName</h3>
         <div class="post-author-description">
-            <p>Vestibulum ante ipsum primis in faucibus orci luctus ultrices posuere cubilia curae dignissim viverra dolor sit amet condimentum. Aenean sollicitudin, justo eu pulvinar rutrum.</p>
+            <p>@Model.Biography</p>
         </div>
         <ul class="post-author-social-media">
             <li><a href="#" target="_blank"><i class="fa fa-facebook"></i></a></li>

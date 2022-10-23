@@ -31,7 +31,7 @@ public class ArticleService : IArticleService
 
     public async Task<IDataResult<List<PublishedArticleByUserListDto>>> GetAllPublishedByUserIdAsync(Guid userId)
     {
-        var articles = await _publishedArticleRepository.GetAllAsync(x => x.Article.UserId == userId,true);
+        var articles = await _publishedArticleRepository.GetAllAsync(x => x.Article.UserId == userId, true);
         var mappedArticles = ObjectMapper.Mapper.Map<List<PublishedArticleByUserListDto>>(articles);
 
         return new SuccessDataResult<List<PublishedArticleByUserListDto>>(mappedArticles, ServiceMessages.ArticlesListed);

@@ -14,7 +14,7 @@ public class TopicProfile : Profile
 
         CreateMap<Topic, TopicListDto>();
 
-        CreateMap<Topic,TopicDetailsDto>().ReverseMap();
+        CreateMap<Topic, TopicDetailsDto>().ReverseMap();
 
         CreateMap<TopicDto, Topic>().ReverseMap();
     }

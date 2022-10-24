@@ -30,6 +30,7 @@ public static class DependencyInjection
         services.AddScoped<ITopicService, TopicService>();
         services.AddScoped<IArticleService, ArticleService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<ICommentService, CommentService>();
 
         services.AddControllersWithViews(/*options => options.Filters.Add<AuthorizationFilter>()*/);
 

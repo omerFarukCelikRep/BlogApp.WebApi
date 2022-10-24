@@ -5,25 +5,26 @@
         <h2>Leave a comment</h2>
     </div>
     <form class="contact-form comment-input" asp-controller="Comment" asp-action="Add" method="post">
+        @Html.HiddenFor(x => x.ArticleId);
         <div class="row">
             <div class="col-xs-12">
                 <div class="box">
-                    <input id="name" type="text" name="name" required />
-                    <label>Your name *</label>
+                    <input asp-for="UserName" required />
+                    <label asp-for="UserName"></label> *
                 </div>
                 <div class="box">
                     <input id="email" type="text" name="email" required />
                     <label>Your email *</label>
                 </div>
                 <div class="box">
-                    <textarea id="mymessage" name="mymessage" required></textarea>
-                    <label>Your comment *</label>
+                    <textarea asp-for="Text" required></textarea>
+                    <label asp-for="Text"></label> *
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-md-4">
-                <input id="submit_message" type="submit" value="Send Comment" />
+                <button type="submit">Send</button>
             </div>
         </div>
     </form>

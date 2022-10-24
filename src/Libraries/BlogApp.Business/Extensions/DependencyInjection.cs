@@ -15,6 +15,7 @@ public static class DependencyInjection
         services.AddScoped<ITopicService, TopicService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IArticleService, ArticleService>();
+        services.AddScoped<ICommentService, CommentService>();
 
         return services;
     }

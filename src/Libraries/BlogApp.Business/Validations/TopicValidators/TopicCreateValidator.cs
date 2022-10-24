@@ -11,7 +11,6 @@ public class TopicCreateValidator : AbstractValidator<TopicCreateDto>
             .WithMessage("Konu ismi boş geçilemez") //TODO: Magic string
             .NotEmpty()
             .WithMessage("Konu ismi boş geçilemez") //TODO: Magic string
-            .MinimumLength(3)
-            .WithMessage("Konu ismi minimum 3 karakter olmalıdır."); // TODO: Magic string
+            .MinimumLength(3);
     }
 }

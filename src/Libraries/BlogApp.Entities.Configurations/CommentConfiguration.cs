@@ -10,6 +10,7 @@ public class CommentConfiguration : AuditableEntityConfiguration<Comment>
         base.Configure(builder);
 
         builder.Property(x => x.UserName).IsRequired();
+        builder.Property(x => x.Text).IsRequired();
         builder.Property(x => x.UserIpAdress).IsRequired();
         builder.Property(x => x.ArticleId).IsRequired();
         builder.Property(x => x.UserId).IsRequired(false);

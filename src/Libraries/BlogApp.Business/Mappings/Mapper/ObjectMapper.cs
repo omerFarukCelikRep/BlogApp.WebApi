@@ -12,6 +12,7 @@ public static class ObjectMapper
             config.AddProfile<UserProfile>();
             config.AddProfile<ArticleProfile>();
             config.AddProfile<PublishedArticleProfile>();
+            config.AddProfile<CommentProfile>();
         });
 
         return configuration.CreateMapper();

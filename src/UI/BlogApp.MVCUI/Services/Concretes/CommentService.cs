@@ -1,4 +1,6 @@
 ﻿using BlogApp.Core.Utilities.Results.Concrete;
+using BlogApp.Core.Utilities.Results.Interfaces;
+using BlogApp.MVCUI.Models.Articles;
 using BlogApp.MVCUI.Models.Comments;
 using BlogApp.MVCUI.Services.Interfaces;
 using System.Net;
@@ -12,6 +14,11 @@ public class CommentService : ICommentService
     public CommentService(HttpClient httpClient)
     {
         _httpClient = httpClient;
+    }
+
+    public async Task<IDataResult<List<ArticleCommentListVM>>> GetAllByArticleId(Guid articleId)
+    {
+        return await _httpClient.GetFromJsonAsync<DataResult<List<ArticleCommentListVM>>>($"/api/v1/Comments/{articleId}");
     }
 
     public async Task<IResult> AddAsync(CommentAddVM commentAddVM)

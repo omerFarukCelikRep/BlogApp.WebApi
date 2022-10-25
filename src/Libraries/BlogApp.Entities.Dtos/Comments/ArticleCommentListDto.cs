@@ -1,6 +1,5 @@
-﻿namespace BlogApp.MVCUI.Models.Articles;
-
-public class ArticleCommentListVM
+﻿namespace BlogApp.Entities.Dtos.Comments;
+public class ArticleCommentListDto
 {
     public string UserName { get; set; } = string.Empty;
     public DateTime CreatedDate { get; set; }

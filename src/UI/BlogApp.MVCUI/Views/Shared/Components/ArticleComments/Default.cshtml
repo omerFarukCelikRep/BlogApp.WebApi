@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<ArticleCommentListVM>
+@using BlogApp.Core.Utilities.Helpers
 
 <div class="post-comments">
     <div class="page-title subtitle">
@@ -12,18 +13,17 @@
                 <div class="comment-wrapper">
                     <div class="comment-avatar">
                         <figure>
-                            <img src="images/upload/comment-avatar02.jpg" alt="avatar" />
+                            <img src="data:image/*;base64,@UserHelper.EmptyImage()" alt="avatar" />
                         </figure>
                     </div>
                     <div class="comment-details">
                         <div class="comment-name">
-                            <a href="#">John Moser</a>
-                            <span class="comment-date">20 November 2015</span>
+                            @comment.UserName
+                            <span class="comment-date">@comment.CreatedDate.ToShortDateString()</span>
                         </div>
                         <div class="comment-description">
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut mauris magna, lacinia ac purus quis, rutrum bibendum leo sit amet.</p>
+                            <p>@comment.Text</p>
                         </div>
-                        <div class="comment-reply"><a href="#">Reply</a></div>
                     </div>
                 </div>
             </li>

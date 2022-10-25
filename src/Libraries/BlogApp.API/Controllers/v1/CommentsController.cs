@@ -32,4 +32,13 @@ public class CommentsController : BaseController
 
         return GetDataResult(result);
     }
+
+    [HttpGet("{articleId:guid}")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetAllByArticleId([FromRoute] Guid articleId)
+    {
+        var result = await _commentService.GetAllByArticleId(articleId);
+
+        return GetDataResult(result);
+    }
 }

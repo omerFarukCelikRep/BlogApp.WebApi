@@ -37,7 +37,7 @@ public class CommentsController : BaseController
     [AllowAnonymous]
     public async Task<IActionResult> GetAllByArticleId([FromRoute] Guid articleId)
     {
-        var result = await _commentService.GetAllByArticleId(articleId);
+        var result = await _commentService.GetAllByArticleIdAsync(articleId);
 
         return GetDataResult(result);
     }

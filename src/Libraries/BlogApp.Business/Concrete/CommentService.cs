@@ -1,4 +1,5 @@
-﻿using BlogApp.Business.Interfaces;
+﻿using BlogApp.Business.Constants;
+using BlogApp.Business.Interfaces;
 using BlogApp.Business.Mappings.Mapper;
 using BlogApp.Core.Utilities.Results.Concrete;
 using BlogApp.Core.Utilities.Results.Interfaces;
@@ -15,6 +16,13 @@ public class CommentService : ICommentService
     {
         _commentRepository = commentRepository;
         _userRepository = userRepository;
+    }
+
+    public async Task<IDataResult<List<ArticleCommentListDto>>> GetAllByArticleIdAsync(Guid articleId)
+    {
+        var comments = await _commentRepository.GetAllAsync(x => x.ArticleId == articleId, false);
+
+        return new SuccessDataResult<List<ArticleCommentListDto>>(ObjectMapper.Mapper.Map<List<ArticleCommentListDto>>(comments), ServiceMessages.CommentsListed);
     }
 
     public async Task<IDataResult<CommentCreatedDto>> AddAsync(CommentCreateDto commentCreateDto)

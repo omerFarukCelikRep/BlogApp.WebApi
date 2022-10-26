@@ -127,4 +127,12 @@ public class ArticleService : IArticleService
 
         return new SuccessResult("Ekleme Gerçekleşti"); //TODO: Magic string
     }
+
+    public async Task<IDataResult<List<PublishedArticleListDto>>> GetAllPublishedByTopicNameAsync(string topicName)
+    {
+        var articles = await _publishedArticleRepository.GetAllAsync(x => x.Article.ArticleTopics.Any(at => at.Topic.Name.ToLower().Contains(topicName.Trim().ToLower())), true);
+        var mappedArticles = ObjectMapper.Mapper.Map<List<PublishedArticleListDto>>(articles);
+
+        return new SuccessDataResult<List<PublishedArticleListDto>>(mappedArticles, ServiceMessages.ArticlesListed);
+    }
 }

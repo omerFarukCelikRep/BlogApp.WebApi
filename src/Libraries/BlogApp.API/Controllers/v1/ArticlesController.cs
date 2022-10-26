@@ -1,5 +1,7 @@
 ﻿using BlogApp.Business.Interfaces;
+using BlogApp.Core.Utilities.Results.Interfaces;
 using BlogApp.Entities.Dtos.Articles;
+using BlogApp.Entities.Dtos.PublishedArticles;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlogApp.API.Controllers.v1;
@@ -25,6 +27,14 @@ public class ArticlesController : BaseController
     public async Task<IActionResult> GetAllPublished()
     {
         var result = await _articleService.GetAllPublishedByUserIdAsync(UserId);
+
+        return GetDataResult(result);
+    }
+
+    [HttpGet("{topicName}")]
+    public async Task<IActionResult> GetAllPublished(string topicName)
+    {
+        IDataResult<List<PublishedArticleListDto>> result = await _articleService.GetAllPublishedByTopicNameAsync(topicName);
 
         return GetDataResult(result);
     }

@@ -59,7 +59,7 @@
                         <h5>Topics</h5>
                         @foreach (var topic in Model.Topics)
                         {
-                            <a asp-controller="Article" asp-action="Index" asp-route-topicName="@topic">
+                            <a asp-controller="Article" asp-action="ListByTopic" asp-route-t="@topic">
                                 <i class="fa-solid fa-hashtag"></i>
                                 @topic
                             </a>

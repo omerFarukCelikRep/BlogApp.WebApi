@@ -27,10 +27,9 @@ public class ArticleAddVM
         }
     }
 
-    [Required]
     [Display(Name = "Resim")]
     [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
-    public IFormFile ThumbnailFile { get; set; }
+    public IFormFile? ThumbnailFile { get; set; }
 
     [Required]
     [Display(Name = "Konular")]

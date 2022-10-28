@@ -23,12 +23,11 @@ public class ArticleController : BaseController
     }
 
     [HttpGet]
-    [Route("[controller]/{topicName}")]
-    public async Task<IActionResult> Index(string topicName)
+    public async Task<IActionResult> ListByTopic([FromQuery(Name = "t")] string topicName)
     {
-        var result = await _articleService.GetAllPublished();
+        var result = await _articleService.GetAllPublishedByTopicName(topicName);
 
-        return View(result.Data);
+        return View(nameof(Index), result.Data);
     }
 
     [HttpGet]

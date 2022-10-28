@@ -22,7 +22,7 @@ public class HomeController : BaseController
     [Route("Login")]
     public IActionResult Login()
     {
-        if (_identityService.IsLoggedIn)
+        if (User.Identity.IsAuthenticated)
         {
             return RedirectToAction(nameof(Index));
         }

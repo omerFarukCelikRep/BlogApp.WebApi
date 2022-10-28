@@ -1,0 +1,51 @@
+﻿@model IEnumerable<UserMainSliderVM>
+
+<div class="home-slider">
+    <div class="flexslider">
+        <ul class="slides">
+            @foreach (var article in Model)
+            {
+                <!--Slider 1 Start-->
+                <li class="img-div-cover">
+                    <div class="home-slide-overlay" data-bg-color="#000" data-opacity="0.15"></div>
+                    <img src="data:image/*;base64,@article.Thumbnail" alt="@article.Title" />
+                    <!--Slider Caption Start-->
+                    <div class="flex-caption">
+                        <div class="home-slide-caption">
+                            <div class="home-slide-category">
+                                @foreach (var topic in article.Topics)
+                                {
+                                    <a asp-controller="Article" asp-action="ListByTopic" asp-route-t="@topic">
+                                        @topic
+                                    </a>
+                                }
+                            </div>
+                            <h1>@article.Title</h1>
+                            <div class="home-slide-link">
+                                <a asp-controller="Article" asp-action="PublishedDetails" asp-route-id="@article.Id">
+                                    Read this article
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Slider Caption End-->
+                </li>
+                <!--Slider 1 End-->
+            }
+        </ul>
+    </div>
+    <!--Custom Navigation Start-->
+    <ul class="home-slide-nav">
+        <li>
+            <a class="slide-prev" href="prev">
+                <i class="fa-solid fa-angle-left"></i>
+            </a>
+        </li>
+        <li>
+            <a class="slide-next" href="next">
+                <i class="fa-solid fa-angle-right"></i>
+            </a>
+        </li>
+    </ul>
+    <!--Custom Navigation End-->
+</div>

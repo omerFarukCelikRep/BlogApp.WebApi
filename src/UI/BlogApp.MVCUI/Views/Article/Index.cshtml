@@ -15,68 +15,88 @@
             <div class="post-list post-list-fullwidth">
                 @foreach (var article in Model)
                 {
-                    <article class="post-type-standard">
-                        <!--Post Image-->
-                        <div class="post-img img-div-cover">
-                            <figure>
-                                <div class="overlay-hover"></div>
-                                <img src="data:image/*;base64,@article.Thumbnail" alt="@article.Title" />
-                            </figure>
-                        </div>
-                        <!--Post Entry-->
-                        <div class="post-entry">
-                            <h2>@article.Title</h2>
-                            <div class="post-description">
-                                <p>@Html.Raw(article.Content.Substring(0, article.Content.Length > 390 ? 390 : article.Content.Length))</p>
+                    <article class="post-blog-list">
+                        <div class="blog-list-box">
+                            <!--Post Image-->
+                            <div class="blog-list-img">
+                                <a asp-controller="Article" asp-action="PublishedDetails" asp-route-id="@article.Id">
+                                    <figure class="fit-img" style="background-image: url(&quot;images/upload/post-blog-list-img02.jpg&quot;);">
+                                        <div class="overlay-hover"></div>
+                                        <img src="data:image/*;base64,@article.Thumbnail" alt="@article.Title" />
+                                    </figure>
+                                </a>
                             </div>
-                            <div class="post-meta">
-                                <ul>
-                                    <li>
-                                        <i class="fa-solid fa-calendar-check"></i>
-                                        @article.PublishDate.ToString("dd MM yyyy")
-                                    </li>
-                                    <li>
-                                        <i class="fa-solid fa-user-tie"></i>
-                                        @article.AuthorName
-                                    </li>
-                                    <li>
-                                        @foreach (var topic in article.Topics)
-                                        {
-                                            <i class="fa-solid fa-hashtag"></i>
-                                            @topic
-                                        }
-                                    </li>
-                                    <li>
-                                        <i class="fa-solid fa-clock"></i>
-                                        @article.ReadTime <span>dk.</span>
-                                    </li>
-                                    <li>
-                                        <i class="fa-solid fa-book-open-reader"></i>
-                                        @article.ReadingCount
-                                    </li>
-                                    <li>
-                                        <i class="fa-solid fa-comment-dots"></i>
-                                        Comments <span>@article.CommentCount</span>
-                                    </li>
-                                    <li>
-                                        <i class="fa-solid fa-thumbs-up"></i>
-                                        @article.LikeCount
-                                    </li>
-                                </ul>
+                            <!--Post Entry-->
+                            <div class="post-entry">
+                                <div class="blog-list-details">
+                                    <h2>
+                                        <a asp-controller="Article" asp-action="PublishedDetails" asp-route-id="@article.Id">
+                                            @article.Title
+                                        </a>
+                                    </h2>
+                                    <div class="post-description">
+                                        @Html.Raw(article.Content.Substring(0,article.Content.Length > 230 ? 230 : article.Content.Length))<span>...</span>
+                                    </div>
+                                    <div class="post-meta">
+                                        <ul>
+                                            <li>
+                                                <i class="fa-solid fa-calendar-check"></i>
+                                                @article.PublishDate.ToString("dd MM yyyy")
+                                            </li>
+                                            <li>
+                                                <i class="fa-solid fa-user-tie"></i>
+                                                @article.AuthorName
+                                            </li>
+                                            <li>
+                                                @foreach (var topic in article.Topics)
+                                                {
+                                                    <i class="fa-solid fa-hashtag"></i>
+                                                    @topic
+                                                }
+                                            </li>
+                                            <li>
+                                                <i class="fa-solid fa-clock"></i>
+                                                @article.ReadTime <span>dk.</span>
+                                            </li>
+                                            <li>
+                                                <i class="fa-solid fa-book-open-reader"></i>
+                                                @article.ReadingCount
+                                            </li>
+                                            <li>
+                                                <i class="fa-solid fa-comment-dots"></i>
+                                                Comments <span>@article.CommentCount</span>
+                                            </li>
+                                            <li>
+                                                <i class="fa-solid fa-thumbs-up"></i>
+                                                @article.LikeCount
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="blog-list-share share-tooltip-animate">
+                                    <i class="fa-solid fa-ellipsis-vertical" data-bs-toggle="tooltip" data-bs-title="Options"></i>
+                                </div>
+                                <div class="share-tooltip" style="display: none; margin-top: 0px;">
+                                    <ul>
+                                        <li>
+                                            <a asp-controller="Article" asp-action="PublishedDetails" asp-route-id="@article.Id" data-bs-toggle="tooltip" data-bs-title="Details">
+                                                <i class="fa-solid fa-file-lines"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a asp-controller="Article" asp-action="Update" asp-route-id="@article.Id" data-bs-toggle="tooltip" data-bs-title="Update">
+                                                <i class="fa-solid fa-pen-to-square"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a asp-controller="Article" asp-action="Delete" asp-route-id="@article.Id" data-bs-toggle="tooltip" data-bs-title="Delete">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
-                        <!--Post Share-->
-                        <div class="post-share">
-                            <div class="read-more-btn"><a asp-controller="Article" asp-action="PublishedDetails" asp-route-id="@article.Id">Read more</a></div>
-                            <div class="share-btn">Share</div>
-                            <ul class="share-standard">
-                                <li><a href="#"><i class="fa-brands fa-facebook"></i></a></li>
-                                <li><a href="#"><i class="fa-brands fa-twitter"></i></a></li>
-                                <li><a href="#"><i class="fa-brands fa-google"></i></a></li>
-                                <li><a href="#"><i class="fa-brands fa-instagram"></i></a></li>
-                            </ul>
-                        </div>
-
                     </article>
                 }
             </div>
@@ -86,3 +106,10 @@
 </div>
 
 <div class="layout-divider"></div>
+
+@section Scripts{
+    <script>
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    </script>
+}

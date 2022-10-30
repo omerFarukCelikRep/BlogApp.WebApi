@@ -1,6 +1,7 @@
 ﻿using BlogApp.Core.Utilities.Results.Concrete;
 using BlogApp.Core.Utilities.Results.Interfaces;
 using BlogApp.MVCUI.Models.Articles;
+using BlogApp.MVCUI.Models.Users;
 using BlogApp.MVCUI.Services.Interfaces;
 using System.Net;
 using IResult = BlogApp.Core.Utilities.Results.Interfaces.IResult;
@@ -32,27 +33,27 @@ public class ArticleService : IArticleService
         return new SuccessResult();
     }
 
-    public async Task<IDataResult<List<ArticlePublishedListVM>>> GetAllPublished()
+    public async Task<IDataResult<List<ArticlePublishedListVM>>?> GetAllPublished()
     {
         return await _httpClient.GetFromJsonAsync<DataResult<List<ArticlePublishedListVM>>>("/api/v1/Articles/Published");
     }
 
-    public async Task<IDataResult<List<ArticlePublishedListVM>>> GetAllPublishedByTopicName(string topicName)
+    public async Task<IDataResult<List<ArticlePublishedListVM>>?> GetAllPublishedByTopicName(string topicName)
     {
         return await _httpClient.GetFromJsonAsync<DataResult<List<ArticlePublishedListVM>>>($"/api/v1/Articles/{topicName}");
     }
 
-    public async Task<IDataResult<ArticlePublishedDetailsVM>> GetPublishedById(Guid articleId)
+    public async Task<IDataResult<ArticlePublishedDetailsVM>?> GetPublishedById(Guid articleId)
     {
         return await _httpClient.GetFromJsonAsync<DataResult<ArticlePublishedDetailsVM>>($"/api/v1/Articles/{articleId}");
     }
 
-    public async Task<IDataResult<List<ArticleUnpublishedListVM>>> GetAllUnpublished()
+    public async Task<IDataResult<List<ArticleUnpublishedListVM>>?> GetAllUnpublished()
     {
         return await _httpClient.GetFromJsonAsync<DataResult<List<ArticleUnpublishedListVM>>>("/api/v1/Articles/Unpublished");
     }
 
-    public async Task<IDataResult<ArticleUnpublishedDetailsVM>> GetUnpublishedById(Guid articleId)
+    public async Task<IDataResult<ArticleUnpublishedDetailsVM>?> GetUnpublishedById(Guid articleId)
     {
         return await _httpClient.GetFromJsonAsync<DataResult<ArticleUnpublishedDetailsVM>>($"/api/v1/Articles/Unpublished/{articleId}");
     }
@@ -67,5 +68,10 @@ public class ArticleService : IArticleService
         }
 
         return new SuccessResult();
+    }
+
+    public async Task<IDataResult<List<UserMainSliderVM>>?> GetAllPublishedShortDetailsRandomly()
+    {
+        return await _httpClient.GetFromJsonAsync<DataResult<List<UserMainSliderVM>>>($"/api/v1/Articles/ShortDetails");
     }
 }

@@ -24,7 +24,7 @@ public class EfBaseRepository<TEntity> : IAsyncFindableRepository<TEntity>, IAsy
 
     public Task<bool> AnyAsync(Expression<Func<TEntity, bool>>? expression = null)
     {
-        return expression is null ? _table.AnyAsync() : _table.AnyAsync(expression);
+        return expression is null ? GetAllActives().AnyAsync() : GetAllActives().AnyAsync(expression);
     }
 
     public Task DeleteAsync(TEntity entity)
@@ -34,15 +34,13 @@ public class EfBaseRepository<TEntity> : IAsyncFindableRepository<TEntity>, IAsy
 
     public async Task<IEnumerable<TEntity>> GetAllAsync(bool tracking = true)
     {
-        var values = _table
-                                .Where(x => x.Status != Status.Deleted);
+        var values = GetAllActives();
         return tracking ? await values.ToListAsync() : await values.AsNoTracking().ToListAsync();
     }
 
     public async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> expression, bool tracking = true)
     {
-        var values = _table
-                             .Where(x => x.Status != Status.Deleted)
+        var values = GetAllActives()
                              .Where(expression);
 
         return tracking ? await values.ToListAsync() : await values.AsNoTracking().ToListAsync();
@@ -50,10 +48,7 @@ public class EfBaseRepository<TEntity> : IAsyncFindableRepository<TEntity>, IAsy
 
     public async Task<IEnumerable<TEntity>> GetAllAsync<TKey>(Expression<Func<TEntity, TKey>> orderby, bool orderDesc = false, bool tracking = true)
     {
-        var values = _table
-                              .Where(x => x.Status != Status.Deleted);
-
-        values = tracking ? values : values.AsNoTracking();
+        var values = tracking ? GetAllActives() : GetAllActives().AsNoTracking();
 
         return !orderDesc ? await values.OrderBy(orderby).ToListAsync() : await values.OrderByDescending(orderby).ToListAsync();
     }
@@ -71,12 +66,12 @@ public class EfBaseRepository<TEntity> : IAsyncFindableRepository<TEntity>, IAsy
 
     public Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> expression, bool tracking = true)
     {
-        return tracking ? _table.FirstOrDefaultAsync(expression) : _table.AsNoTracking().FirstOrDefaultAsync(expression);
+        return tracking ? GetAllActives().FirstOrDefaultAsync(expression) : GetAllActives().AsNoTracking().FirstOrDefaultAsync(expression);
     }
 
     public Task<TEntity?> GetByIdAsync(Guid id, bool tracking = true)
     {
-        return tracking ? _table.FindAsync(id).AsTask() : _table.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+        return tracking ? GetAllActives().FirstOrDefaultAsync(x => x.Id == id) : GetAllActives().AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public Task<TEntity> UpdateAsync(TEntity entity)
@@ -87,5 +82,29 @@ public class EfBaseRepository<TEntity> : IAsyncFindableRepository<TEntity>, IAsy
     public Task<int> SaveChangesAsync()
     {
         return _context.SaveChangesAsync();
+    }
+
+    public async Task<IEnumerable<TEntity>> GetAllAsync<TKey>(Expression<Func<TEntity, TKey>> orderby, bool orderDesc = false, int takeCount = 0, bool tracking = true)
+    {
+        var values = tracking ? GetAllActives() : GetAllActives().AsNoTracking();
+        values = !orderDesc ? values.OrderBy(orderby) : values.OrderByDescending(orderby);
+
+        return takeCount > 0 ? await values.Take(takeCount).ToListAsync() : await values.ToListAsync();
+    }
+
+    public async Task<IEnumerable<TEntity>> GetAllAsync<TKey>(Expression<Func<TEntity, bool>> expression, Expression<Func<TEntity, TKey>> orderby, bool orderDesc = false, int takeCount = 0, bool tracking = true)
+    {
+        var values = GetAllActives()
+                             .Where(expression);
+
+        values = tracking ? values : values.AsNoTracking();
+        values = !orderDesc ? values.OrderBy(orderby) : values.OrderByDescending(orderby);
+
+        return takeCount > 0 ? await values.Take(takeCount).ToListAsync() : await values.ToListAsync();
+    }
+
+    private IQueryable<TEntity> GetAllActives()
+    {
+        return _table.Where(x => x.Status != Status.Deleted);
     }
 }

@@ -14,4 +14,5 @@ public interface IArticleService
     Task<IDataResult<List<ArticleUnpublishedListDto>>> GetAllUnpublishedByUserIdAsync(Guid userId);
     Task<IDataResult<ArticleUnpublishedDetailsDto>> GetUnpublishedByIdAsync(Guid id);
     Task<IDataResult<List<PublishedArticleListDto>>> GetAllPublishedByTopicNameAsync(string topicName);
+    Task<IDataResult<List<PublishedArticleShortDetailsDto>>> GetRandomArticlesWithShortDetails();
 }

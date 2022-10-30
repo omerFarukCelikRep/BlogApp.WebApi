@@ -31,6 +31,19 @@ public class ArticleController : BaseController
     }
 
     [HttpGet]
+    public async Task<IActionResult> Details(Guid id)
+    {
+        var result = await _articleService.GetPublishedById(id);
+        if (!result.IsSuccess)
+        {
+            ModelState.AddModelError(string.Empty, result.Message);
+            return RedirectToAction(nameof(Unpublished));
+        }
+
+        return View(result.Data);
+    }
+
+    [HttpGet]
     public async Task<IActionResult> Add()
     {
         return View(new ArticleAddVM

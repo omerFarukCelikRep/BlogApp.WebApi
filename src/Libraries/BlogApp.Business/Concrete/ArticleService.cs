@@ -135,4 +135,12 @@ public class ArticleService : IArticleService
 
         return new SuccessDataResult<List<PublishedArticleListDto>>(mappedArticles, ServiceMessages.ArticlesListed);
     }
+
+    public async Task<IDataResult<List<PublishedArticleShortDetailsDto>>> GetRandomArticlesWithShortDetails()
+    {
+        var articles = await _publishedArticleRepository.GetAllAsync(x => Guid.NewGuid(), takeCount: 3);
+
+        var mappedArticle = ObjectMapper.Mapper.Map<List<PublishedArticleShortDetailsDto>>(articles);
+        return new SuccessDataResult<List<PublishedArticleShortDetailsDto>>(mappedArticle, ServiceMessages.ArticlesListed);
+    }
 }

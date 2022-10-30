@@ -63,6 +63,14 @@ public class ArticlesController : BaseController
         return GetDataResult(result);
     }
 
+    [HttpGet("ShortDetails")]
+    public async Task<IActionResult> GetShortDetails()
+    {
+        var result = await _articleService.GetRandomArticlesWithShortDetails();
+
+        return GetDataResult(result);
+    }
+
     [HttpGet("Trends")]
     public async Task<IActionResult> GetTrends()
     {

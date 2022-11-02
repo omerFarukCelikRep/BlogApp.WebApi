@@ -100,5 +100,19 @@ public class PublishedArticleProfile : Profile
                     dest => dest.Topics,
                     config => config.MapFrom(src => src.Article.ArticleTopics.Select(x => x.Topic.Name).ToList())
             );
+
+        CreateMap<PublishedArticle, PublishedArticleShortDetailsDto>()
+            .ForMember(
+                dest => dest.Title,
+                config => config.MapFrom(src => src.Article.Title)
+            )
+            .ForMember(
+                dest => dest.Thumbnail,
+                config => config.MapFrom(src => src.Article.Thumbnail)
+            )
+            .ForMember(
+                    dest => dest.Topics,
+                    config => config.MapFrom(src => src.Article.ArticleTopics.Select(x => x.Topic.Name).ToList())
+            );
     }
 }

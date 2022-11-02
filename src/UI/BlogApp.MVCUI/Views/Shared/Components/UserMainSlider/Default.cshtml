@@ -1,12 +1,16 @@
 ﻿@model IEnumerable<UserMainSliderVM>
 
-<div class="home-slider">
-    <div class="flexslider">
-        <ul class="slides">
-            @foreach (var article in Model)
-            {
-                <!--Slider 1 Start-->
-                <li class="img-div-cover">
+<div id="articleCarousel" class="carousel carousel-dark slide" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#articleCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#articleCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#articleCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
+    <div class="carousel-inner">
+        @foreach (var article in Model)
+        {
+            <div class="carousel-item active" data-bs-interval="10000">
+                <div class="img-div-cover">
                     <div class="home-slide-overlay" data-bg-color="#000" data-opacity="0.15"></div>
                     <img src="data:image/*;base64,@article.Thumbnail" alt="@article.Title" />
                     <!--Slider Caption Start-->
@@ -20,7 +24,7 @@
                                     </a>
                                 }
                             </div>
-                            <h1>@article.Title</h1>
+                            <h1 class="text-dark">@article.Title</h1>
                             <div class="home-slide-link">
                                 <a asp-controller="Article" asp-action="Details" asp-route-id="@article.Id">
                                     Read this article
@@ -29,23 +33,16 @@
                         </div>
                     </div>
                     <!--Slider Caption End-->
-                </li>
-                <!--Slider 1 End-->
-            }
-        </ul>
+                </div>
+            </div>
+        }
     </div>
-    <!--Custom Navigation Start-->
-    <ul class="home-slide-nav">
-        <li>
-            <a class="slide-prev" href="prev">
-                <i class="fa-solid fa-angle-left"></i>
-            </a>
-        </li>
-        <li>
-            <a class="slide-next" href="next">
-                <i class="fa-solid fa-angle-right"></i>
-            </a>
-        </li>
-    </ul>
-    <!--Custom Navigation End-->
+    <button class="carousel-control-prev" type="button" data-bs-target="#articleCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#articleCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
 </div>

@@ -944,6 +944,7 @@ blockquote {
     -moz-animation-duration: 1.6s;
     -o-animation-duration: 1.6s;
     animation-duration: 1.6s;
+    z-index:auto;
 }
 
 /* Alternate Caption CSS */

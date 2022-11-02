@@ -19,7 +19,7 @@ public class ArticleController : BaseController
     {
         var result = await _articleService.GetAllPublished();
 
-        return View(result.Data);
+        return View(result?.Data);
     }
 
     [HttpGet]
@@ -27,7 +27,7 @@ public class ArticleController : BaseController
     {
         var result = await _articleService.GetAllPublishedByTopicName(topicName);
 
-        return View(nameof(Index), result.Data);
+        return View(nameof(Index), result?.Data);
     }
 
     [HttpGet]
@@ -110,7 +110,7 @@ public class ArticleController : BaseController
     {
         var result = await _articleService.GetPublishedById(id);
 
-        return View(result.Data);
+        return View(result?.Data);
     }
 
     private async Task<List<SelectListItem>> GetTopics(Guid? selectedId = null)

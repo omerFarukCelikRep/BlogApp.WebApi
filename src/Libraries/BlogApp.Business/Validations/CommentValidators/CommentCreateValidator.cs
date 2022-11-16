@@ -15,7 +15,7 @@ public class CommentCreateValidator : AbstractValidator<CommentCreateDto>
         .NotNull().WithMessage("Boş Geçilemez") //TODO:Magic String
         .NotEmpty().WithMessage("Boş Geçilemez"); //TODO:Magic String
 
-        RuleFor(x=>x.ArticleId)
+        RuleFor(x => x.ArticleId)
             .NotNull().WithMessage("Boş Geçilemez"); //TODO:Magic String
     }
 }

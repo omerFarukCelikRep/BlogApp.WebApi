@@ -1,13 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
-using Microsoft.Net.Http.Headers;
 using System.IdentityModel.Tokens.Jwt;
-using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
-using System.Text.RegularExpressions;
 
 namespace BlogApp.MVCUI.Handlers.Authentication;
 

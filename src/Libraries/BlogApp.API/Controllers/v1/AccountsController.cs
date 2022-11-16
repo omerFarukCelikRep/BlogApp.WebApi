@@ -77,5 +77,5 @@ public class AccountsController : BaseController
         }
 
         return Ok(result);
-    }    
+    }
 }

@@ -1,5 +1,4 @@
 using BlogApp.MVCUI.Extensions;
-using BlogApp.MVCUI.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 

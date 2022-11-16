@@ -1,9 +1,6 @@
 ﻿using BlogApp.MVCUI.Handlers.Authentication;
-using BlogApp.MVCUI.Middlewares;
 using BlogApp.MVCUI.Services.Concretes;
 using BlogApp.MVCUI.Services.Interfaces;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
 
 namespace BlogApp.MVCUI.Extensions;
 

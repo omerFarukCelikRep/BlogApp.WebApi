@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -10,17 +11,12 @@ public class AuthorizationFilter : Attribute, IAsyncAuthorizationFilter
 {
     public Task OnAuthorizationAsync(AuthorizationFilterContext context)
     {
-        var token = context.HttpContext.Session.GetString("Token");
-        if (string.IsNullOrEmpty(token))
+        bool isAnonymous = context.Filters.Any(x => x.GetType() == typeof(AllowAnonymousFilter));
+        if (!context.HttpContext.User.Identity.IsAuthenticated && !isAnonymous)
         {
             context.Result = new RedirectToRouteResult(
                 new RouteValueDictionary(new { controller = "Home", action = "Login" })
             );
-        }
-        else
-        {
-            JwtSecurityToken jwtSecurityToken = new JwtSecurityTokenHandler().ReadJwtToken(token);
-            context.HttpContext.User = new(new ClaimsIdentity(jwtSecurityToken.Claims, "JwtAuthType"));
         }
 
         return Task.CompletedTask;

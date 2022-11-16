@@ -1,6 +1,9 @@
-﻿using BlogApp.MVCUI.Handlers;
+﻿using BlogApp.MVCUI.Handlers.Authentication;
+using BlogApp.MVCUI.Middlewares;
 using BlogApp.MVCUI.Services.Concretes;
 using BlogApp.MVCUI.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BlogApp.MVCUI.Extensions;
 
@@ -9,16 +12,19 @@ public static class DependencyInjection
     public static IServiceCollection AddMVCServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddSession();
+
+        services.AddAuthentication("Basic")
+        .AddScheme<BlogAppAuthenticationSchemeOptions, BlogAppAuthenticationHandler>("Basic", null);
+
         services.AddScoped<AuthTokenHandler>();
+
         services.AddHttpClient("WebApiClient", client =>
         {
             client.BaseAddress = new Uri(configuration["WebApiClient:Url"]);
         })
         .AddHttpMessageHandler<AuthTokenHandler>();
-        services.AddHttpContextAccessor();
 
-        services.AddAuthentication();
-        services.AddAuthorization();
+        services.AddHttpContextAccessor();
 
         services.AddScoped(serviceProvider =>
         {
@@ -32,9 +38,9 @@ public static class DependencyInjection
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<ICommentService, CommentService>();
 
+        //services.AddSingleton<IAuthorizationMiddlewareResultHandler, CustomAuthorizationMiddlewareResultHandler>();
+
         services.AddControllersWithViews(/*options => options.Filters.Add<AuthorizationFilter>()*/);
-
-
 
         return services;
     }

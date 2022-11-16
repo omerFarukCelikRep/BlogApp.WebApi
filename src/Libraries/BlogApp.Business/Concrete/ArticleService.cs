@@ -104,10 +104,7 @@ public class ArticleService : IArticleService
         };
 
         await _publishedArticleRepository.AddAsync(publishArticle);
-        if (await _publishedArticleRepository.SaveChangesAsync() <= 0)
-        {
-            return new ErrorResult("İşlem Başarısız");  //TODO:Magic string
-        }
+        await _publishedArticleRepository.SaveChangesAsync();
 
         return new SuccessResult(ServiceMessages.ArticlePublished);
     }
@@ -120,10 +117,7 @@ public class ArticleService : IArticleService
         articleCreateDto.Topics.ForEach(topicId => article.ArticleTopics.Add(new() { ArticleId = article.Id, TopicId = topicId }));
 
         article = await _articleRepository.AddAsync(article);
-        if (await _articleRepository.SaveChangesAsync() <= 0)
-        {
-            return new ErrorResult("İşlem Başarısız");  //TODO:Magic string
-        }
+        await _articleRepository.SaveChangesAsync();
 
         return new SuccessResult("Ekleme Gerçekleşti"); //TODO: Magic string
     }

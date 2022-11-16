@@ -87,6 +87,7 @@ public class EfBaseRepository<TEntity> : IAsyncFindableRepository<TEntity>, IAsy
     public async Task<IEnumerable<TEntity>> GetAllAsync<TKey>(Expression<Func<TEntity, TKey>> orderby, bool orderDesc = false, int takeCount = 0, bool tracking = true)
     {
         var values = tracking ? GetAllActives() : GetAllActives().AsNoTracking();
+
         values = !orderDesc ? values.OrderBy(orderby) : values.OrderByDescending(orderby);
 
         return takeCount > 0 ? await values.Take(takeCount).ToListAsync() : await values.ToListAsync();

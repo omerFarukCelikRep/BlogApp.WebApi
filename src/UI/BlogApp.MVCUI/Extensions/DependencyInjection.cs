@@ -1,4 +1,5 @@
-﻿using BlogApp.MVCUI.Handlers.Authentication;
+﻿using BlogApp.MVCUI.Filters;
+using BlogApp.MVCUI.Handlers.Authentication;
 using BlogApp.MVCUI.Services.Concretes;
 using BlogApp.MVCUI.Services.Interfaces;
 
@@ -37,7 +38,7 @@ public static class DependencyInjection
 
         //services.AddSingleton<IAuthorizationMiddlewareResultHandler, CustomAuthorizationMiddlewareResultHandler>();
 
-        services.AddControllersWithViews(/*options => options.Filters.Add<AuthorizationFilter>()*/);
+        services.AddControllersWithViews(options => options.Filters.Add<CustomExceptionFilter>());
 
         return services;
     }

@@ -1,6 +1,6 @@
 ﻿using System.Net.Http.Headers;
 
-namespace BlogApp.MVCUI.Handlers;
+namespace BlogApp.MVCUI.Handlers.Authentication;
 
 public class AuthTokenHandler : DelegatingHandler
 {

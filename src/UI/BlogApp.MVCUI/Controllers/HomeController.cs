@@ -1,8 +1,11 @@
-﻿using BlogApp.MVCUI.Models.Authentication;
+﻿using BlogApp.MVCUI.Filters;
+using BlogApp.MVCUI.Models.Authentication;
 using BlogApp.MVCUI.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlogApp.MVCUI.Controllers;
+
+[AllowAnonymousFilter]
 public class HomeController : BaseController
 {
     private readonly IIdentityService _identityService;

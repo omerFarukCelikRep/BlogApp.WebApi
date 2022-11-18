@@ -21,7 +21,8 @@ builder.Host.UseCustomSerilog();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+app.UseRateLimiter();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

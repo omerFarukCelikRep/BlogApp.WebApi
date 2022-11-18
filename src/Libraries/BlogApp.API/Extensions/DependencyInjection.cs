@@ -1,6 +1,8 @@
 ﻿using BlogApp.DataAccess.Contexts;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Models;
+using System.Threading.RateLimiting;
 
 namespace BlogApp.API.Extensions;
 
@@ -11,6 +13,7 @@ public static class DependencyInjection
         services
             .AddCustomSwagger()
             .AddCustomVersioning()
+            .AddCustomRateLimiter()
             .AddHttpContextAccessor()
             .AddControllers();
 
@@ -25,6 +28,22 @@ public static class DependencyInjection
                           tags: new string[] { "services" }
                           )
             .AddDbContextCheck<BlogAppDbContext>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddCustomRateLimiter(this IServiceCollection services)
+    {
+        services.AddRateLimiter(options =>
+        {
+            options.AddFixedWindowLimiter("Basic", fixedWindowsOptions =>
+            {
+                fixedWindowsOptions.Window = TimeSpan.FromSeconds(12);
+                fixedWindowsOptions.PermitLimit = 5;
+                fixedWindowsOptions.QueueLimit = 2;
+                fixedWindowsOptions.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+            });
+        });
 
         return services;
     }

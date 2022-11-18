@@ -3,9 +3,11 @@ using BlogApp.Core.Utilities.Results.Interfaces;
 using BlogApp.Entities.Dtos.Articles;
 using BlogApp.Entities.Dtos.PublishedArticles;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace BlogApp.API.Controllers.v1;
 
+[EnableRateLimiting("Basic")]
 public class ArticlesController : BaseController
 {
     private readonly IArticleService _articleService;
@@ -80,6 +82,7 @@ public class ArticlesController : BaseController
     }
 
     [HttpPost]
+    [DisableRateLimiting]
     public async Task<IActionResult> Create([FromBody] ArticleCreateDto createArticleDto)
     {
         if (!ModelState.IsValid)

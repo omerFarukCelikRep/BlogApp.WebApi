@@ -14,6 +14,7 @@ public static class DependencyInjection
             .AddCustomSwagger()
             .AddCustomVersioning()
             .AddCustomRateLimiter()
+            .AddCustomOutputCaching()
             .AddHttpContextAccessor()
             .AddControllers();
 
@@ -28,6 +29,24 @@ public static class DependencyInjection
                           tags: new string[] { "services" }
                           )
             .AddDbContextCheck<BlogAppDbContext>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddCustomOutputCaching(this IServiceCollection services)
+    {
+        services.AddOutputCache(options =>
+        {
+            options.AddBasePolicy(builder =>
+            {
+                builder.Expire(TimeSpan.FromMinutes(5));
+            });
+
+            //options.AddPolicy("Basic", policy =>
+            //{
+            //    policy.Expire(TimeSpan.FromMinutes(10));
+            //});
+        });
 
         return services;
     }

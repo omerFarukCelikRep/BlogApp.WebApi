@@ -3,6 +3,7 @@ using BlogApp.Core.Utilities.Results.Interfaces;
 using BlogApp.Entities.Dtos.Articles;
 using BlogApp.Entities.Dtos.PublishedArticles;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.AspNetCore.RateLimiting;
 
 namespace BlogApp.API.Controllers.v1;
@@ -18,6 +19,7 @@ public class ArticlesController : BaseController
     }
 
     [HttpGet]
+    [OutputCache]
     public async Task<IActionResult> GetAll()
     {
         var result = await _articleService.GetAllPublishedAsync();
@@ -74,6 +76,7 @@ public class ArticlesController : BaseController
     }
 
     [HttpGet("Trends")]
+    [OutputCache]
     public async Task<IActionResult> GetTrends()
     {
         var result = await _articleService.GetTrendsAsync();

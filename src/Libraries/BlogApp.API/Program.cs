@@ -21,13 +21,15 @@ builder.Host.UseCustomSerilog();
 
 var app = builder.Build();
 
-app.UseRateLimiter();
-
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseRateLimiter();
+
+app.UseOutputCache();
 
 app.MapHealthChecks("/healthz", new HealthCheckOptions
 {

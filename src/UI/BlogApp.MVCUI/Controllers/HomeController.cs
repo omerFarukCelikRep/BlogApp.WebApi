@@ -23,8 +23,9 @@ public class HomeController : BaseController
 
     [HttpGet]
     [Route("Login")]
-    public IActionResult Login()
+    public IActionResult Login(string returnUrl)
     {
+        TempData["returnUrl"] = returnUrl;
         if (User.Identity.IsAuthenticated)
         {
             return RedirectToAction(nameof(Index));
@@ -48,6 +49,9 @@ public class HomeController : BaseController
             ModelState.AddModelError(string.Empty, result.Message);
             return View(loginVM);
         }
+        var returnUrl = TempData["returnUrl"].ToString();
+        if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+            return LocalRedirect(returnUrl);
 
         return RedirectToAction(nameof(Index));
     }

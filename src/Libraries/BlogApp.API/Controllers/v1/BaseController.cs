@@ -25,11 +25,11 @@ public class BaseController : ControllerBase
         return result.IsSuccess ? Ok(result) : BadRequest(result);
     }
 
-    protected string GetIpAddress()
+    protected string? GetIpAddress()
     {
         if (Request.Headers.ContainsKey("X-Forwarded-For"))
             return Request.Headers["X-Forwarded-For"];
         else
-            return HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
+            return HttpContext.Connection.RemoteIpAddress?.MapToIPv4().ToString();
     }
 }

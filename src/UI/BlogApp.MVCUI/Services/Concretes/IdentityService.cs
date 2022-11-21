@@ -2,7 +2,11 @@
 using BlogApp.MVCUI.Models.Authentication;
 using BlogApp.MVCUI.Services.Interfaces;
 using BlogApp.MVCUI.Services.Results;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net;
+using System.Security.Claims;
 using System.Text;
 using IResult = BlogApp.Core.Utilities.Results.Interfaces.IResult;
 
@@ -39,6 +43,19 @@ public class IdentityService : IIdentityService
         {
             return new ErrorResult(response.ToString());
         }
+        JwtSecurityToken jwtSecurityToken = new JwtSecurityTokenHandler().ReadJwtToken(response.Token);
+        var claims = jwtSecurityToken.Claims;
+
+        var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+        var authProperties = new AuthenticationProperties
+        {
+            AllowRefresh = true,
+            ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(15),
+            IsPersistent = false
+        };
+
+        await _httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new(claimsIdentity), authProperties);
 
         _httpContextAccessor.HttpContext?.Session.SetString("Token", response.Token);
         _httpContextAccessor.HttpContext?.Response.Cookies.Append("RefreshToken", response.RefreshToken);
@@ -61,5 +78,10 @@ public class IdentityService : IIdentityService
         }
 
         return new SuccessResult("Kayıt İşlemi Başarılı"); //TODO: Magic string
+    }
+
+    public Task SignOutAsync()
+    {
+        return _httpContextAccessor.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
     }
 }

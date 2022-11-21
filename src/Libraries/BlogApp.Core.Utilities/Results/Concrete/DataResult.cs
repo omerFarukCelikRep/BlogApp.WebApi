@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 namespace BlogApp.Core.Utilities.Results.Concrete;
 public class DataResult<T> : Result, IDataResult<T>
 {
-    public T Data { get; set; }
+    public T Data { get; init; }
     public DataResult(T data, bool isSuccess) : base(isSuccess)
     {
         Data = data;

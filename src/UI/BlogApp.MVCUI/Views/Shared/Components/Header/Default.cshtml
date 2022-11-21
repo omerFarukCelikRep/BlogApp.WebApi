@@ -59,12 +59,21 @@
                 <li class="float-end">
                     <a href="#"><i class="fa-regular fa-user"></i></a>
                     <ul>
-                        <li>
-                            <a asp-controller="Home" asp-action="Login">Giriş Yap</a>
-                        </li>
-                        <li>
-                            <a asp-controller="Home" asp-action="Register">Kayıt Ol</a>
-                        </li>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li>
+                                <a asp-controller="Home" asp-action="Logout">Çıkış Yap</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li>
+                                <a asp-controller="Home" asp-action="Login">Giriş Yap</a>
+                            </li>
+                            <li>
+                                <a asp-controller="Home" asp-action="Register">Kayıt Ol</a>
+                            </li>
+                         }
                     </ul>
                 </li>
             </ul>

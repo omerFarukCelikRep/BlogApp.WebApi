@@ -16,12 +16,12 @@ public class Configuration
         }
     }
 
-    public static string GetConnectionString(string connection)
+    public static string? GetConnectionString(string connection)
     {
         return ConfigurationManager.GetConnectionString(connection);
     }
 
-    public static string GetValue(string section)
+    public static string? GetValue(string section)
     {
         return ConfigurationManager.GetSection(section).Value;
     }

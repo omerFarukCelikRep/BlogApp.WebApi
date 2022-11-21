@@ -2,6 +2,7 @@
 using BlogApp.MVCUI.Handlers.Authentication;
 using BlogApp.MVCUI.Services.Concretes;
 using BlogApp.MVCUI.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace BlogApp.MVCUI.Extensions;
 
@@ -11,8 +12,18 @@ public static class DependencyInjection
     {
         services.AddSession();
 
-        services.AddAuthentication("Basic")
-        .AddScheme<BlogAppAuthenticationSchemeOptions, BlogAppAuthenticationHandler>("Basic", null);
+        //services.AddAuthentication("Basic")
+        //.AddScheme<BlogAppAuthenticationSchemeOptions, BlogAppAuthenticationHandler>("Basic", null);
+
+        services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(options =>
+            {
+                options.AccessDeniedPath = "/AccessDenied";
+                options.LogoutPath = "/Logout";
+                options.LoginPath = "/Login";
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(15);
+                options.SlidingExpiration = true;
+            });
 
         services.AddScoped<AuthTokenHandler>();
 

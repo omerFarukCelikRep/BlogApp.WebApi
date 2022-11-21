@@ -10,4 +10,5 @@ public interface IIdentityService
     string GetUserToken();
     Task<IResult> LoginAsync(LoginVM loginVM);
     Task<IResult> RegisterAsync(RegisterVM registerVM);
+    Task SignOutAsync();
 }

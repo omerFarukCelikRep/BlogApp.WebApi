@@ -1,11 +1,11 @@
-﻿using BlogApp.MVCUI.Filters;
-using BlogApp.MVCUI.Models.Authentication;
+﻿using BlogApp.MVCUI.Models.Authentication;
 using BlogApp.MVCUI.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlogApp.MVCUI.Controllers;
 
-[AllowAnonymousFilter]
+[AllowAnonymous]
 public class HomeController : BaseController
 {
     private readonly IIdentityService _identityService;
@@ -26,7 +26,7 @@ public class HomeController : BaseController
     public IActionResult Login(string returnUrl)
     {
         TempData["returnUrl"] = returnUrl;
-        if (User.Identity.IsAuthenticated)
+        if (User.Identity!.IsAuthenticated)
         {
             return RedirectToAction(nameof(Index));
         }
@@ -46,10 +46,10 @@ public class HomeController : BaseController
         var result = await _identityService.LoginAsync(loginVM);
         if (!result.IsSuccess)
         {
-            ModelState.AddModelError(string.Empty, result.Message);
+            ModelState.AddModelError(string.Empty, result.Message!);
             return View(loginVM);
         }
-        var returnUrl = TempData["returnUrl"].ToString();
+        var returnUrl = TempData["returnUrl"]?.ToString();
         if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
             return LocalRedirect(returnUrl);
 
@@ -76,10 +76,19 @@ public class HomeController : BaseController
         var result = await _identityService.RegisterAsync(registerVM);
         if (!result.IsSuccess)
         {
-            ModelState.AddModelError(string.Empty, result.Message);
+            ModelState.AddModelError(string.Empty, result.Message!);
             return View(registerVM);
         }
 
         return RedirectToAction(nameof(Login));
+    }
+
+    [HttpGet]
+    [Route("Logout")]
+    public async Task<IActionResult> Logout()
+    {
+        await _identityService.SignOutAsync();
+
+        return RedirectToAction(nameof(Index));
     }
 }

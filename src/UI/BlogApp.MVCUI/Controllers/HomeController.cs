@@ -9,7 +9,6 @@ namespace BlogApp.MVCUI.Controllers;
 public class HomeController : BaseController
 {
     private readonly IIdentityService _identityService;
-
     public HomeController(IIdentityService identityService)
     {
         _identityService = identityService;

@@ -12,7 +12,7 @@
             <div class="carousel-item active" data-bs-interval="10000">
                 <div class="img-div-cover">
                     <div class="home-slide-overlay" data-bg-color="#000" data-opacity="0.15"></div>
-                    <img src="data:image/*;base64,@article.Thumbnail" alt="@article.Title" />
+                    <img src="data:image/*;base64,@article.Thumbnail" style="height: 40vh;" alt="@article.Title" />
                     <!--Slider Caption Start-->
                     <div class="flex-caption">
                         <div class="home-slide-caption">
@@ -24,7 +24,7 @@
                                     </a>
                                 }
                             </div>
-                            <h1 class="text-dark">@article.Title</h1>
+                            <h1 class="text-warning">@article.Title</h1>
                             <div class="home-slide-link">
                                 <a asp-controller="Article" asp-action="Details" asp-route-id="@article.Id">
                                     Read this article

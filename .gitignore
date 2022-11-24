@@ -366,3 +366,4 @@ FodyWeavers.xsd
 /src/Libraries/BlogApp.API/appsettings.Development.json
 /.vscode
 /src/.vscode
+/.editorconfig

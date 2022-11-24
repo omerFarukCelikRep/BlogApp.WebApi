@@ -165,6 +165,7 @@ a:focus {
 .img-div-cover img {
     width: 100%;
     height: auto;
+    object-fit:cover;
 }
 
 .max-img img {

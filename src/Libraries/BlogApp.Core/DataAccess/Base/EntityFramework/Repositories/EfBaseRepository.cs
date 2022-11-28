@@ -1,11 +1,13 @@
-﻿using BlogApp.Core.DataAccess.Interfaces.Repositories;
+﻿using BlogApp.Core.DataAccess.Extensions;
+using BlogApp.Core.DataAccess.Interfaces.Models;
+using BlogApp.Core.DataAccess.Interfaces.Repositories;
 using BlogApp.Core.Entities.Base;
 using BlogApp.Core.Entities.Enums;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace BlogApp.Core.DataAccess.Base.EntityFramework.Repositories;
-public class EfBaseRepository<TEntity> : IAsyncFindableRepository<TEntity>, IAsyncOrderableRepository<TEntity>, IAsyncQueryableRepository<TEntity>, IAsyncInsertableRepository<TEntity>, IAsyncUpdateableRepository<TEntity>, IAsyncDeleteableRepository<TEntity>, IAsyncRepository
+public class EfBaseRepository<TEntity> : IAsyncPaginateRepository<TEntity>, IAsyncFindableRepository<TEntity>, IAsyncOrderableRepository<TEntity>, IAsyncQueryableRepository<TEntity>, IAsyncInsertableRepository<TEntity>, IAsyncUpdateableRepository<TEntity>, IAsyncDeleteableRepository<TEntity>, IAsyncRepository
     where TEntity : BaseEntity
 {
     protected readonly DbContext _context;
@@ -107,5 +109,27 @@ public class EfBaseRepository<TEntity> : IAsyncFindableRepository<TEntity>, IAsy
     private IQueryable<TEntity> GetAllActives()
     {
         return _table.Where(x => x.Status != Status.Deleted);
+    }
+
+    public Task<IPaginate<TEntity>> GetAllAsPaginateAsync(int index = 0, int size = 10, bool tracking = true)
+    {
+        var items = GetAllActives();
+        if (!tracking)
+        {
+            items.AsNoTracking();
+        }
+
+        return items.ToPaginateAsync(index, size);
+    }
+
+    public Task<IPaginate<TEntity>> GetAllAsPaginateAsync(Expression<Func<TEntity, bool>> expression, int index = 0, int size = 10, bool tracking = true)
+    {
+        var items = GetAllActives().Where(expression);
+        if (!tracking)
+        {
+            items.AsNoTracking();
+        }
+
+        return items.ToPaginateAsync(index, size);
     }
 }

@@ -1,4 +1,4 @@
-﻿using BlogApp.Core.DataAccess.Interfaces;
+﻿using BlogApp.Core.DataAccess.Interfaces.Repositories;
 using BlogApp.Core.Entities.Base;
 using BlogApp.Core.Entities.Enums;
 using Microsoft.EntityFrameworkCore;

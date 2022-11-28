@@ -10,7 +10,7 @@ public class Article : AuditableEntity
     }
     public string Title { get; set; } = null!;
     public string Content { get; set; } = null!;
-    public int ReadTime { get; set; }
+    public int? ReadTime { get; set; }
     public string? Thumbnail { get; set; }
 
     //Navigation Prop.

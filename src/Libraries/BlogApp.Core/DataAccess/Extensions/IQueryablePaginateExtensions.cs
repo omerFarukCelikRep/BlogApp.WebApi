@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace BlogApp.Core.DataAccess.Extensions;
 public static class IQueryablePaginateExtensions
 {
-    public static async Task<IPaginate<T>> ToPaginateAsync<T>(this IQueryable<T> source, int index = 0, int size = 10, CancellationToken cancellationToken = default)
+    public static async Task<IPaginate<T>> ToPaginateAsync<T>(this IQueryable<T> source, int index, int size, CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrEmpty(nameof(source));
         EnsureInRange(index, size);

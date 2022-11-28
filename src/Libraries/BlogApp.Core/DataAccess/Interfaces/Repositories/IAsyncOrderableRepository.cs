@@ -1,7 +1,7 @@
 ﻿using BlogApp.Core.Entities.Base;
 using System.Linq.Expressions;
 
-namespace BlogApp.Core.DataAccess.Interfaces;
+namespace BlogApp.Core.DataAccess.Interfaces.Repositories;
 public interface IAsyncOrderableRepository<TEntity> : IAsyncRepository where TEntity : BaseEntity
 {
     Task<IEnumerable<TEntity>> GetAllAsync<TKey>(Expression<Func<TEntity, TKey>> orderby, bool orderDesc = false, bool tracking = true);

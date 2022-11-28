@@ -3,41 +3,36 @@
 namespace BlogApp.Core.DataAccess.Models.Pagination;
 public class Paginate<TModel> : IPaginate<TModel>
 {
-    internal Paginate(IEnumerable<TModel> source, int index, int size, int from)
+    internal Paginate(IEnumerable<TModel> source, int index, int size)
     {
-        var enumerable = source as TModel[] ?? source.ToArray();
-
-        if (from > index)
-            throw new ArgumentException($"indexFrom: {from} > pageIndex: {index}, must indexFrom <= pageIndex");
-
         if (source is IQueryable<TModel> querable)
         {
             Index = index;
             Size = size;
-            From = from;
             Count = querable.Count();
             Pages = (int)Math.Ceiling(Count / (double)Size);
 
-            Items = querable.Skip((Index - From) * Size).Take(Size).ToList().AsReadOnly();
+            Items = querable.Skip(Index * Size).Take(Size).ToList().AsReadOnly();
         }
         else
         {
+            var enumerable = source as TModel[] ?? source.ToArray();
             Index = index;
             Size = size;
-            From = from;
-
             Count = enumerable.Length;
             Pages = (int)Math.Ceiling(Count / (double)Size);
-
-            Items = enumerable.Skip((Index - From) * Size).Take(Size).ToList();
+            Items = enumerable.Skip(Index * Size).Take(Size).ToList();
         }
     }
-    public int From { get; init; }
-    public int Index { get; init; }
-    public int Size { get; init; }
-    public int Count { get; init; }
-    public int Pages { get; init; }
+    internal Paginate(IEnumerable<TModel> source, int index, int size, int count) : this(source,index, size)
+    {
+       Count = count;
+    }
+    public int Index { get; private set; }
+    public int Size { get; private set; }
+    public int Count { get; private set; }
+    public int Pages { get; private set; }
     public IReadOnlyCollection<TModel> Items { get; init; }
-    public bool HasPrevious => Index - From > 0;
-    public bool HasNext => Index - From + 1 < Pages;
+    public bool HasPrevious => Index * Size > 0;
+    public bool HasNext => Index < Pages;
 }

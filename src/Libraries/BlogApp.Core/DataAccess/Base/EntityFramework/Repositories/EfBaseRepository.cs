@@ -36,44 +36,37 @@ public class EfBaseRepository<TEntity> : IAsyncPaginateRepository<TEntity>, IAsy
 
     public async Task<IEnumerable<TEntity>> GetAllAsync(bool tracking = true)
     {
-        var values = GetAllActives();
-        return tracking ? await values.ToListAsync() : await values.AsNoTracking().ToListAsync();
+        return await GetAllActives(tracking).ToListAsync();
     }
 
     public async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> expression, bool tracking = true)
     {
-        var values = GetAllActives()
-                             .Where(expression);
-
-        return tracking ? await values.ToListAsync() : await values.AsNoTracking().ToListAsync();
+        return await GetAllActives(tracking).Where(expression).ToListAsync();
     }
 
     public async Task<IEnumerable<TEntity>> GetAllAsync<TKey>(Expression<Func<TEntity, TKey>> orderby, bool orderDesc = false, bool tracking = true)
     {
-        var values = tracking ? GetAllActives() : GetAllActives().AsNoTracking();
+        var values = GetAllActives(tracking);
 
         return !orderDesc ? await values.OrderBy(orderby).ToListAsync() : await values.OrderByDescending(orderby).ToListAsync();
     }
 
     public async Task<IEnumerable<TEntity>> GetAllAsync<TKey>(Expression<Func<TEntity, bool>> expression, Expression<Func<TEntity, TKey>> orderby, bool orderDesc = false, bool tracking = true)
     {
-        var values = _table
-                              .Where(x => x.Status != Status.Deleted)
+        var values = GetAllActives(tracking)
                               .Where(expression);
-
-        values = tracking ? values : values.AsNoTracking();
 
         return !orderDesc ? await values.OrderBy(orderby).ToListAsync() : await values.OrderByDescending(orderby).ToListAsync();
     }
 
     public Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> expression, bool tracking = true)
     {
-        return tracking ? GetAllActives().FirstOrDefaultAsync(expression) : GetAllActives().AsNoTracking().FirstOrDefaultAsync(expression);
+        return GetAllActives(tracking).FirstOrDefaultAsync(expression);
     }
 
     public Task<TEntity?> GetByIdAsync(Guid id, bool tracking = true)
     {
-        return tracking ? GetAllActives().FirstOrDefaultAsync(x => x.Id == id) : GetAllActives().AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+        return GetAllActives(tracking).FirstOrDefaultAsync(x => x.Id == id);
     }
 
     public Task<TEntity> UpdateAsync(TEntity entity)
@@ -81,14 +74,14 @@ public class EfBaseRepository<TEntity> : IAsyncPaginateRepository<TEntity>, IAsy
         return Task.FromResult(_table.Update(entity).Entity);
     }
 
-    public Task<int> SaveChangesAsync()
+    public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        return _context.SaveChangesAsync();
+        return _context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task<IEnumerable<TEntity>> GetAllAsync<TKey>(Expression<Func<TEntity, TKey>> orderby, bool orderDesc = false, int takeCount = 0, bool tracking = true)
     {
-        var values = tracking ? GetAllActives() : GetAllActives().AsNoTracking();
+        var values = GetAllActives(tracking);
 
         values = !orderDesc ? values.OrderBy(orderby) : values.OrderByDescending(orderby);
 
@@ -97,39 +90,28 @@ public class EfBaseRepository<TEntity> : IAsyncPaginateRepository<TEntity>, IAsy
 
     public async Task<IEnumerable<TEntity>> GetAllAsync<TKey>(Expression<Func<TEntity, bool>> expression, Expression<Func<TEntity, TKey>> orderby, bool orderDesc = false, int takeCount = 0, bool tracking = true)
     {
-        var values = GetAllActives()
+        var values = GetAllActives(tracking)
                              .Where(expression);
 
-        values = tracking ? values : values.AsNoTracking();
         values = !orderDesc ? values.OrderBy(orderby) : values.OrderByDescending(orderby);
 
         return takeCount > 0 ? await values.Take(takeCount).ToListAsync() : await values.ToListAsync();
-    }
-
-    private IQueryable<TEntity> GetAllActives()
-    {
-        return _table.Where(x => x.Status != Status.Deleted);
-    }
+    }   
 
     public Task<IPaginate<TEntity>> GetAllAsPaginateAsync(int index = 0, int size = 10, bool tracking = true)
     {
-        var items = GetAllActives();
-        if (!tracking)
-        {
-            items.AsNoTracking();
-        }
-
-        return items.ToPaginateAsync(index, size);
+        return GetAllActives(tracking).ToPaginateAsync(index, size);
     }
 
     public Task<IPaginate<TEntity>> GetAllAsPaginateAsync(Expression<Func<TEntity, bool>> expression, int index = 0, int size = 10, bool tracking = true)
     {
-        var items = GetAllActives().Where(expression);
-        if (!tracking)
-        {
-            items.AsNoTracking();
-        }
+        return GetAllActives(tracking).Where(expression).ToPaginateAsync(index, size);
+    }
 
-        return items.ToPaginateAsync(index, size);
+    protected IQueryable<TEntity> GetAllActives(bool tracking = true)
+    {
+        var values = _table.Where(x => x.Status != Status.Deleted);
+
+        return tracking ? values : values.AsNoTracking();
     }
 }

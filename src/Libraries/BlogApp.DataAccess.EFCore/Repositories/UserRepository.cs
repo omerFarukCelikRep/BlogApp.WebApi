@@ -8,8 +8,8 @@ public class UserRepository : EfBaseRepository<User>, IUserRepository
 {
     public UserRepository(BlogAppDbContext context) : base(context) { }
 
-    public async Task<User> GetByIdentityId(Guid identityId)
+    public Task<User?> GetByIdentityId(Guid identityId)
     {
-        return await GetAsync(x => x.IdentityId == identityId);
+        return GetAsync(x => x.IdentityId == identityId);
     }
 }

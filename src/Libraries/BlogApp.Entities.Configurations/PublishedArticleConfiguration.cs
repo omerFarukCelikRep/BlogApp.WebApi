@@ -1,7 +1,4 @@
-﻿using BlogApp.Core.Entities.Configurations;
-using BlogApp.Entities.DbSets;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace BlogApp.Entities.Configurations;
 

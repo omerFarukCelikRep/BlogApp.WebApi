@@ -1,8 +1,4 @@
-﻿using BlogApp.Core.Entities.Configurations;
-using BlogApp.Entities.DbSets;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
-namespace BlogApp.Entities.Configurations;
+﻿namespace BlogApp.Entities.Configurations;
 public class CommentConfiguration : AuditableEntityConfiguration<Comment>
 {
     public override void Configure(EntityTypeBuilder<Comment> builder)

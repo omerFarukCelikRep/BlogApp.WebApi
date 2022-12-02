@@ -1,8 +1,4 @@
-﻿using BlogApp.Core.Entities.Configurations;
-using BlogApp.Entities.DbSets;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
-namespace BlogApp.Entities.Configurations;
+﻿namespace BlogApp.Entities.Configurations;
 public class TopicConfiguration : BaseEntityConfiguration<Topic>
 {
     public override void Configure(EntityTypeBuilder<Topic> builder)

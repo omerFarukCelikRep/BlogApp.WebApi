@@ -24,9 +24,9 @@ public class Paginate<TModel> : IPaginate<TModel>
             Items = enumerable.Skip(Index * Size).Take(Size).ToList();
         }
     }
-    internal Paginate(IEnumerable<TModel> source, int index, int size, int count) : this(source,index, size)
+    internal Paginate(IEnumerable<TModel> source, int index, int size, int count) : this(source, index, size)
     {
-       Count = count;
+        Count = count;
     }
     public int Index { get; private set; }
     public int Size { get; private set; }

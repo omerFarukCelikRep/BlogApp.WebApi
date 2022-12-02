@@ -1,7 +1,4 @@
-﻿using BlogApp.Core.Entities.Base;
-using Microsoft.AspNetCore.Identity;
-
-namespace BlogApp.Entities.DbSets;
+﻿namespace BlogApp.Entities.DbSets;
 
 public class RefreshToken : BaseEntity
 {
@@ -33,5 +30,4 @@ public class RefreshToken : BaseEntity
 
     //Navigation Prop.
     public Guid UserId { get; set; }
-    public virtual IdentityUser<Guid> User { get; set; }
 }

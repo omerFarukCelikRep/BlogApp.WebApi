@@ -1,6 +1,4 @@
-﻿using BlogApp.Core.Entities.Base;
-
-namespace BlogApp.Entities.DbSets;
+﻿namespace BlogApp.Entities.DbSets;
 
 public class Article : AuditableEntity
 {
@@ -15,7 +13,7 @@ public class Article : AuditableEntity
 
     //Navigation Prop.
     public Guid UserId { get; set; }
-    public virtual User User { get; set; }
+    public virtual User? User { get; set; }
 
     public virtual ICollection<ArticleTopic> ArticleTopics { get; set; }
 }

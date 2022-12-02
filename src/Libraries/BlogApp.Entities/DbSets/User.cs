@@ -1,6 +1,4 @@
-﻿using BlogApp.Core.Entities.Base;
-
-namespace BlogApp.Entities.DbSets;
+﻿namespace BlogApp.Entities.DbSets;
 
 public class User : AuditableEntity
 {

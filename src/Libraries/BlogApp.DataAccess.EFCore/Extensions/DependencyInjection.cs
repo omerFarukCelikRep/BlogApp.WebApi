@@ -1,5 +1,4 @@
 ﻿using BlogApp.DataAccess.EFCore.Repositories;
-using BlogApp.DataAccess.Interfaces.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BlogApp.DataAccess.EFCore.Extensions;

@@ -96,7 +96,7 @@ public class EfBaseRepository<TEntity> : IAsyncPaginateRepository<TEntity>, IAsy
         values = !orderDesc ? values.OrderBy(orderby) : values.OrderByDescending(orderby);
 
         return takeCount > 0 ? await values.Take(takeCount).ToListAsync() : await values.ToListAsync();
-    }   
+    }
 
     public Task<IPaginate<TEntity>> GetAllAsPaginateAsync(int index = 0, int size = 10, bool tracking = true)
     {

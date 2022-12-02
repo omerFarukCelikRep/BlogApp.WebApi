@@ -33,7 +33,7 @@ public class TokenService : ITokenService
         var jwtHandler = new JwtSecurityTokenHandler();
 
         //Get security key
-        var key = Encoding.ASCII.GetBytes(_jwtConfig.Secret);
+        var key = Encoding.ASCII.GetBytes(_jwtConfig.Secret!);
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
@@ -41,10 +41,9 @@ public class TokenService : ITokenService
             {
                     new Claim("Id", userId.ToString()),
                     new Claim(ClaimTypes.NameIdentifier, identityUser.Id.ToString()),
-                    new Claim(JwtRegisteredClaimNames.Sub, identityUser.Email),
-                    new Claim(JwtRegisteredClaimNames.Email, identityUser.Email),
+                    new Claim(JwtRegisteredClaimNames.Sub, identityUser.Email!),
+                    new Claim(JwtRegisteredClaimNames.Email, identityUser.Email!),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()) //Used by the refreshed token
-
             }),
             Expires = DateTime.Now.Add(_jwtConfig.ExpiryTimeFrame), //TODO: Update expiration time
             SigningCredentials = new SigningCredentials(
@@ -113,8 +112,7 @@ public class TokenService : ITokenService
         {
             Token = Convert.ToHexString(RandomNumberGenerator.GetBytes(64)),
             ExpiryDate = DateTime.Now.AddDays(7),
-            UserId = user.Id,
-            User = user
+            UserId = user.Id
         };
 
         var tokenIsNotUnique = await _refreshTokenRepository.AnyAsync(x => x.Token == refreshToken.Token);
@@ -127,7 +125,7 @@ public class TokenService : ITokenService
         return await _refreshTokenRepository.AddAsync(refreshToken);
     }
 
-    public async Task<RefreshToken> GetActiveRefreshTokenAsync(IdentityUser<Guid> user)
+    public async Task<RefreshToken?> GetActiveRefreshTokenAsync(IdentityUser<Guid> user)
     {
         var refreshTokens = await _refreshTokenRepository.GetAllAsync(x => x.UserId == user.Id, false);
 
@@ -142,25 +140,27 @@ public class TokenService : ITokenService
         }
 
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.UTF8.GetBytes(_jwtConfig.Secret);
+        var key = Encoding.UTF8.GetBytes(_jwtConfig.Secret!);
 
-        try
-        {
-            var validationResult = await tokenHandler.ValidateTokenAsync(token, _tokenValidationParameters);
+        var validationResult = await tokenHandler.ValidateTokenAsync(token, _tokenValidationParameters);
 
-            var jwtToken = (JwtSecurityToken)validationResult.SecurityToken;
-            return Guid.Parse(jwtToken.Claims.FirstOrDefault(x => x.Type == "Id").Value);
-        }
-        catch (Exception ex)
+        var jwtToken = (JwtSecurityToken)validationResult.SecurityToken;
+        bool parseResult = Guid.TryParse(jwtToken.Claims.FirstOrDefault(x => x.Type == "Id")?.Value, out Guid result);
+        if (!parseResult)
         {
-            //TODO:Add Logger
             return null;
         }
+
+        return result;
     }
 
     public async Task<bool> UpdateRefreshTokenAsUsedAsync(string token)
     {
         var refreshToken = await _refreshTokenRepository.GetByRefreshTokenAsync(token);
+        if (refreshToken is null)
+        {
+            return false;
+        }
 
         return await _refreshTokenRepository.UpdateRefreshTokenAsUsedAsync(refreshToken);
     }
@@ -190,7 +190,11 @@ public class TokenService : ITokenService
 
     private bool CheckTokenExpired(IDictionary<string, object> claims)
     {
-        var expiryUnixDate = long.Parse(claims.FirstOrDefault(x => x.Key == JwtRegisteredClaimNames.Exp).Value.ToString());
+        bool result = long.TryParse(claims.FirstOrDefault(x => x.Key == JwtRegisteredClaimNames.Exp).Value.ToString(), out long expiryUnixDate);
+        if (!result)
+        {
+            return result;
+        }
 
         var expiryDate = UnixTimeStampToDateTime(expiryUnixDate);
 

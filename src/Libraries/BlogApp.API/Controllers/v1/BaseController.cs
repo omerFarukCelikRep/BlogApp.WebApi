@@ -12,8 +12,8 @@ namespace BlogApp.API.Controllers.v1;
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class BaseController : ControllerBase
 {
-    protected string UserIdentityId => User.FindFirstValue(ClaimTypes.NameIdentifier);
-    protected Guid UserId => Guid.Parse(User.FindFirstValue("Id"));
+    protected string? UserIdentityId => User.FindFirstValue(ClaimTypes.NameIdentifier);
+    protected Guid UserId => Guid.Parse(User.FindFirstValue("Id")!);
 
     protected IActionResult GetResult(Core.Utilities.Results.Interfaces.IResult result)
     {
@@ -25,11 +25,17 @@ public class BaseController : ControllerBase
         return result.IsSuccess ? Ok(result) : BadRequest(result);
     }
 
-    protected string? GetIpAddress()
+    protected string GetIpAddress()
     {
         if (Request.Headers.ContainsKey("X-Forwarded-For"))
-            return Request.Headers["X-Forwarded-For"];
-        else
-            return HttpContext.Connection.RemoteIpAddress?.MapToIPv4().ToString();
+            return Request.Headers["X-Forwarded-For"]!;
+
+        var remoteIpAddress = HttpContext.Connection.RemoteIpAddress;
+        if (remoteIpAddress is null)
+        {
+            return "::1";
+        }
+
+        return remoteIpAddress.MapToIPv4().ToString();
     }
 }

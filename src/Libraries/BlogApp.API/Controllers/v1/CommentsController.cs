@@ -22,7 +22,7 @@ public class CommentsController : BaseController
             return BadRequest(ModelState);
         }
 
-        if (User.Identity.IsAuthenticated)
+        if (User.Identity!.IsAuthenticated)
         {
             commentCreateDto.UserId = UserId;
         }

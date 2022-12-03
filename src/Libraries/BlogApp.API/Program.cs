@@ -43,7 +43,7 @@ app.MapHealthChecks("/healthz", new HealthCheckOptions
             {
                 Component = x.Key,
                 Status = x.Value.Status.ToString(),
-                Description = x.Value.Description
+                Description = x.Value.Description!
             }),
             HealthCheckDuration = report.TotalDuration
         };

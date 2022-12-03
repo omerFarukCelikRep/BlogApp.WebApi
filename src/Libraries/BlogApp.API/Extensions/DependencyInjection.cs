@@ -22,7 +22,7 @@ public static class DependencyInjection
 
         //TODO: Özel ayarlara bakılacak
         services.AddHealthChecks()
-            .AddSqlServer(configuration.GetConnectionString("Default"),
+            .AddSqlServer(configuration.GetConnectionString("Default")!,
                           name: "Database",
                           failureStatus: HealthStatus.Degraded,
                           timeout: TimeSpan.FromSeconds(1),

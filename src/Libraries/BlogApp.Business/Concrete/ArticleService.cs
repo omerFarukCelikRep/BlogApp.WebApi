@@ -31,7 +31,7 @@ public class ArticleService : IArticleService
 
     public async Task<IDataResult<List<PublishedArticleByUserListDto>>> GetAllPublishedByUserIdAsync(Guid userId)
     {
-        var articles = await _publishedArticleRepository.GetAllAsync(x => x.Article.UserId == userId, true);
+        var articles = await _publishedArticleRepository.GetAllAsync(x => x.Article!.UserId == userId, true);
         var mappedArticles = ObjectMapper.Mapper.Map<List<PublishedArticleByUserListDto>>(articles);
 
         return new SuccessDataResult<List<PublishedArticleByUserListDto>>(mappedArticles, ServiceMessages.ArticlesListed);
@@ -39,7 +39,7 @@ public class ArticleService : IArticleService
 
     public async Task<IDataResult<List<ArticleUnpublishedListDto>>> GetAllUnpublishedByUserIdAsync(Guid userId)
     {
-        var publishedArticleIds = (await _publishedArticleRepository.GetAllAsync(x => x.Article.UserId == userId, false)).Select(x => x.Id).ToList();
+        var publishedArticleIds = (await _publishedArticleRepository.GetAllAsync(x => x.Article!.UserId == userId, false)).Select(x => x.Id).ToList();
         var articles = await _articleRepository.GetAllAsync(x => x.UserId == userId);
         var unpublishedArticles = articles.Where(article => !publishedArticleIds.Any(publishedArticleId => publishedArticleId == article.Id)).ToList();
 
@@ -124,7 +124,7 @@ public class ArticleService : IArticleService
 
     public async Task<IDataResult<List<PublishedArticleListDto>>> GetAllPublishedByTopicNameAsync(string topicName)
     {
-        var articles = await _publishedArticleRepository.GetAllAsync(x => x.Article.ArticleTopics.Any(at => at.Topic.Name.ToLower().Contains(topicName.Trim().ToLower())), true);
+        var articles = await _publishedArticleRepository.GetAllAsync(x => x.Article!.ArticleTopics.Any(at => at.Topic!.Name.ToLower().Contains(topicName.Trim().ToLower())), true);
         var mappedArticles = ObjectMapper.Mapper.Map<List<PublishedArticleListDto>>(articles);
 
         return new SuccessDataResult<List<PublishedArticleListDto>>(mappedArticles, ServiceMessages.ArticlesListed);

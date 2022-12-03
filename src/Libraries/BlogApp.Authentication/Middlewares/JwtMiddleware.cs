@@ -14,9 +14,14 @@ public class JwtMiddleware
     public async Task Invoke(HttpContext context, ITokenService tokenService)
     {
         var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-        var userId = await tokenService.ValidateJwtTokenAsync(token);
+        if (string.IsNullOrEmpty(token))
+        {
+            await _next(context);
+        }
 
-        if (userId == null || userId == Guid.Empty)
+        var userId = await tokenService.ValidateJwtTokenAsync(token!);
+
+        if (userId is null || userId == Guid.Empty)
         {
             context.Items["User"] = userId;
         }

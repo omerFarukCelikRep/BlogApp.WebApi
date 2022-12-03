@@ -11,5 +11,5 @@ public class ArticleCreateDto
     public Guid UserId { get; set; }
 
     [JsonPropertyName("topicIds")]
-    public List<Guid> Topics { get; set; }
+    public List<Guid> Topics { get; set; } = new();
 }

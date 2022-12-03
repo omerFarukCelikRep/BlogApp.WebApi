@@ -17,16 +17,16 @@ public class UserService : IUserService
         _userRepository = userRepository;
     }
 
-    public async Task<IDataResult<List<UserDto>>> GetAllAsync()
+    public async Task<IDataResult<List<UserListDto>>> GetAllAsync()
     {
         var users = await _userRepository.GetAllAsync(false);
 
         if (!users.Any())
         {
-            return new ErrorDataResult<List<UserDto>>(ServiceMessages.UserNotFound);
+            return new ErrorDataResult<List<UserListDto>>(ServiceMessages.UserNotFound);
         }
 
-        return new SuccessDataResult<List<UserDto>>(ObjectMapper.Mapper.Map<List<UserDto>>(users), ServiceMessages.UsersListed);
+        return new SuccessDataResult<List<UserListDto>>(ObjectMapper.Mapper.Map<List<UserListDto>>(users), ServiceMessages.UsersListed);
     }
 
     public async Task<IDataResult<UserDto>> GetByIdAsync(Guid id)
@@ -52,16 +52,18 @@ public class UserService : IUserService
         return new SuccessDataResult<PublishedArticleUserInfoDto>(ObjectMapper.Mapper.Map<PublishedArticleUserInfoDto>(user), ServiceMessages.UserGetted);
     }
 
-    public async Task<IDataResult<UserDto>> UpdateAsync(UserUpdateDto userUpdateDto)
+    public async Task<IDataResult<UserUpdatedDto>> UpdateAsync(UserUpdateDto userUpdateDto)
     {
         var user = await _userRepository.GetByIdAsync(userUpdateDto.Id);
+        if (user is null)
+        {
+            return new ErrorDataResult<UserUpdatedDto>("User Not Found"); //TODO: Magic string
+        }
 
         var mappedUser = ObjectMapper.Mapper.Map(userUpdateDto, user);
-
         var updatedUser = await _userRepository.UpdateAsync(mappedUser);
+        await _userRepository.SaveChangesAsync();
 
-        _ = await _userRepository.SaveChangesAsync();
-
-        return new SuccessDataResult<UserDto>(ObjectMapper.Mapper.Map<UserDto>(updatedUser), ServiceMessages.UserUpdateSuccess);
+        return new SuccessDataResult<UserUpdatedDto>(ObjectMapper.Mapper.Map<UserUpdatedDto>(updatedUser), ServiceMessages.UserUpdateSuccess);
     }
 }

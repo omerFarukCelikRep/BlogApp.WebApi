@@ -31,7 +31,7 @@ public class CommentService : ICommentService
         if (commentCreateDto.UserId.HasValue)
         {
             var user = await _userRepository.GetByIdAsync(commentCreateDto.UserId.Value, false);
-            comment.UserName = $"{user.FirstName} {user.LastName}";
+            comment.UserName = $"{user?.FirstName} {user?.LastName}";
         }
 
         await _commentRepository.AddAsync(comment);

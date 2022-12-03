@@ -10,21 +10,21 @@ public class ArticleProfile : Profile
         CreateMap<Article, ArticleUnpublishedListDto>()
             .ForMember(
                 dest => dest.AuthorName,
-                config => config.MapFrom(src => $"{src.User.FirstName} {src.User.LastName}")
+                config => config.MapFrom(src => $"{src.User!.FirstName} {src.User.LastName}")
             )
             .ForMember(
                 dest => dest.Topics,
-                config => config.MapFrom(src => src.ArticleTopics.Select(x => x.Topic.Name).ToList())
+                config => config.MapFrom(src => src.ArticleTopics.Select(x => x.Topic!.Name).ToList())
             );
 
         CreateMap<Article, ArticleUnpublishedDetailsDto>()
             .ForMember(
                     dest => dest.AuthorName,
-                    config => config.MapFrom(src => $"{src.User.FirstName} {src.User.LastName}")
+                    config => config.MapFrom(src => $"{src.User!.FirstName} {src.User.LastName}")
                 )
                 .ForMember(
                     dest => dest.Topics,
-                    config => config.MapFrom(src => src.ArticleTopics.Select(x => x.Topic.Name).ToList())
+                    config => config.MapFrom(src => src.ArticleTopics.Select(x => x.Topic!.Name).ToList())
             );
 
         CreateMap<Article, ArticleDto>();

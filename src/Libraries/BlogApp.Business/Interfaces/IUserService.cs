@@ -5,8 +5,8 @@ using BlogApp.Entities.Dtos.Users;
 namespace BlogApp.Business.Interfaces;
 public interface IUserService
 {
-    Task<IDataResult<List<UserDto>>> GetAllAsync();
+    Task<IDataResult<List<UserListDto>>> GetAllAsync();
     Task<IDataResult<PublishedArticleUserInfoDto>> GetArticleUserInfoById(Guid userId);
     Task<IDataResult<UserDto>> GetByIdAsync(Guid id);
-    Task<IDataResult<UserDto>> UpdateAsync(UserUpdateDto updateMemberDto);
+    Task<IDataResult<UserUpdatedDto>> UpdateAsync(UserUpdateDto updateMemberDto);
 }

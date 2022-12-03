@@ -16,6 +16,8 @@ public class UserProfile : Profile
 
         CreateMap<UserRegistrationRequestDto, User>();
 
+        CreateMap<User, UserListDto>();
+
         CreateMap<User, UserDto>();
 
         CreateMap<User, PublishedArticleUserInfoDto>()
@@ -27,5 +29,9 @@ public class UserProfile : Profile
                 dest => dest.Image,
                 config => config.MapFrom(src => src.ProfilePicture)
             );
+
+        CreateMap<UserUpdateDto, User>();
+
+        CreateMap<User, UserUpdatedDto>();
     }
 }

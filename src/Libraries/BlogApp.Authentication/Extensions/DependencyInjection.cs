@@ -19,7 +19,7 @@ public static class DependencyInjection
 
         var secret = Configuration.GetValue("Jwt:Secret");
 
-        var key = Encoding.ASCII.GetBytes(secret);
+        var key = Encoding.ASCII.GetBytes(secret!);
 
         var tokenValidationParameters = new TokenValidationParameters
         {

@@ -37,10 +37,13 @@ public class TopicService : ITopicService
     public async Task<IResult> DeleteAsync(Guid id)
     {
         var topic = await _topicRepository.GetByIdAsync(id);
+        if (topic is null)
+        {
+            return new ErrorResult("Topic Not Found"); //TODO: Magic string
+        }
 
         await _topicRepository.DeleteAsync(topic);
-
-        _ = await _topicRepository.SaveChangesAsync();
+        await _topicRepository.SaveChangesAsync();
 
         return new SuccessResult("Successfully Deleted"); // TODO: Magic string
     }

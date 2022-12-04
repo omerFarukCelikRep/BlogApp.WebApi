@@ -1,19 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Libraries\BlogApp.Core.Utilities.LoggerServices\BlogApp.Core.Utilities.LoggerServices.csproj" />
-    <ProjectReference Include="..\..\Libraries\BlogApp.Core.Utilities\BlogApp.Core.Utilities.csproj" />
-    <ProjectReference Include="..\..\Libraries\BlogApp.Core\BlogApp.Core.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\Libraries\BlogApp.Core.Utilities.LoggerServices\BlogApp.Core.Utilities.LoggerServices.csproj" />
+		<ProjectReference Include="..\..\Libraries\BlogApp.Core.Utilities\BlogApp.Core.Utilities.csproj" />
+		<ProjectReference Include="..\..\Libraries\BlogApp.Core\BlogApp.Core.csproj" />
+	</ItemGroup>
 
 </Project>

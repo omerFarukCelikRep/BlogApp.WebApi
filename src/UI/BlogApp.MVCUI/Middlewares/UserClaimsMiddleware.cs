@@ -15,7 +15,7 @@ public class UserClaimsMiddleware
 
     public Task InvokeAsync(HttpContext httpContext)
     {
-        string token = _httpContextAccessor.HttpContext.Session.GetString("Token");
+        var token = _httpContextAccessor.HttpContext?.Session.GetString("Token");
         if (!string.IsNullOrEmpty(token))
         {
             JwtSecurityToken jwtSecurityToken = new JwtSecurityTokenHandler().ReadJwtToken(token);

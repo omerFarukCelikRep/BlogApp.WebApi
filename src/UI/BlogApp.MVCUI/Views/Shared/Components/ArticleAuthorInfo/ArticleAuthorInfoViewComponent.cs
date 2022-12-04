@@ -16,6 +16,6 @@ public class ArticleAuthorInfoViewComponent : ViewComponent
     public async Task<IViewComponentResult> InvokeAsync(Guid userId)
     {
         var result = await _userService.GetArticleUserInfo(userId);
-        return View(result.IsSuccess ? result.Data : new ArticleAuthorInfoVM());
+        return View(result!.IsSuccess ? result.Data : new ArticleAuthorInfoVM());
     }
 }

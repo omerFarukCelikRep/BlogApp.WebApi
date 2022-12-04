@@ -5,5 +5,5 @@ namespace BlogApp.MVCUI.Services.Interfaces;
 
 public interface IUserService
 {
-    Task<IDataResult<ArticleAuthorInfoVM>> GetArticleUserInfo(Guid userId);
+    Task<IDataResult<ArticleAuthorInfoVM>?> GetArticleUserInfo(Guid userId);
 }

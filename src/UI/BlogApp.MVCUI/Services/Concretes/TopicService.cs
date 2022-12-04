@@ -2,7 +2,6 @@
 using BlogApp.Core.Utilities.Results.Interfaces;
 using BlogApp.MVCUI.Models.Topics;
 using BlogApp.MVCUI.Services.Interfaces;
-using System.Net;
 using IResult = BlogApp.Core.Utilities.Results.Interfaces.IResult;
 
 namespace BlogApp.MVCUI.Services.Concretes;
@@ -16,7 +15,7 @@ public class TopicService : ITopicService
         _httpClient = httpClient;
     }
 
-    public async Task<IDataResult<List<TopicListVM>>> GetAll()
+    public async Task<IDataResult<List<TopicListVM>>?> GetAll()
     {
         return await _httpClient.GetFromJsonAsync<DataResult<List<TopicListVM>>>("/api/v1/Topics");
     }
@@ -30,9 +29,9 @@ public class TopicService : ITopicService
         }
 
         var response = await responseMessage.Content.ReadFromJsonAsync<DataResult<TopicAddVM>>();
-        if (responseMessage.StatusCode == HttpStatusCode.BadRequest || !responseMessage.IsSuccessStatusCode)
+        if (!responseMessage.IsSuccessStatusCode)
         {
-            return new ErrorResult($"{responseMessage.ReasonPhrase} - {response.Message}");
+            return new ErrorResult($"{responseMessage.ReasonPhrase} - {response!.Message}");
         }
 
         return new SuccessResult();

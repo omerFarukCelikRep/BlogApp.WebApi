@@ -5,7 +5,6 @@ using BlogApp.MVCUI.Services.Results;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.IdentityModel.Tokens.Jwt;
-using System.Net;
 using System.Security.Claims;
 using System.Text;
 using IResult = BlogApp.Core.Utilities.Results.Interfaces.IResult;
@@ -25,9 +24,9 @@ public class IdentityService : IIdentityService
 
     public bool IsLoggedIn => !string.IsNullOrEmpty(GetUserToken());
 
-    public string GetUserToken()
+    public string? GetUserToken()
     {
-        return _httpContextAccessor.HttpContext.Session.GetString("Token");
+        return _httpContextAccessor.HttpContext?.Session.GetString("Token");
     }
 
     public async Task<IResult> LoginAsync(LoginVM loginVM)
@@ -39,11 +38,11 @@ public class IdentityService : IIdentityService
         }
 
         var response = await responseMessage.Content.ReadFromJsonAsync<AuthResult>();
-        if (responseMessage.StatusCode == HttpStatusCode.BadRequest || !responseMessage.IsSuccessStatusCode)
+        if (!responseMessage.IsSuccessStatusCode)
         {
-            return new ErrorResult(response.ToString());
+            return new ErrorResult(response!.ToString());
         }
-        JwtSecurityToken jwtSecurityToken = new JwtSecurityTokenHandler().ReadJwtToken(response.Token);
+        JwtSecurityToken jwtSecurityToken = new JwtSecurityTokenHandler().ReadJwtToken(response!.Token);
         var claims = jwtSecurityToken.Claims;
 
         var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -55,7 +54,7 @@ public class IdentityService : IIdentityService
             IsPersistent = false
         };
 
-        await _httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new(claimsIdentity), authProperties);
+        await _httpContextAccessor.HttpContext!.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new(claimsIdentity), authProperties);
 
         _httpContextAccessor.HttpContext?.Session.SetString("Token", response.Token);
         _httpContextAccessor.HttpContext?.Response.Cookies.Append("RefreshToken", response.RefreshToken);
@@ -72,9 +71,9 @@ public class IdentityService : IIdentityService
         }
 
         var response = await responseMessage.Content.ReadFromJsonAsync<AuthResult>();
-        if (responseMessage.StatusCode == HttpStatusCode.BadRequest || !responseMessage.IsSuccessStatusCode)
+        if (!responseMessage.IsSuccessStatusCode)
         {
-            return new ErrorResult(response.ToString());
+            return new ErrorResult(response!.ToString());
         }
 
         return new SuccessResult("Kayıt İşlemi Başarılı"); //TODO: Magic string
@@ -82,6 +81,6 @@ public class IdentityService : IIdentityService
 
     public Task SignOutAsync()
     {
-        return _httpContextAccessor.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        return _httpContextAccessor.HttpContext!.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
     }
 }

@@ -34,9 +34,9 @@ public class ArticleController : BaseController
     public async Task<IActionResult> Details(Guid id)
     {
         var result = await _articleService.GetPublishedById(id);
-        if (!result.IsSuccess)
+        if (!result!.IsSuccess)
         {
-            ModelState.AddModelError(string.Empty, result.Message);
+            ModelState.AddModelError(string.Empty, result.Message!);
             return RedirectToAction(nameof(Unpublished));
         }
 
@@ -64,7 +64,7 @@ public class ArticleController : BaseController
         var result = await _articleService.AddAsync(articleAddVM);
         if (!result.IsSuccess)
         {
-            ModelState.AddModelError(string.Empty, result.Message);
+            ModelState.AddModelError(string.Empty, result.Message!);
             return View(articleAddVM);
         }
 
@@ -75,9 +75,9 @@ public class ArticleController : BaseController
     public async Task<IActionResult> Unpublished()
     {
         var result = await _articleService.GetAllUnpublished();
-        if (!result.IsSuccess)
+        if (!result!.IsSuccess)
         {
-            ModelState.AddModelError(string.Empty, result.Message);
+            ModelState.AddModelError(string.Empty, result.Message!);
             return RedirectToAction(nameof(Index));
         }
 
@@ -88,9 +88,9 @@ public class ArticleController : BaseController
     public async Task<IActionResult> UnpublishedDetails(Guid id)
     {
         var result = await _articleService.GetUnpublishedById(id);
-        if (!result.IsSuccess)
+        if (!result!.IsSuccess)
         {
-            ModelState.AddModelError(string.Empty, result.Message);
+            ModelState.AddModelError(string.Empty, result.Message!);
             return RedirectToAction(nameof(Unpublished));
         }
 
@@ -113,10 +113,15 @@ public class ArticleController : BaseController
         return View(result?.Data);
     }
 
-    private async Task<List<SelectListItem>> GetTopics(Guid? selectedId = null)
+    private async Task<IEnumerable<SelectListItem>> GetTopics(Guid? selectedId = null)
     {
-        var topics = (await _topicService.GetAll()).Data;
-        return topics.ConvertAll(topic => new SelectListItem
+        var result = await _topicService.GetAll();
+        if (result is null)
+        {
+            return Enumerable.Empty<SelectListItem>();
+        }
+
+        return result.Data!.ConvertAll(topic => new SelectListItem
         {
             Selected = selectedId is not null && selectedId == topic.Id,
             Text = topic.Name,

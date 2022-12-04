@@ -1,11 +1,10 @@
-﻿using BlogApp.MVCUI.Filters;
-using BlogApp.MVCUI.Models.Topics;
+﻿using BlogApp.MVCUI.Models.Topics;
 using BlogApp.MVCUI.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlogApp.MVCUI.Controllers;
-[AuthorizationFilter]
+
 public class TopicController : BaseController
 {
     private readonly ITopicService _topicService;
@@ -19,7 +18,7 @@ public class TopicController : BaseController
     public async Task<IActionResult> Index()
     {
         var result = await _topicService.GetAll();
-        return View(result.Data);
+        return View(result!.Data);
     }
 
     [HttpGet]
@@ -39,7 +38,7 @@ public class TopicController : BaseController
         var result = await _topicService.AddAsync(topicAddVM);
         if (!result.IsSuccess)
         {
-            ModelState.AddModelError(string.Empty, result.Message);
+            ModelState.AddModelError(string.Empty, result.Message!);
             return View(topicAddVM);
         }
 

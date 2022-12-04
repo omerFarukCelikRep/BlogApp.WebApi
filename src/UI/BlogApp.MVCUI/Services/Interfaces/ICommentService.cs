@@ -7,5 +7,5 @@ namespace BlogApp.MVCUI.Services.Interfaces;
 public interface ICommentService
 {
     Task<Core.Utilities.Results.Interfaces.IResult> AddAsync(CommentAddVM commentAddVM);
-    Task<IDataResult<List<ArticleCommentListVM>>> GetAllByArticleId(Guid articleId);
+    Task<IDataResult<List<ArticleCommentListVM>>?> GetAllByArticleId(Guid articleId);
 }

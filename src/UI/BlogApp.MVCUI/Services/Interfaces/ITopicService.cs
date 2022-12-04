@@ -6,6 +6,6 @@ namespace BlogApp.MVCUI.Services.Interfaces;
 
 public interface ITopicService
 {
-    Task<IDataResult<List<TopicListVM>>> GetAll();
+    Task<IDataResult<List<TopicListVM>>?> GetAll();
     Task<IResult> AddAsync(TopicAddVM topicAddVM);
 }

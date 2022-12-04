@@ -3,7 +3,6 @@ using BlogApp.Core.Utilities.Results.Interfaces;
 using BlogApp.MVCUI.Models.Articles;
 using BlogApp.MVCUI.Models.Comments;
 using BlogApp.MVCUI.Services.Interfaces;
-using System.Net;
 using IResult = BlogApp.Core.Utilities.Results.Interfaces.IResult;
 
 namespace BlogApp.MVCUI.Services.Concretes;
@@ -16,7 +15,7 @@ public class CommentService : ICommentService
         _httpClient = httpClient;
     }
 
-    public async Task<IDataResult<List<ArticleCommentListVM>>> GetAllByArticleId(Guid articleId)
+    public async Task<IDataResult<List<ArticleCommentListVM>>?> GetAllByArticleId(Guid articleId)
     {
         return await _httpClient.GetFromJsonAsync<DataResult<List<ArticleCommentListVM>>>($"/api/v1/Comments/{articleId}");
     }
@@ -30,11 +29,8 @@ public class CommentService : ICommentService
         }
 
         var response = await responseMessage.Content.ReadFromJsonAsync<DataResult<CommentAddVM>>();
-        if (responseMessage.StatusCode == HttpStatusCode.BadRequest || !responseMessage.IsSuccessStatusCode)
-        {
-            return new ErrorResult($"{responseMessage.ReasonPhrase} - {response.Message}");
-        }
-
-        return new SuccessResult();
+        return !responseMessage.IsSuccessStatusCode
+            ? new ErrorResult($"{responseMessage.ReasonPhrase} - {response?.Message}")
+            : new SuccessResult();
     }
 }

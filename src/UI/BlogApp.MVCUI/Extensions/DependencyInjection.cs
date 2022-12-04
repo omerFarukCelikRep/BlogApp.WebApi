@@ -29,7 +29,7 @@ public static class DependencyInjection
 
         services.AddHttpClient("WebApiClient", client =>
         {
-            client.BaseAddress = new Uri(configuration["WebApiClient:Url"]);
+            client.BaseAddress = new Uri(configuration["WebApiClient:Url"]!);
         })
         .AddHttpMessageHandler<AuthTokenHandler>();
 

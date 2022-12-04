@@ -14,6 +14,6 @@ public class ArticleCommentsViewComponent : ViewComponent
     public async Task<IViewComponentResult> InvokeAsync(Guid articleId)
     {
         var result = await _commentService.GetAllByArticleId(articleId);
-        return View(result.Data);
+        return View(result!.Data);
     }
 }

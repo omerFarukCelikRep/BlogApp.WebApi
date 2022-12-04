@@ -9,22 +9,12 @@ public class TopicAddVM
     [Required]
     [MinLength(0)]
     [Display(Name = "İsim")]
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     [Required]
     [Display(Name = "Resim")]
     [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
-    public IFormFile ThumbnailFile { get; set; }
+    public IFormFile ThumbnailFile { get; set; } = null!;
 
-    public string Thumbnail
-    {
-        get
-        {
-            if (ThumbnailFile is null)
-            {
-                return string.Empty;
-            }
-            return ThumbnailFile.FileToString().GetAwaiter().GetResult();
-        }
-    }
+    public string? Thumbnail => ThumbnailFile?.FileToString().GetAwaiter().GetResult();
 }

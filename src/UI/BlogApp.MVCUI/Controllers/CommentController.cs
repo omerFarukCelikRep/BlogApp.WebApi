@@ -22,7 +22,7 @@ public class CommentController : Controller
         var result = await _commentService.AddAsync(commentAddVM);
         if (!result.IsSuccess)
         {
-            ModelState.AddModelError(string.Empty, result.Message);
+            ModelState.AddModelError(string.Empty, result.Message!);
         }
 
         return RedirectToAction("Details", "Article", new { id = commentAddVM.ArticleId });

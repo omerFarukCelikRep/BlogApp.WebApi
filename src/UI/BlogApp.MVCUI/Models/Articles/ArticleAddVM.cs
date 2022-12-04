@@ -10,22 +10,12 @@ public class ArticleAddVM
     [Required]
     [MinLength(0)]
     [Display(Name = "Başlık")]
-    public string Title { get; set; }
+    public string Title { get; set; } = string.Empty;
 
     [Required]
     [Display(Name = "İçerik")]
-    public string Content { get; set; }
-    public string Thumbnail
-    {
-        get
-        {
-            if (ThumbnailFile is null)
-            {
-                return string.Empty;
-            }
-            return ThumbnailFile.FileToString().GetAwaiter().GetResult();
-        }
-    }
+    public string Content { get; set; } = string.Empty;
+    public string? Thumbnail => ThumbnailFile?.FileToString().GetAwaiter().GetResult();
 
     [Display(Name = "Resim")]
     [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
@@ -33,8 +23,8 @@ public class ArticleAddVM
 
     [Required]
     [Display(Name = "Konular")]
-    public List<Guid> TopicIds { get; set; }
+    public List<Guid> TopicIds { get; set; } = new();
 
     [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
-    public List<SelectListItem>? Topics { get; set; }
+    public IEnumerable<SelectListItem>? Topics { get; set; }
 }

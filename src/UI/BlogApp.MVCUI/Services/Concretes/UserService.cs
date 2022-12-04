@@ -14,7 +14,7 @@ public class UserService : IUserService
         _httpClient = httpClient;
     }
 
-    public async Task<IDataResult<ArticleAuthorInfoVM>> GetArticleUserInfo(Guid userId)
+    public async Task<IDataResult<ArticleAuthorInfoVM>?> GetArticleUserInfo(Guid userId)
     {
         return await _httpClient.GetFromJsonAsync<DataResult<ArticleAuthorInfoVM>>($"/api/v1/Users/GetUserInfo?userId={userId}");
     }

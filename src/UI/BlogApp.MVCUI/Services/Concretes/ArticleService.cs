@@ -27,7 +27,7 @@ public class ArticleService : IArticleService
         var response = await responseMessage.Content.ReadFromJsonAsync<DataResult<ArticleAddVM>>();
         if (responseMessage.StatusCode == HttpStatusCode.BadRequest || !responseMessage.IsSuccessStatusCode)
         {
-            return new ErrorResult($"{responseMessage.ReasonPhrase} - {response.Message}");
+            return new ErrorResult($"{responseMessage.ReasonPhrase} - {response!.Message}");
         }
 
         return new SuccessResult();
@@ -62,7 +62,7 @@ public class ArticleService : IArticleService
     {
         var responseMessage = await _httpClient.PostAsJsonAsync("/api/v1/Articles/Publish", articleId);
         var response = await responseMessage.Content.ReadFromJsonAsync<Result>();
-        if (!responseMessage.IsSuccessStatusCode)
+        if (response is not null && !responseMessage.IsSuccessStatusCode)
         {
             return new ErrorResult($"{responseMessage.ReasonPhrase} - {response.Message}");
         }

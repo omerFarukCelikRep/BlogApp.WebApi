@@ -1,4 +1,4 @@
-﻿using BlogApp.Authentication.Services.Interfaces;
+﻿using BlogApp.Authentication.Interfaces.Services;
 using Microsoft.AspNetCore.Http;
 
 namespace BlogApp.Authentication.Middlewares;

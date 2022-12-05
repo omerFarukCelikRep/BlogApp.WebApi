@@ -2,7 +2,7 @@
 using BlogApp.Authentication.Constants;
 using BlogApp.Authentication.Dtos.Incoming;
 using BlogApp.Authentication.Dtos.Outgoing;
-using BlogApp.Authentication.Services.Interfaces;
+using BlogApp.Authentication.Interfaces.Services;
 using BlogApp.Core.Utilities.Constants;
 using BlogApp.DataAccess.Interfaces.Repositories;
 using BlogApp.Entities.DbSets;
@@ -14,7 +14,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace BlogApp.Authentication.Services.Concrete;
+namespace BlogApp.Authentication.Services;
 public class TokenService : ITokenService
 {
     private readonly JwtConfig _jwtConfig;

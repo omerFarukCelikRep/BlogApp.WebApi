@@ -1,6 +1,6 @@
 ﻿using BlogApp.Authentication.Configurations;
-using BlogApp.Authentication.Services.Concrete;
-using BlogApp.Authentication.Services.Interfaces;
+using BlogApp.Authentication.Interfaces.Services;
+using BlogApp.Authentication.Services;
 using BlogApp.Core.Utilities.Authentication;
 using BlogApp.Core.Utilities.Configurations;
 using BlogApp.DataAccess.Contexts;
@@ -33,17 +33,14 @@ public static class DependencyInjection
 
         services.AddSingleton(tokenValidationParameters);
 
-        services.AddAuthentication(options =>
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(options =>
         {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        })
-            .AddJwtBearer(options =>
-            {
-                options.SaveToken = true;
-                options.TokenValidationParameters = tokenValidationParameters;
-            });
+            options.SaveToken = true;
+            options.TokenValidationParameters = tokenValidationParameters;
+        });
+
+        //services.AddAuthentication("Bearer").AddJwtBearer();
 
         services.AddIdentity<IdentityUser<Guid>, IdentityRole<Guid>>(options =>
         {

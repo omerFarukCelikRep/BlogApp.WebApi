@@ -1,7 +1,8 @@
 ﻿using BlogApp.Authentication.Constants;
 using BlogApp.Authentication.Dtos.Incoming;
 using BlogApp.Authentication.Dtos.Outgoing;
-using BlogApp.Authentication.Services.Interfaces;
+using BlogApp.Authentication.Interfaces.Providers;
+using BlogApp.Authentication.Interfaces.Services;
 using BlogApp.Business.Constants;
 using BlogApp.Business.Interfaces;
 using BlogApp.Business.Mappings.Mapper;
@@ -19,12 +20,13 @@ public class AccountService : IAccountService
     private readonly UserManager<IdentityUser<Guid>> _userManager;
     private readonly IUserRepository _userRepository;
     private readonly ITokenService _tokenService;
-
-    public AccountService(UserManager<IdentityUser<Guid>> userManager, IUserRepository userRepository, ITokenService tokenService)
+    private readonly IJwtProvider _jwtProvider;
+    public AccountService(UserManager<IdentityUser<Guid>> userManager, IUserRepository userRepository, ITokenService tokenService, IJwtProvider jwtProvider)
     {
         _userManager = userManager;
         _userRepository = userRepository;
         _tokenService = tokenService;
+        _jwtProvider = jwtProvider;
     }
     public async Task<AuthResult> AddAsync(UserRegistrationRequestDto registrationRequestDto)
     {
@@ -34,9 +36,11 @@ public class AccountService : IAccountService
             return new AuthResult(false, identityCreateResult.Message!);
         }
 
-        var member = await AddMember(registrationRequestDto, identityCreateResult.Data!.Id);
+        var user = await AddMember(registrationRequestDto, identityCreateResult.Data!.Id);
 
-        var jwtToken = _tokenService.GenerateJwtToken(identityCreateResult.Data, member.Id);
+        var jwtToken = _jwtProvider.Generate(identityCreateResult.Data, user.Id);
+
+        //var jwtToken = _tokenService.GenerateJwtToken(identityCreateResult.Data, member.Id);
         var refreshToken = await _tokenService.GenerateRefreshTokenAsync(identityCreateResult.Data, registrationRequestDto.IpAddress);
         await _userRepository.SaveChangesAsync();
 
@@ -68,7 +72,7 @@ public class AccountService : IAccountService
             return new AuthResult(false, AuthenticationMessages.InvalidRequest);
         }
 
-        var jwtToken = _tokenService.GenerateJwtToken(identityUser, user.Id);
+        var jwtToken = _jwtProvider.Generate(identityUser, user.Id);
         var refreshToken = await _tokenService.GetActiveRefreshTokenAsync(identityUser)
                            ?? await _tokenService.GenerateRefreshTokenAsync(identityUser, ipAddress);
 
@@ -108,7 +112,7 @@ public class AccountService : IAccountService
 
         var user = await _userManager.FindByIdAsync(identityUserId.ToString()!);
         var member = await _userRepository.GetByIdentityId(identityUserId.Value);
-        var jwtToken = _tokenService.GenerateJwtToken(user!, member!.Id);
+        var jwtToken = _jwtProvider.Generate(user!, member!.Id);
         var refreshToken = await _tokenService.GenerateRefreshTokenAsync(user!, tokenRequestDto.IpAddress);
 
         return new AuthResult

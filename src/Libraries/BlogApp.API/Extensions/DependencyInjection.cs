@@ -20,7 +20,6 @@ public static class DependencyInjection
 
         services.AddEndpointsApiExplorer();
 
-        //TODO: Özel ayarlara bakılacak
         services.AddHealthChecks()
             .AddSqlServer(configuration.GetConnectionString("Default")!,
                           name: "Database",

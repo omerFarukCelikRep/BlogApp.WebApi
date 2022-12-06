@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 namespace BlogApp.Authentication.Configurations;
-public class JwtBearerOptionsSetup : IConfigureOptions<JwtBearerOptions>
+public class JwtBearerOptionsSetup : IPostConfigureOptions<JwtBearerOptions>
 {
     private readonly JwtOptions _jwtOptions;
     public JwtBearerOptionsSetup(IOptions<JwtOptions> options)
@@ -13,7 +12,7 @@ public class JwtBearerOptionsSetup : IConfigureOptions<JwtBearerOptions>
         _jwtOptions = options.Value;
     }
 
-    public void Configure(JwtBearerOptions options)
+    public void PostConfigure(string? name, JwtBearerOptions options)
     {
         options.TokenValidationParameters = new()
         {
@@ -26,5 +25,7 @@ public class JwtBearerOptionsSetup : IConfigureOptions<JwtBearerOptions>
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Secret)),
             RequireExpirationTime = false, //TODO: Update this later
         };
+
+        options.SaveToken = true;
     }
 }

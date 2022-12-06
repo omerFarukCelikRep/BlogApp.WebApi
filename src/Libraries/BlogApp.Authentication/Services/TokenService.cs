@@ -6,6 +6,7 @@ using BlogApp.Authentication.Interfaces.Services;
 using BlogApp.Core.Utilities.Constants;
 using BlogApp.DataAccess.Interfaces.Repositories;
 using BlogApp.Entities.DbSets;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -17,23 +18,26 @@ using System.Text;
 namespace BlogApp.Authentication.Services;
 public class TokenService : ITokenService
 {
-    private readonly JwtConfig _jwtConfig;
+    private readonly JwtOptions _jwtOptions;
     private readonly IRefreshTokenRepository _refreshTokenRepository;
-    private readonly TokenValidationParameters _tokenValidationParameters;
-    public TokenService(IOptions<JwtConfig> options,
+    //private readonly TokenValidationParameters _tokenValidationParameters;
+    private readonly JwtBearerOptions _jwtBearerOptions;
+    public TokenService(IOptions<JwtOptions> options,
                         IRefreshTokenRepository refreshTokenRepository,
-                        TokenValidationParameters tokenValidationParameters)
+                        //TokenValidationParameters tokenValidationParameters,
+                        IOptions<JwtBearerOptions> jwtBearerOptions)
     {
-        _jwtConfig = options.Value;
+        _jwtOptions = options.Value;
         _refreshTokenRepository = refreshTokenRepository;
-        _tokenValidationParameters = tokenValidationParameters;
+        //_tokenValidationParameters = tokenValidationParameters;
+        _jwtBearerOptions = jwtBearerOptions.Value;
     }
     public string GenerateJwtToken(IdentityUser<Guid> identityUser, Guid userId)
     {
         var jwtHandler = new JwtSecurityTokenHandler();
 
         //Get security key
-        var key = Encoding.ASCII.GetBytes(_jwtConfig.Secret!);
+        var key = Encoding.ASCII.GetBytes(_jwtOptions.Secret!);
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
@@ -45,7 +49,7 @@ public class TokenService : ITokenService
                     new Claim(JwtRegisteredClaimNames.Email, identityUser.Email!),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()) //Used by the refreshed token
             }),
-            Expires = DateTime.Now.Add(_jwtConfig.ExpiryTimeFrame), //TODO: Update expiration time
+            Expires = DateTime.Now.Add(_jwtOptions.ExpiryTimeFrame), //TODO: Update expiration time
             SigningCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature //TODO: Review the algorithm
             )
@@ -62,7 +66,7 @@ public class TokenService : ITokenService
 
         try
         {
-            var validationResult = await tokenHandler.ValidateTokenAsync(tokenRequestDto.Token, _tokenValidationParameters);
+            var validationResult = await tokenHandler.ValidateTokenAsync(tokenRequestDto.Token, _jwtBearerOptions.TokenValidationParameters);
 
             if (!ValidateEncryptionAlg(validationResult.SecurityToken))
             {
@@ -140,9 +144,9 @@ public class TokenService : ITokenService
         }
 
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.UTF8.GetBytes(_jwtConfig.Secret!);
+        var key = Encoding.UTF8.GetBytes(_jwtOptions.Secret!);
 
-        var validationResult = await tokenHandler.ValidateTokenAsync(token, _tokenValidationParameters);
+        var validationResult = await tokenHandler.ValidateTokenAsync(token, _jwtBearerOptions.TokenValidationParameters);
 
         var jwtToken = (JwtSecurityToken)validationResult.SecurityToken;
         bool parseResult = Guid.TryParse(jwtToken.Claims.FirstOrDefault(x => x.Type == "Id")?.Value, out Guid result);

@@ -7,13 +7,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.0" />
+	  <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.25.1" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Libraries\BlogApp.Core.Utilities.LoggerServices\BlogApp.Core.Utilities.LoggerServices.csproj" />
-		<ProjectReference Include="..\..\Libraries\BlogApp.Core.Utilities\BlogApp.Core.Utilities.csproj" />
-		<ProjectReference Include="..\..\Libraries\BlogApp.Core\BlogApp.Core.csproj" />
+	  <Reference Include="BlogApp.Core.Utilities">
+	    <HintPath>BlogApp.Core.Utilities.dll</HintPath>
+	  </Reference>
 	</ItemGroup>
 
 </Project>

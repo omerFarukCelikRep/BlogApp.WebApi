@@ -47,14 +47,9 @@ public class TopicsController : BaseController
         return StatusCode((int)HttpStatusCode.Created, result);
     }
 
-    [HttpPut("{id:guid}")]
-    public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] TopicUpdateDto updateTopicDto)
+    [HttpPut]
+    public async Task<IActionResult> UpdateAsync([FromBody] TopicUpdateDto updateTopicDto)
     {
-        if (id != updateTopicDto.Id)
-        {
-            return BadRequest();
-        }
-
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);

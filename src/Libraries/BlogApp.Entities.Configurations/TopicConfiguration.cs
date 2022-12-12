@@ -6,6 +6,7 @@ public class TopicConfiguration : BaseEntityConfiguration<Topic>
         base.Configure(builder);
 
         builder.Property(x => x.Name).HasMaxLength(256).IsRequired();
+        builder.Property(x => x.Description).HasMaxLength(512).IsRequired();
         builder.Property(x => x.Thumbnail).IsRequired();
     }
 }

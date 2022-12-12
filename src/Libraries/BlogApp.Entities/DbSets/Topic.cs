@@ -8,6 +8,7 @@ public class Topic : BaseEntity
         MemberFollowedTopics = new HashSet<UserFollowedTopic>();
     }
     public string Name { get; set; } = null!;
+    public string Description { get; set; } = null!;
     public string Thumbnail { get; set; } = null!;
 
     //Navigation Prop.

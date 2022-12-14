@@ -7,6 +7,6 @@ public class ArticleUnpublishedListDto
     public int ReadTime { get; set; }
     public string? Thumbnail { get; set; }
     public DateTime CreatedDate { get; set; }
-    public string Topics { get; set; } = null!;
+    public List<string> Topics { get; set; } = null!;
     public string AuthorName { get; set; } = null!;
 }

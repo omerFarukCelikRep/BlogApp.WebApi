@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BlogApp.Entities.DbSets;
 using BlogApp.Entities.Dtos.Articles;
+using BlogApp.Entities.Dtos.Topics;
 
 namespace BlogApp.Business.Mappings.Profiles;
 public class ArticleProfile : Profile
@@ -24,7 +25,11 @@ public class ArticleProfile : Profile
                 )
                 .ForMember(
                     dest => dest.Topics,
-                    config => config.MapFrom(src => src.ArticleTopics.Select(x => x.Topic!.Name).ToList())
+                    config => config.MapFrom(src => src.ArticleTopics.Select(x => new TopicArticleDetailsDto()
+                    {
+                        Id = x.Topic!.Id,
+                        Name = x.Topic!.Name,
+                    }).ToList())
             );
 
         CreateMap<Article, ArticleDto>();

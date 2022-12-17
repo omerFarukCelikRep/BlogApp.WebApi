@@ -23,14 +23,16 @@ public class ArticleProfile : Profile
                     dest => dest.AuthorName,
                     config => config.MapFrom(src => $"{src.User!.FirstName} {src.User.LastName}")
                 )
-                .ForMember(
-                    dest => dest.Topics,
-                    config => config.MapFrom(src => src.ArticleTopics.Select(x => new TopicArticleDetailsDto()
-                    {
-                        Id = x.Topic!.Id,
-                        Name = x.Topic!.Name,
-                    }).ToList())
-            );
+            .ForMember(
+                dest => dest.Topics,
+                config => 
+                    config.MapFrom(
+                        src => src.ArticleTopics.Select(x => new TopicArticleDetailsDto
+                        {
+                            Id = x.TopicId,
+                            Name = x.Topic!.Name
+                        }).ToList()
+                    ));
 
         CreateMap<Article, ArticleDto>();
 

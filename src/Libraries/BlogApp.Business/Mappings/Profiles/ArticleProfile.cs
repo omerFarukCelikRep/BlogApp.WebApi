@@ -25,7 +25,7 @@ public class ArticleProfile : Profile
                 )
             .ForMember(
                 dest => dest.Topics,
-                config => 
+                config =>
                     config.MapFrom(
                         src => src.ArticleTopics.Select(x => new TopicArticleDetailsDto
                         {

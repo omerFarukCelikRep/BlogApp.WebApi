@@ -7,13 +7,13 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace BlogApp.Core.DataAccess.Base.EntityFramework.Repositories;
-public class EfBaseRepository<TEntity> : IAsyncPaginateRepository<TEntity>, IAsyncFindableRepository<TEntity>, IAsyncOrderableRepository<TEntity>, IAsyncQueryableRepository<TEntity>, IAsyncInsertableRepository<TEntity>, IAsyncUpdateableRepository<TEntity>, IAsyncDeleteableRepository<TEntity>, IAsyncRepository
+public class EFBaseRepository<TEntity> : IAsyncPaginateRepository<TEntity>, IAsyncFindableRepository<TEntity>, IAsyncOrderableRepository<TEntity>, IAsyncQueryableRepository<TEntity>, IAsyncInsertableRepository<TEntity>, IAsyncUpdateableRepository<TEntity>, IAsyncDeleteableRepository<TEntity>, IDeleteableRepository<TEntity>, IAsyncRepository
     where TEntity : BaseEntity
 {
     protected readonly DbContext _context;
     protected readonly DbSet<TEntity> _table;
 
-    public EfBaseRepository(DbContext context)
+    public EFBaseRepository(DbContext context)
     {
         _context = context;
         _table = _context.Set<TEntity>();
@@ -31,7 +31,7 @@ public class EfBaseRepository<TEntity> : IAsyncPaginateRepository<TEntity>, IAsy
 
     public Task DeleteAsync(TEntity entity)
     {
-        return Task.FromResult(_table.Remove(entity));
+        return Task.FromResult(Delete);
     }
 
     public async Task<IEnumerable<TEntity>> GetAllAsync(bool tracking = true)
@@ -96,6 +96,11 @@ public class EfBaseRepository<TEntity> : IAsyncPaginateRepository<TEntity>, IAsy
         values = !orderDesc ? values.OrderBy(orderby) : values.OrderByDescending(orderby);
 
         return takeCount > 0 ? await values.Take(takeCount).ToListAsync() : await values.ToListAsync();
+    }
+
+    public void Delete(TEntity entity)
+    {
+        _table.Remove(entity);
     }
 
     public Task<IPaginate<TEntity>> GetAllAsPaginateAsync(int index = 0, int size = 10, bool tracking = true)

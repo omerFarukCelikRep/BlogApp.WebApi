@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
 namespace BlogApp.DataAccess.EFCore.Repositories;
-public class RefreshTokenRepository : EfBaseRepository<RefreshToken>, IRefreshTokenRepository
+public class RefreshTokenRepository : EFBaseRepository<RefreshToken>, IRefreshTokenRepository
 {
     public RefreshTokenRepository(BlogAppDbContext context) : base(context) { }
 

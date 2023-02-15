@@ -1,5 +1,5 @@
 ﻿namespace BlogApp.DataAccess.EFCore.Repositories;
-public class ArticleRepository : EfBaseRepository<Article>, IArticleRepository
+public class ArticleRepository : EFBaseRepository<Article>, IArticleRepository
 {
     public ArticleRepository(BlogAppDbContext context) : base(context) { }
 }

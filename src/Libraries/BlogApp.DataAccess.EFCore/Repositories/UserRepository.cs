@@ -1,5 +1,5 @@
 ﻿namespace BlogApp.DataAccess.EFCore.Repositories;
-public class UserRepository : EfBaseRepository<User>, IUserRepository
+public class UserRepository : EFBaseRepository<User>, IUserRepository
 {
     public UserRepository(BlogAppDbContext context) : base(context) { }
 

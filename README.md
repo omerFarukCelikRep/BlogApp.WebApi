@@ -15,6 +15,7 @@
     9. Swagger
 
 
+
 # Coding Standard
 
 0. [Genel Standartlar](#0genel-standartlar)
@@ -29,7 +30,7 @@
       7. [Interface İsimlendirmesi](#117interface-i̇simlendirmesi)
 2. [Yorum Satırları](#2yorum-satırları)
    1. [Copyrights](#21-copyrights)
-   2. [Method/Class/Prop vb. Summary](#22-methodclassprop-vb-summary)
+   2. [Method/Class/Prop vb. Özet (Summary)](#22-methodclassprop-vb-summary)
 3. [Class ve Interface](#3class-ve-interface)
    1. [İsimlendirme](#31i̇simlendirme)
       1. [Interface İsimlendirme](#311interface-i̇simlendirme)
@@ -41,7 +42,15 @@
       7. [Servis İsimlendirmesi](#317servis-i̇simlendirmesi)
 4. [Methodlar](#4methodlar)
    1. [İsimlendirme](#41i̇simlendirme)
-5. [Variables](5.%20Variables.md)
+      1. [Fiil (Verb)](#411fiil-verb)
+      2. [Asenkron](#412asenkron)
+      3. [Parametreler](#413parametreler)
+      4. [Argüman (Parametre Gönderimi)](#414argüman-parametre-gönderimi)
+5. [Değişkenler](#5değişkenler)
+   1. [İsimlendirme](#51i̇simlendirme)
+      1. [Tekil](#511tekil)
+      2. [Lambda Expressions](#512lambda-expressions)
+      3. [Çoğul](#513çoğul)
 
 ---
 
@@ -323,12 +332,13 @@
     */
 ```
 
-### 2.2 Method/Class/Prop vb. Summary
+### 2.2.Method/Class/Prop vb. Özet (Summary)
 
     Method summary bir class, method, property, field vb. kod bloğunun yaptığı işi parametrelerin, sınıfların vb. elemanların neyi ifade ettiğini gösteren bilgi bloklarıdır.
 
     Visual studio'da method summary oluşturmak için method öncesinde '///'  yazıp method summary bloğu otomatik olarak oluşacaktır.
 
+    ```csharp
     ///<summary>
     /// Buraya Metodun yaptığı ana iş gelecek. 
     ///</summary>
@@ -340,6 +350,7 @@
     /// Buraya eğer method bir exception barındırıyorsa onun koşullarını ekliyoruz
     ///</exception>
     ///<returns> Dönüş değerleri </returns>
+    ```
 
 ## 3.Class ve Interface
 
@@ -573,9 +584,9 @@
     Student_Service.cs
 ```
 
-### 4.Methodlar
+## 4.Methodlar
 
-#### 4.1.İsimlendirme
+### 4.1.İsimlendirme
 
     Method isimleri:
     1. Methodun ne yaptığını özetleyecek şekilde olmalı.
@@ -589,37 +600,37 @@
 ##### Do ✅
 
 ```csharp
-public List<Student> GetAll()
-{
-	...
-}
+    public List<Student> GetAll()
+    {
+        ...
+    }
 ```
 
 ##### Also, Do ✅
 
 ```csharp
-public Student Add()
-{
-	...
-}
+    public Student Add()
+    {
+        ...
+    }
 ```
 
 ##### Don't ❌
 
 ```csharp
-public List<Student> All()
-{
-	...
-}
+    public List<Student> All()
+    {
+        ...
+    }
 ```
 
 ##### Also, Don't ❌
 
 ```csharp
-public List<Student> getAll()
-{
-	...
-}
+    public List<Student> getAll()
+    {
+        ...
+    }
 ```
 
 #### 4.1.2.Asenkron
@@ -627,271 +638,176 @@ public List<Student> getAll()
     Asenkron methodlar isim sonuna ```Async``` ifadesini almalı ve ````Task``` yada ````ValueTask``` döndürmeli
 
 ##### Do ✅
+
 ```csharp
-public async ValueTask<List<Student>> GetAllAsync()
-{
-	...
-}
+    public async Task<List<Student>> GetAllAsync()
+    {
+        ...
+    }
 ```
 
 ##### Also, Do ✅
 
 ```csharp
-public Student Add()
-{
-	...
-}
+    public Student Add()
+    {
+        ...
+    }
 ```
 
 ##### Don't ❌
 
 ```csharp
-public async ValueTask<List<Student>> GetAll()
-{
-	...
-}
+    public async Task<List<Student>> GetAll()
+    {
+        ...
+    }
 ```
 
-#### 1.0.2 Input Parameters
-Input parameters should be explicit about what property of an object they will be assigned to, or will be used for any action such as search.
-##### Do
-```cs
-public async ValueTask<Student> GetStudentByNameAsync(string studentName)
-{
-	...
-}
-```
-##### Don't
-```cs
-public async ValueTask<Student> GetStudentByNameAsync(string text)
-{
-	...
-}
-```
-##### Also, Don't
-```cs
-public async ValueTask<Student> GetStudentByNameAsync(string name)
-{
-	...
-}
-```
-<br />
+#### 4.1.3.Parametreler
 
-#### 1.0.3 Action Parameters
-If your method is performing an action with a particular parameter specify it.
-##### Do
-```cs
-public async ValueTask<Student> GetStudentByIdAsync(Guid studentId)
-{
-	...
-}
-```
-##### Don't
-```cs
-public async ValueTask<Student> GetStudentAsync(Guid studentId)
-{
-	...
-}
-```
-<br />
+    Method parametreleri bir nesnenin hangi özelliğini ifade ettiğini atanacakları veya arama gibi herhangi bir eylem için kullanılacakları açık belirtmelidir.
 
-#### 1.0.4 Passing Parameters
-When utilizing a method, if the input parameters aliases match the passed in variables in part or in full, then you don't have to use the aliases, otherwise you must specify your values with aliases.
-
-Assume you have a method:
-```csharp
-Student GetStudentByNameAsync(string studentName);
-```
-
-##### Do
-```cs
-string studentName = "Todd";
-Student student = await GetStudentByNameAsync(studentName);
-```
-##### Also, Do
-```cs
-Student student = await GetStudentByNameAsync(studentName: "Todd");
-```
-
-##### Also, Do
-```cs
-Student student = await GetStudentByNameAsync(toddName);
-```
-
-##### Don't
-```cs
-Student student = await GetStudentByNameAsync("Todd");
-```
-
-##### Don't
-```cs
-Student student = await GetStudentByNameAsync(todd);
-```
-
-<br /><br />
-
-### 1.1 Organization
-In general encapsulate multiple lines of the same logic into their own method, and keep your method at level 0 of details at all times.
-
-#### 1.1.0 One-Liners
-Any method that contains only one line of code should use fat arrows
-##### Do
-```cs
-public List<Student> GetStudents() => this.storageBroker.GetStudents();
-```
-##### Don't
-```cs
-public List<Student> Students()
-{
-	return this.storageBroker.GetStudents();
-}
-```
-
-If a one-liner method exceeds the length of 120 characters then break after the fat arrow with an extra tab for the new line.
-
-##### Do
-```cs
-public async ValueTask<List<Student>> GetAllWashingtonSchoolsStudentsAsync() => 
-	await this.storageBroker.GetStudentsAsync();
-```
-
-##### Don't
-```cs
-public async ValueTask<List<Student>> GetAllWashingtonSchoolsStudentsAsync() => await this.storageBroker.GetStudentsAsync();
-```
-<br />
-
-#### 1.1.1 Returns
-For multi-liner methods, take a new line between the method logic and the final return line (if any).
-##### Do
-```cs
-public List<Student> GetStudents(){
-	StudentsClient studentsApiClient = InitializeStudentApiClient();
-	return studentsApiClient.GetStudents();
-}
-```
-
-##### Don't
-```cs
-public List<Student> GetStudents(){
-	StudentsClient studentsApiClient = InitializeStudentApiClient();
-	return studentsApiClient.GetStudents();
-}
-```
-<br />
-
-#### 1.1.2 Multiple Calls
-With mutliple method calls, if both calls are less than 120 characters then they may stack unless the final call is a method return, otherwise separate with a new line.
-##### Do
-```cs
-public List<Student> GetStudents(){
-	StudentsClient studentsApiClient = InitializeStudentApiClient();
-	List<Student> students = studentsApiClient.GetStudents();
-	return students; 
-}
-```
-
-##### Don't
-```cs
-public List<Student> GetStudents(){
-	StudentsClient studentsApiClient = InitializeStudentApiClient();
-	List<Student> students = studentsApiClient.GetStudents();
-	return students; 
-}
-```
-##### Also, Do
+##### Do ✅
 
 ```cs
-public List<Student> GetStudents(){
-	StudentsClient washingtonSchoolsStudentsApiClient = 
-		await InitializeWashingtonSchoolsStudentsApiClientAsync();
-	List<Student> students = studentsApiClient.GetStudents();
-	return students; 
-}
+    public async Task<Student> GetByNameAsync(string studentName)
+    {
+        ...
+    }
 ```
-##### Don't
+
+##### Also, Do ✅
 
 ```cs
-public List<Student> GetStudents(){
-	StudentsClient washingtonSchoolsStudentsApiClient = 
-		await InitializeWashingtonSchoolsStudentsApiClientAsync();
-	List<Student> students = studentsApiClient.GetStudents();
-	return students; 
-}
+    public async Task<Student> GetByIdAsync(Guid studentId)
+    {
+        ...
+    }
 ```
-<br />
 
-#### 1.1.3 Declaration
-A method declaration should not be longer than 120 characters.
-##### Do
+##### Also, Do ✅
+
 ```cs
-public async ValueTask<List<Student>> GetAllRegisteredWashgintonSchoolsStudentsAsync(
-	StudentsQuery studentsQuery)
-{
-	...
-}
+    public async Task<Student> GetByClassroomIdAsync(Guid classroomId)
+    {
+        ...
+    }
 ```
 
-##### Don't
+##### Don't ❌
+
 ```cs
-public async ValueTask<List<Student>> GetAllRegisteredWashgintonSchoolsStudentsAsync(StudentsQuery studentsQuery)
-{
-	...
-}
-```
-<br />
-
-#### 1.1.4 Multiple Parameters
-If you are passing multiple parameters, and the length of the method call is over 120 characters, you must break by the parameters, with **one** parameter on each line.
-##### Do
-```cs
-List<Student> redmondHighStudents = await QueryAllWashingtonStudentsByScoreAndSchoolAsync(
-	MinimumScore: 130,
-	SchoolName: "Redmond High");
+    public async Task<Student> GetByStudentNameAsync(string text)
+    {
+        ...
+    }
 ```
 
-##### Don't
-```cs
-List<Student> redmondHighStudents = await QueryAllWashingtonStudentsByScoreAndSchoolAsync(
-	MinimumScore: 130,SchoolName: "Redmond High");
-```
-
-#### 1.1.5 Chaining (Uglification/Beautification)
-Some methods offer extensions to call other methods. For instance, you can call a `Select()` method after a `Where()` method. And so on until a full query is completed.
-
-We will follow a process of Uglification Beautification. We uglify our code to beautify our view of a chain methods. Here's some examples:
-
-##### Do
-```csharp
-	students.Where(student => student.Name is "Elbek")
-		.Select(student => student.Name)
-			.ToList();
-```
-
-##### Don't
-```csharp
-	students
-	.Where(student => student.Name is "Elbek")
-	.Select(student => student.Name)
-	.ToList();
-```
-
-The first approach enforces simplifying and cutting the chaining short as more calls continues to uglify the code like this:
+##### Also, Don't ❌
 
 ```csharp
-	students.SomeMethod(...)
-		.SomeOtherMethod(...)
-			.SomeOtherMethod(...)
-				.SomeOtherMethod(...)
-					.SomeOtherMethod(...);
+    public async Task<Student> GetByStudentNameAsync(string name)
+    {
+        ...
+    }
 ```
-The uglification process forces breaking down the chains to smaller lists then processing it. The second approach (no uglification approach) may require additional cognitive resources to distinguish between a new statement and an existing one as follows:
+
+#### 4.1.4.Argüman (Parametre Gönderimi)
+
+    Bir methodu kullanırken, parametre isimleri, kısmen veya tamamen aktarılan değişkenlerle eşleşirse, parametre ismi kullanmanız gerekmez, aksi takdirde değişkenlerden önce parametre ismi belirtmeniz gerekir.
+
+> Bir methodumuz olduğunu varsayalım:
 
 ```csharp
-	student
-	.Where(student => student.Name is "Elbek")
-	.Select(student => student.Name)
-	.OrderBy(student => student.Name)
-	.ToList();
-	ProcessStudents(students);
+    Student GetByNameAsync(string studentName);
+```
+
+##### Do ✅
+
+```cs
+    string studentName = "Todd";
+    Student student = await GetStudentByNameAsync(studentName);
+```
+
+##### Also, Do ✅
+
+```cs
+    Student student = await GetByNameAsync(studentName: "Todd");
+```
+
+##### Don't ❌
+
+```cs
+    Student student = await GetByNameAsync("Todd");
+```
+
+##### Also, Don't ❌
+
+```cs
+    Student student = await GetByNameAsync(todd);
+```
+
+## 5.Değişkenler
+
+### 5.1.İsimlendirme
+
+    Değişken isimleri öz ve sahip olduğu veya potansiyel olarak tutacağı değeri temsil edecek şekilde isimlendirilmeli.
+
+#### 5.1.1.Tekil
+
+    Değişkenin tutacağı değer tekil bir değeri temsil edecek şekilde isimlendirilmeli.
+
+##### Do ✅
+
+```csharp
+    var student = new Student();
+```
+
+##### Also, Do ✅
+
+```csharp
+    var hasStudent = await CheckNameAsync(studentName);
+```
+
+##### Don't ❌
+
+```csharp
+    var studentModel = new Student();
+```
+
+##### Also, Don't ❌
+
+```csharp
+    var studentObj = new Student();
+```
+
+#### 5.1.2.Lambda Expressions
+
+##### Do ✅
+
+```csharp
+    students.Where(student => student ... );
+```
+
+##### Don't ❌
+
+```csharp
+    students.Where(s => s ... );
+```
+
+#### 5.1.3.Çoğul
+
+    Değişkenin tutacağı değer çoğul değerleri temsil edecek şekilde isimlendirilmeli.
+
+##### Do ✅
+
+```csharp
+    var students = new List<Student>();
+```
+
+##### Don't ❌
+
+```csharp
+    var studentList = new List<Student>();
 ```

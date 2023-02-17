@@ -707,10 +707,10 @@
 ##### Also, Don't ❌
 
 ```csharp
-    public async Task<Student> GetByStudentNameAsync(string name)
-    {
-        ...
-    }
+public async Task<Student> GetByStudentNameAsync(string name)
+{
+    ...
+}
 ```
 
 #### 4.1.4.Argüman (Parametre Gönderimi)
@@ -720,14 +720,14 @@
 > Bir methodumuz olduğunu varsayalım:
 
 ```csharp
-    Student GetByNameAsync(string studentName);
+Student GetByNameAsync(string studentName);
 ```
 
 ##### Do ✅
 
 ```cs
-    string studentName = "Todd";
-    Student student = await GetStudentByNameAsync(studentName);
+string studentName = "Todd";
+Student student = await GetStudentByNameAsync(studentName);
 ```
 
 ##### Also, Do ✅
@@ -739,13 +739,13 @@
 ##### Don't ❌
 
 ```cs
-    Student student = await GetByNameAsync("Todd");
+Student student = await GetByNameAsync("Todd");
 ```
 
 ##### Also, Don't ❌
 
 ```cs
-    Student student = await GetByNameAsync(todd);
+Student student = await GetByNameAsync(todd);
 ```
 
 ## 5.Değişkenler
@@ -761,25 +761,25 @@
 ##### Do ✅
 
 ```csharp
-    var student = new Student();
+var student = new Student();
 ```
 
 ##### Also, Do ✅
 
 ```csharp
-    var hasStudent = await CheckNameAsync(studentName);
+var hasStudent = await CheckNameAsync(studentName);
 ```
 
 ##### Don't ❌
 
 ```csharp
-    var studentModel = new Student();
+var studentModel = new Student();
 ```
 
 ##### Also, Don't ❌
 
 ```csharp
-    var studentObj = new Student();
+var studentObj = new Student();
 ```
 
 #### 5.1.2.Lambda Expressions
@@ -787,13 +787,13 @@
 ##### Do ✅
 
 ```csharp
-    students.Where(student => student ... );
+students.Where(student => student ... );
 ```
 
 ##### Don't ❌
 
 ```csharp
-    students.Where(s => s ... );
+students.Where(s => s ... );
 ```
 
 #### 5.1.3.Çoğul
@@ -803,11 +803,11 @@
 ##### Do ✅
 
 ```csharp
-    var students = new List<Student>();
+var students = new List<Student>();
 ```
 
 ##### Don't ❌
 
 ```csharp
-    var studentList = new List<Student>();
+var studentList = new List<Student>();
 ```

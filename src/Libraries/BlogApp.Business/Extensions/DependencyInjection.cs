@@ -9,13 +9,12 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddBusinessServices(this IServiceCollection services)
     {
-        services.AddCustomValidation();
-
-        services.AddScoped<IAccountService, AccountService>();
-        services.AddScoped<ITopicService, TopicService>();
-        services.AddScoped<IUserService, UserService>();
-        services.AddScoped<IArticleService, ArticleService>();
-        services.AddScoped<ICommentService, CommentService>();
+        services.AddCustomValidation()
+                .AddScoped<IAccountService, AccountService>()
+                .AddScoped<ITopicService, TopicService>()
+                .AddScoped<IUserService, UserService>()
+                .AddScoped<IArticleService, ArticleService>()
+                .AddScoped<ICommentService, CommentService>();
 
         return services;
     }

@@ -1,6 +1,6 @@
-﻿using BlogApp.Authentication.Configurations;
-using BlogApp.Authentication.Interfaces.Providers;
+﻿using BlogApp.Authentication.Interfaces.Providers;
 using BlogApp.Authentication.Interfaces.Services;
+using BlogApp.Authentication.Options;
 using BlogApp.Authentication.Providers;
 using BlogApp.Authentication.Services;
 using BlogApp.Core.Utilities.Authentication;

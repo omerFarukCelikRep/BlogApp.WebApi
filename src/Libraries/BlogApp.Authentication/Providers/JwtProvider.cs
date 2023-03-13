@@ -1,5 +1,5 @@
-﻿using BlogApp.Authentication.Configurations;
-using BlogApp.Authentication.Interfaces.Providers;
+﻿using BlogApp.Authentication.Interfaces.Providers;
+using BlogApp.Authentication.Options;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;

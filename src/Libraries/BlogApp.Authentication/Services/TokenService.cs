@@ -1,8 +1,8 @@
-﻿using BlogApp.Authentication.Configurations;
-using BlogApp.Authentication.Constants;
+﻿using BlogApp.Authentication.Constants;
 using BlogApp.Authentication.Dtos.Incoming;
 using BlogApp.Authentication.Dtos.Outgoing;
 using BlogApp.Authentication.Interfaces.Services;
+using BlogApp.Authentication.Options;
 using BlogApp.Core.Utilities.Constants;
 using BlogApp.DataAccess.Interfaces.Repositories;
 using BlogApp.Entities.DbSets;

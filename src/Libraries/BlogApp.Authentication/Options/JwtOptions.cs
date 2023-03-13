@@ -1,4 +1,4 @@
-﻿namespace BlogApp.Authentication.Configurations;
+﻿namespace BlogApp.Authentication.Options;
 
 public class JwtOptions
 {

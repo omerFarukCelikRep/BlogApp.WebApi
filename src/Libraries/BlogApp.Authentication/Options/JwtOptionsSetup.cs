@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
-namespace BlogApp.Authentication.Configurations;
+namespace BlogApp.Authentication.Options;
 public class JwtOptionsSetup : IConfigureOptions<JwtOptions>
 {
     private const string SectionName = "Jwt";

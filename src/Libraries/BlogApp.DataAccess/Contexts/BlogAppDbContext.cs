@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace BlogApp.DataAccess.Contexts;
 
-public class BlogAppDbContext : IdentityDbContext<IdentityUser<Guid>, IdentityRole<Guid>, Guid>
+public class BlogAppDbContext : DbContext
 {
     private readonly IHttpContextAccessor _context;
     public BlogAppDbContext(DbContextOptions<BlogAppDbContext> options, IHttpContextAccessor context) : base(options)

@@ -3,8 +3,8 @@ public class UserRepository : EFBaseRepository<User>, IUserRepository
 {
     public UserRepository(BlogAppDbContext context) : base(context) { }
 
-    public Task<User?> GetByIdentityId(Guid identityId)
+    public Task<User?> GetByEmailAsync(string email)
     {
-        return GetAsync(x => x.IdentityId == identityId);
+        return GetAsync(x => x.Email == email);
     }
 }

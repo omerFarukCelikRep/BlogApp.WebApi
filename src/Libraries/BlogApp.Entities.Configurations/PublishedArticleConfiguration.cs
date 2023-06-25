@@ -1,17 +1,23 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace BlogApp.Entities.Configurations;
+﻿namespace BlogApp.Entities.Configurations;
 
 public class PublishedArticleConfiguration : AuditableEntityConfiguration<PublishedArticle>
 {
+    private const string TableName = "PublishedArticles";
     public override void Configure(EntityTypeBuilder<PublishedArticle> builder)
     {
         base.Configure(builder);
 
-        builder.Property(x => x.PublishDate).IsRequired();
-        builder.Property(x => x.ReadingCount).HasDefaultValue(0);
-        builder.Property(x => x.LikeCount).HasDefaultValue(0);
+        builder.ToTable(TableName);
 
-        builder.HasOne(x => x.Article).WithMany().HasForeignKey(x => x.Id);
+        builder.Property(x => x.PublishDate)
+               .IsRequired();
+        builder.Property(x => x.ReadingCount)
+               .HasDefaultValue(default);
+        builder.Property(x => x.LikeCount)
+               .HasDefaultValue(default);
+
+        builder.HasOne(x => x.Article)
+               .WithMany()
+               .HasForeignKey(x => x.Id);
     }
 }

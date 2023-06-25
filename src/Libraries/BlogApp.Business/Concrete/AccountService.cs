@@ -66,7 +66,7 @@ public class AccountService : IAccountService
             return new AuthResult(false, AuthenticationMessages.InvalidRequest);
         }
 
-        var user = await _userRepository.GetByIdentityId(identityUser.Id);
+        var user = await _userRepository.GetByEmailAsync(loginRequestDto.Email);
         if (user is null)
         {
             return new AuthResult(false, AuthenticationMessages.InvalidRequest);
@@ -111,7 +111,7 @@ public class AccountService : IAccountService
         }
 
         var user = await _userManager.FindByIdAsync(identityUserId.ToString()!);
-        var member = await _userRepository.GetByIdentityId(identityUserId.Value);
+        var member = await _userRepository.GetByEmailAsync(user.Email);
         var jwtToken = _jwtProvider.Generate(user!, member!.Id);
         var refreshToken = await _tokenService.GenerateRefreshTokenAsync(user!, tokenRequestDto.IpAddress);
 
@@ -123,16 +123,9 @@ public class AccountService : IAccountService
         };
     }
 
-    public async Task<Guid?> GetUserIdByIdentityIdAsync(Guid identityId)
-    {
-        return (await _userRepository.GetByIdentityId(identityId))?.Id;
-    }
-
     private async Task<User> AddMember(UserRegistrationRequestDto registrationRequestDto, Guid identityId)
     {
         var member = ObjectMapper.Mapper.Map<User>(registrationRequestDto);
-
-        member.IdentityId = identityId;
 
         return await _userRepository.AddAsync(member);
     }

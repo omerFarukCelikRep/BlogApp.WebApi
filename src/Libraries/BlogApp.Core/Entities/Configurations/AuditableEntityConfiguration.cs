@@ -11,5 +11,7 @@ public class AuditableEntityConfiguration<TEntity> : BaseEntityConfiguration<TEn
 
         builder.Property(x => x.DeletedBy).HasMaxLength(128).IsRequired(false);
         builder.Property(x => x.DeletedDate).IsRequired(false);
+
+        builder.HasQueryFilter(x => x.Status != Enums.Status.Deleted);
     }
 }

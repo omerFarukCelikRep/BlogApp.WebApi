@@ -1,20 +1,44 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace BlogApp.Entities.Configurations;
+﻿namespace BlogApp.Entities.Configurations;
 
 public class UserConfiguration : AuditableEntityConfiguration<User>
 {
+    public const string TableName = "Users";
     public override void Configure(EntityTypeBuilder<User> builder)
     {
         base.Configure(builder);
 
-        builder.ToTable("Users");
+        builder.ToTable(TableName);
 
-        builder.Property(x => x.FirstName).HasMaxLength(256).IsRequired();
-        builder.Property(x => x.LastName).HasMaxLength(256).IsRequired();
-        builder.Property(x => x.Biography).HasMaxLength(1024).IsRequired(false);
-        builder.Property(x => x.ProfilePicture).IsRequired(false);
-        builder.Property(x => x.Url).HasMaxLength(512).IsRequired(false);
-        builder.Property(x => x.IdentityId).IsRequired();
+        builder.HasIndex(x => x.Email)
+               .IsUnique();
+        builder.HasIndex(x => x.Url)
+               .IsUnique();
+
+        builder.Property(x => x.FirstName)
+               .HasMaxLength(256)
+               .IsRequired();
+        builder.Property(x => x.LastName)
+               .HasMaxLength(256)
+               .IsRequired();
+        builder.Property(x => x.Email)
+               .HasMaxLength(256)
+               .IsRequired();
+        builder.Property(x => x.PasswordHash)
+               .HasMaxLength(256)
+               .IsRequired();
+        builder.Property(x => x.PasswordSalt)
+               .HasMaxLength(256)
+               .IsRequired();
+        builder.Property(x => x.Biography)
+               .HasMaxLength(1024)
+               .IsRequired(false);
+        builder.Property(x => x.ProfilePicture)
+               .IsRequired(false);
+        builder.Property(x => x.Url)
+               .IsRequired(false);
+
+        builder.HasMany<UserRole>()
+               .WithOne()
+               .HasForeignKey(x => x.UserId);
     }
 }

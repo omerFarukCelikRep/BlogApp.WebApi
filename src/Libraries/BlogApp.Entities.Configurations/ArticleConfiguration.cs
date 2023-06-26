@@ -1,4 +1,6 @@
-﻿namespace BlogApp.Entities.Configurations;
+﻿using BlogApp.Entities.Configurations.SeedData;
+
+namespace BlogApp.Entities.Configurations;
 
 public class ArticleConfiguration : AuditableEntityConfiguration<Article>
 {
@@ -23,5 +25,7 @@ public class ArticleConfiguration : AuditableEntityConfiguration<Article>
         builder.HasOne(x => x.User)
                .WithMany(x => x.Articles)
                .HasForeignKey(x => x.UserId);
+
+        builder.HasData(DataGenerator.Articles);
     }
 }

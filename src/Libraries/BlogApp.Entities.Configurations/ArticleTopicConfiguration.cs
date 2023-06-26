@@ -1,4 +1,6 @@
-﻿namespace BlogApp.Entities.Configurations;
+﻿using BlogApp.Entities.Configurations.SeedData;
+
+namespace BlogApp.Entities.Configurations;
 public class ArticleTopicConfiguration : BaseEntityConfiguration<ArticleTopic>
 {
     private const string TableName = "ArticleTopics";
@@ -18,5 +20,7 @@ public class ArticleTopicConfiguration : BaseEntityConfiguration<ArticleTopic>
         builder.HasOne(x => x.Topic)
                .WithMany(x => x.ArticleTopics)
                .HasForeignKey(x => x.TopicId);
+
+        builder.HasData(DataGenerator.ArticleTopics);
     }
 }

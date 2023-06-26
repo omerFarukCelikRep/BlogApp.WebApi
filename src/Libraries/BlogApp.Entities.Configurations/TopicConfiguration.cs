@@ -1,4 +1,6 @@
-﻿namespace BlogApp.Entities.Configurations;
+﻿using BlogApp.Entities.Configurations.SeedData;
+
+namespace BlogApp.Entities.Configurations;
 public class TopicConfiguration : BaseEntityConfiguration<Topic>
 {
     private const string TableName = "Topics";
@@ -16,5 +18,7 @@ public class TopicConfiguration : BaseEntityConfiguration<Topic>
                .IsRequired();
         builder.Property(x => x.Thumbnail)
                .IsRequired();
+
+        builder.HasData(DataGenerator.Topics);
     }
 }

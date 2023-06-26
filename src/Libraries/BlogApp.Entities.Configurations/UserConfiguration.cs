@@ -1,4 +1,6 @@
-﻿namespace BlogApp.Entities.Configurations;
+﻿using BlogApp.Entities.Configurations.SeedData;
+
+namespace BlogApp.Entities.Configurations;
 
 public class UserConfiguration : AuditableEntityConfiguration<User>
 {
@@ -40,5 +42,7 @@ public class UserConfiguration : AuditableEntityConfiguration<User>
         builder.HasMany<UserRole>()
                .WithOne()
                .HasForeignKey(x => x.UserId);
+
+        builder.HasData(DataGenerator.Users);
     }
 }

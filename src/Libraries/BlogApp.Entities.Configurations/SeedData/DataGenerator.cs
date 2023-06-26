@@ -1,18 +1,22 @@
 ﻿using BlogApp.Core.Entities.Enums;
 using BlogApp.Core.Utilities.Authentication;
-using BlogApp.Entities.DbSets;
 using Bogus;
 
-namespace BlogApp.Entities.Configurations.SeedData;.
+namespace BlogApp.Entities.Configurations.SeedData;
 public class DataGenerator
 {
     private const string DefaultPassword = "newPassword+0";
+    private static (byte[], string) DefaultHash = PasswordHelper.HashPassword(DefaultPassword);
 
     private static List<Topic> _topics = TopicGenerator.Generate(20);
     private static List<User> _users = UserGenerator.Generate(20);
+    private static List<Article> _articles = ArticleGenerator.Generate(100);
+    private static List<ArticleTopic> _articleTopics = ArticleTopicGenerator.Generate(20);
 
     public static IReadOnlyCollection<Topic> Topics => _topics.AsReadOnly();
     public static IReadOnlyCollection<User> Users => _users.AsReadOnly();
+    public static IReadOnlyCollection<Article> Articles => _articles.AsReadOnly();
+    public static IReadOnlyCollection<ArticleTopic> ArticleTopics => _articleTopics.DistinctBy(at => new { at.TopicId, at.ArticleId }).ToList().AsReadOnly();
 
 #pragma warning disable CS0618 // Type or member is obsolete
     public static Faker<Topic> TopicGenerator => new Faker<Topic>()
@@ -29,30 +33,20 @@ public class DataGenerator
         .RuleFor(at => at.Id, _ => Guid.NewGuid())
         .RuleFor(at => at.Status, _ => Status.Added)
         .RuleFor(at => at.CreatedBy, _ => Guid.Empty.ToString())
-        .RuleFor(at => at.CreatedDate, f => f.Date.Past());
+        .RuleFor(at => at.CreatedDate, f => f.Date.Past())
+        .RuleFor(at => at.ArticleId, f => f.PickRandom(_articles).Id)
+        .RuleFor(at => at.TopicId, f => f.PickRandom(_topics).Id);
 
 
     public static Faker<Article> ArticleGenerator => new Faker<Article>()
         .RuleFor(a => a.Id, _ => Guid.NewGuid())
-        .RuleFor(a => a.Title, f => f.Hacker.Phrase())
+        .RuleFor(a => a.CreatedBy, _ => Guid.Empty.ToString())
+        .RuleFor(a => a.CreatedDate, f => f.Date.Past())
+        .RuleFor(a => a.Status, _ => Status.Added)
         .RuleFor(a => a.Title, f => f.Hacker.Phrase())
         .RuleFor(a => a.Content, f => f.Lorem.Paragraphs(5))
-        .RuleFor(a => a.ArticleTopics, (f, a) =>
-        {
-            ArticleTopicGenerator
-            .RuleFor(at => at.ArticleId, _ => a.Id)
-            .RuleFor(at => at.TopicId, f => f.PickRandom(_topics).Id);
-
-            var articleTopics = ArticleTopicGenerator.GenerateBetween(1, 3);
-            foreach (var articleTopic in articleTopics)
-            {
-                a.ArticleTopics.Add(articleTopic);
-            }
-
-#pragma warning disable CS8603 // Possible null reference return.
-            return null;
-#pragma warning restore CS8603 // Possible null reference return.
-        });
+        .RuleFor(a => a.ReadTime, (f, a) => a.Content.Length / 150)
+        .RuleFor(a => a.UserId, f => f.PickRandom(_users).Id);
 
     public static Faker<User> UserGenerator => new Faker<User>()
         .RuleFor(u => u.Id, _ => Guid.NewGuid())
@@ -63,28 +57,6 @@ public class DataGenerator
         .RuleFor(u => u.CreatedDate, f => f.Date.Past())
         .RuleFor(u => u.Status, _ => Status.Added)
         .RuleFor(u => u.Email, f => f.Person.Email)
-        .RuleFor(u => new { u.PasswordSalt, u.PasswordHash }, (f, u) =>
-        {
-            var (salt, hash) = PasswordHelper.HashPassword(DefaultPassword);
-            u.PasswordSalt = salt;
-            u.PasswordHash = hash;
-#pragma warning disable CS8603 // Possible null reference return.
-            return null;
-#pragma warning restore CS8603 // Possible null reference return.
-        })
-        .RuleFor(u => u.Articles, (f, u) =>
-        {
-            ArticleGenerator
-            .RuleFor(a => a.UserId, _ => u.Id);
-
-            var articles = ArticleGenerator.Generate(5);
-            foreach (var article in articles)
-            {
-                u.Articles.Add(article);
-            }
-
-#pragma warning disable CS8603 // Possible null reference return.
-            return null;
-#pragma warning restore CS8603 // Possible null reference return.
-        });
+        .RuleFor(u => u.PasswordSalt, _ => DefaultHash.Item1)
+        .RuleFor(u => u.PasswordHash, _ => DefaultHash.Item2);
 }

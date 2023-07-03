@@ -12,6 +12,7 @@ namespace BlogApp.API.Controllers.v1;
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class BaseController : ControllerBase
 {
+    private const string DefaultIpAddress = "Local";
     protected string? UserIdentityId => User.FindFirstValue(ClaimTypes.NameIdentifier);
     protected Guid UserId
     {
@@ -38,11 +39,6 @@ public class BaseController : ControllerBase
             return Request.Headers["X-Forwarded-For"]!;
 
         var remoteIpAddress = HttpContext.Connection.RemoteIpAddress;
-        if (remoteIpAddress is null)
-        {
-            return "::1";
-        }
-
-        return remoteIpAddress.MapToIPv4().ToString();
+        return remoteIpAddress is null ? DefaultIpAddress : remoteIpAddress.MapToIPv4().ToString();
     }
 }

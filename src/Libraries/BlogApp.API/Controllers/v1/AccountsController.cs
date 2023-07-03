@@ -27,12 +27,7 @@ public class AccountsController : BaseController
         
         registrationRequestDto.IpAddress = GetIpAddress();
         var registerResult = await _accountService.AddAsync(registrationRequestDto);
-        if (!registerResult.Success)
-        {
-            return BadRequest(registerResult);
-        }
-
-        return Ok(registerResult);
+        return !registerResult.Success ? BadRequest(registerResult) : Ok(registerResult);
     }
 
     [HttpPost]

@@ -6,6 +6,7 @@ using BlogApp.Authentication.Interfaces.Services;
 using BlogApp.Business.Constants;
 using BlogApp.Business.Interfaces;
 using BlogApp.Business.Mappings.Mapper;
+using BlogApp.Core.Utilities.Authentication;
 using BlogApp.Core.Utilities.Constants;
 using BlogApp.Core.Utilities.Results.Concrete;
 using BlogApp.Core.Utilities.Results.Interfaces;
@@ -13,8 +14,9 @@ using BlogApp.DataAccess.Interfaces.Repositories;
 using BlogApp.Entities.DbSets;
 using Microsoft.AspNetCore.Identity;
 using System.Text;
+using System.Text.RegularExpressions;
 
-namespace BlogApp.Business.Concrete;
+namespace BlogApp.Business.Services;
 public class AccountService : IAccountService
 {
     private readonly UserManager<IdentityUser<Guid>> _userManager;
@@ -30,13 +32,22 @@ public class AccountService : IAccountService
     }
     public async Task<AuthResult> AddAsync(UserRegistrationRequestDto registrationRequestDto)
     {
-        var identityCreateResult = await AddIdentityUser(registrationRequestDto);
-        if (!identityCreateResult.IsSuccess)
-        {
-            return new AuthResult(false, identityCreateResult.Message!);
-        }
+        var existUser = await _userRepository.GetByEmailAsync(registrationRequestDto.Email);
+        if (existUser is not null)
+            return new AuthResult(false, AuthenticationMessages.EmailAlredyTaken);
 
-        var user = await AddMember(registrationRequestDto, identityCreateResult.Data!.Id);
+        if (!ValidatePassword(registrationRequestDto.Password))
+            return new AuthResult(false, AuthenticationMessages.PasswordIsNotValid);
+
+        if (registrationRequestDto.Password != registrationRequestDto.ConfirmedPassword)
+            return new AuthResult(false, AuthenticationMessages.PasswordMustMatch);
+
+        var user = ObjectMapper.Mapper.Map<User>(registrationRequestDto);
+        var (salt,hash) = PasswordHelper.HashPassword(registrationRequestDto.Password);
+        user.PasswordSalt = salt;
+        user.PasswordHash = hash;
+
+        await _userRepository.AddAsync(user);
 
         var jwtToken = _jwtProvider.Generate(identityCreateResult.Data, user.Id);
 
@@ -130,37 +141,11 @@ public class AccountService : IAccountService
         return await _userRepository.AddAsync(member);
     }
 
-    private async Task<IDataResult<IdentityUser<Guid>>> AddIdentityUser(UserRegistrationRequestDto registrationRequestDto)
+
+    private bool ValidatePassword(string password)
     {
-        var identityUser = new IdentityUser<Guid>
-        {
-            Email = registrationRequestDto.Email,
-            EmailConfirmed = true, //TODO: EMail servisiyle beraber güncellenecek 
-            UserName = registrationRequestDto.Email,
+        var regex = new Regex("""^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[*.!@$%^&(){}[]:;<>,.?/~_+-=|\]).{8,32}$""");
 
-        };
-
-        var isCreated = await _userManager.CreateAsync(identityUser, registrationRequestDto.Password);
-
-        if (!isCreated.Succeeded)
-        {
-            return new ErrorDataResult<IdentityUser<Guid>>(ConcatIdentityErrors(isCreated.Errors));
-        }
-
-        return new SuccessDataResult<IdentityUser<Guid>>(identityUser);
-    }
-
-    private string ConcatIdentityErrors(IEnumerable<IdentityError> identityErrors)
-    {
-        StringBuilder stringBuilder = new();
-
-        foreach (var identityError in identityErrors)
-        {
-            stringBuilder.Append(identityError.Code);
-            stringBuilder.Append(" : ");
-            stringBuilder.AppendLine(identityError.Description);
-        }
-
-        return stringBuilder.ToString();
+        return regex.IsMatch(password);
     }
 }

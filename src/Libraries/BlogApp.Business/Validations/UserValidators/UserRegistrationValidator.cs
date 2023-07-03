@@ -4,34 +4,36 @@ using FluentValidation;
 namespace BlogApp.Business.Validations.UserValidators;
 public class UserRegistrationValidator : AbstractValidator<UserRegistrationRequestDto>
 {
+    private const int EmailMaxLength = 86;
+    private const int PasswordMinLength = 8;
     public UserRegistrationValidator()
     {
         RuleFor(x => x.FirstName).NotNull()
                                  .NotEmpty()
-                                 .WithMessage("İsim boş bırakılamaz"); //TODO: Magic string
+                                 .WithMessage(x => string.Join(ValidationMessages.NotEmpty, nameof(x.FirstName)));
 
         RuleFor(x => x.LastName).NotNull()
                                 .NotEmpty()
-                                .WithMessage("Soyisim boş bırakılamaz"); //TODO: Magic string
+                                .WithMessage(x => string.Join(ValidationMessages.NotEmpty, nameof(x.LastName)));
 
         RuleFor(x => x.Email).NotNull()
                              .NotEmpty()
-                             .WithMessage("Email Adresi Boş Geçilemez") //TODO: Magic string
+                             .WithMessage(x => string.Join(ValidationMessages.NotEmpty, nameof(x.Email)))
                              .EmailAddress()
-                             .WithMessage("Lütfen Geçerli Bir Email Adresi Giriniz") //TODO: Magic string 
-                             .MaximumLength(86)
-                             .WithMessage("Email Adresi 86 karakterden fazla olamaz"); //TODO: Magic string
+                             .WithMessage(x => string.Join(ValidationMessages.NotEmpty, nameof(x.Email)))
+                             .MaximumLength(EmailMaxLength)
+                             .WithMessage(x => string.Join(ValidationMessages.NotEmpty, nameof(x.Email), EmailMaxLength));
 
         RuleFor(x => x.Password).NotNull()
                                 .NotEmpty()
-                                .WithMessage("Şifre boş bırakılamaz") //TODO: Magic string
-                                .MinimumLength(8)
-                                .WithMessage("Şifre minimum 8 karakter olmalıdır"); //TODO: Magic string
+                                .WithMessage(x => string.Join(ValidationMessages.NotEmpty, nameof(x.Password)))
+                                .MinimumLength(PasswordMinLength)
+                                .WithMessage(x => string.Join(ValidationMessages.NotEmpty, nameof(x.Password), PasswordMinLength));
 
         RuleFor(x => x.ConfirmedPassword).NotNull()
                                          .NotEmpty()
-                                         .WithMessage("Şifre tekrarı boş bırakılamaz") //TODO: Magic string
+                                         .WithMessage(x => string.Join(ValidationMessages.NotEmpty, nameof(x.ConfirmedPassword)))
                                          .Equal(x => x.Password)
-                                         .WithMessage("Şifre eşleşmemektedir"); //TODO : Magic string
+                                         .WithMessage(x => string.Join(ValidationMessages.NotMatch, nameof(x.ConfirmedPassword)));
     }
 }

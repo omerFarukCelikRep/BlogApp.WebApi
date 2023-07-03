@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
 namespace BlogApp.Authentication.Dtos.Incoming;
-public class UserRegistrationRequestDto
+public record UserRegistrationRequestDto
 {
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;

@@ -24,13 +24,7 @@ public class AccountsController : BaseController
         {
             return BadRequest(ModelState);
         }
-
-        var userExistingResult = await _accountService.FindByEmailAsync(registrationRequestDto.Email);
-        if (userExistingResult.IsSuccess)
-        {
-            return BadRequest(new AuthResult(false, AuthenticationMessages.EmailAlredyTaken));
-        }
-
+        
         registrationRequestDto.IpAddress = GetIpAddress();
         var registerResult = await _accountService.AddAsync(registrationRequestDto);
         if (!registerResult.Success)

@@ -3,5 +3,5 @@
 namespace BlogApp.Core.DataAccess.Interfaces.Repositories;
 public interface IAsyncUpdateableRepository<TEntity> : IAsyncRepository where TEntity : BaseEntity
 {
-    Task<TEntity> UpdateAsync(TEntity entity);
+    Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default);
 }

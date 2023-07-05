@@ -18,59 +18,61 @@ public class EFBaseRepository<TEntity> : IAsyncPaginateRepository<TEntity>, IAsy
         _context = context;
         _table = _context.Set<TEntity>();
     }
-    public async Task<TEntity> AddAsync(TEntity entity)
+    public async Task<TEntity> AddAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
-        await _table.AddAsync(entity);
+        await _table.AddAsync(entity, cancellationToken);
         return entity;
     }
 
-    public Task<bool> AnyAsync(Expression<Func<TEntity, bool>>? expression = null)
+    public Task<bool> AnyAsync(Expression<Func<TEntity, bool>>? expression = null, CancellationToken cancellationToken = default)
     {
-        return expression is null ? GetAllActives().AnyAsync() : GetAllActives().AnyAsync(expression);
+        return expression is null ? GetAllActives().AnyAsync(cancellationToken) : GetAllActives().AnyAsync(expression, cancellationToken);
     }
 
-    public Task DeleteAsync(TEntity entity)
+    public Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         return Task.FromResult(Delete);
     }
 
-    public async Task<IEnumerable<TEntity>> GetAllAsync(bool tracking = true)
+    public async Task<IEnumerable<TEntity>> GetAllAsync(bool tracking = true, CancellationToken cancellationToken = default)
     {
-        return await GetAllActives(tracking).ToListAsync();
+        return await GetAllActives(tracking).ToListAsync(cancellationToken);
     }
 
-    public async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> expression, bool tracking = true)
+    public async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> expression, bool tracking = true, CancellationToken cancellationToken = default)
     {
-        return await GetAllActives(tracking).Where(expression).ToListAsync();
+        return await GetAllActives(tracking).Where(expression).ToListAsync(cancellationToken);
     }
 
-    public async Task<IEnumerable<TEntity>> GetAllAsync<TKey>(Expression<Func<TEntity, TKey>> orderby, bool orderDesc = false, bool tracking = true)
+    public async Task<IEnumerable<TEntity>> GetAllAsync<TKey>(Expression<Func<TEntity, TKey>> orderby, bool orderDesc = false, bool tracking = true, CancellationToken cancellationToken = default)
     {
         var values = GetAllActives(tracking);
 
-        return !orderDesc ? await values.OrderBy(orderby).ToListAsync() : await values.OrderByDescending(orderby).ToListAsync();
+        return !orderDesc ? await values.OrderBy(orderby).ToListAsync(cancellationToken) : await values.OrderByDescending(orderby).ToListAsync(cancellationToken);
     }
 
-    public async Task<IEnumerable<TEntity>> GetAllAsync<TKey>(Expression<Func<TEntity, bool>> expression, Expression<Func<TEntity, TKey>> orderby, bool orderDesc = false, bool tracking = true)
+    public async Task<IEnumerable<TEntity>> GetAllAsync<TKey>(Expression<Func<TEntity, bool>> expression, Expression<Func<TEntity, TKey>> orderby, bool orderDesc = false, bool tracking = true, CancellationToken cancellationToken = default)
     {
         var values = GetAllActives(tracking)
                               .Where(expression);
 
-        return !orderDesc ? await values.OrderBy(orderby).ToListAsync() : await values.OrderByDescending(orderby).ToListAsync();
+        return !orderDesc ? await values.OrderBy(orderby).ToListAsync(cancellationToken) : await values.OrderByDescending(orderby).ToListAsync(cancellationToken);
     }
 
-    public Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> expression, bool tracking = true)
+    public Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> expression, bool tracking = true, CancellationToken cancellationToken = default)
     {
-        return GetAllActives(tracking).FirstOrDefaultAsync(expression);
+        return GetAllActives(tracking).FirstOrDefaultAsync(expression, cancellationToken);
     }
 
-    public Task<TEntity?> GetByIdAsync(Guid id, bool tracking = true)
+    public Task<TEntity?> GetByIdAsync(Guid id, bool tracking = true, CancellationToken cancellationToken = default)
     {
-        return GetAllActives(tracking).FirstOrDefaultAsync(x => x.Id == id);
+        return GetAllActives(tracking).FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
-    public Task<TEntity> UpdateAsync(TEntity entity)
+    public Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         return Task.FromResult(_table.Update(entity).Entity);
     }
 
@@ -79,23 +81,23 @@ public class EFBaseRepository<TEntity> : IAsyncPaginateRepository<TEntity>, IAsy
         return _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<IEnumerable<TEntity>> GetAllAsync<TKey>(Expression<Func<TEntity, TKey>> orderby, bool orderDesc = false, int takeCount = 0, bool tracking = true)
+    public async Task<IEnumerable<TEntity>> GetAllAsync<TKey>(Expression<Func<TEntity, TKey>> orderby, bool orderDesc = false, int takeCount = 0, bool tracking = true, CancellationToken cancellationToken = default)
     {
         var values = GetAllActives(tracking);
 
         values = !orderDesc ? values.OrderBy(orderby) : values.OrderByDescending(orderby);
 
-        return takeCount > 0 ? await values.Take(takeCount).ToListAsync() : await values.ToListAsync();
+        return takeCount > 0 ? await values.Take(takeCount).ToListAsync(cancellationToken) : await values.ToListAsync(cancellationToken);
     }
 
-    public async Task<IEnumerable<TEntity>> GetAllAsync<TKey>(Expression<Func<TEntity, bool>> expression, Expression<Func<TEntity, TKey>> orderby, bool orderDesc = false, int takeCount = 0, bool tracking = true)
+    public async Task<IEnumerable<TEntity>> GetAllAsync<TKey>(Expression<Func<TEntity, bool>> expression, Expression<Func<TEntity, TKey>> orderby, bool orderDesc = false, int takeCount = 0, bool tracking = true, CancellationToken cancellationToken = default)
     {
         var values = GetAllActives(tracking)
                              .Where(expression);
 
         values = !orderDesc ? values.OrderBy(orderby) : values.OrderByDescending(orderby);
 
-        return takeCount > 0 ? await values.Take(takeCount).ToListAsync() : await values.ToListAsync();
+        return takeCount > 0 ? await values.Take(takeCount).ToListAsync(cancellationToken) : await values.ToListAsync(cancellationToken);
     }
 
     public void Delete(TEntity entity)
@@ -103,14 +105,14 @@ public class EFBaseRepository<TEntity> : IAsyncPaginateRepository<TEntity>, IAsy
         _table.Remove(entity);
     }
 
-    public Task<IPaginate<TEntity>> GetAllAsPaginateAsync(int index = 0, int size = 10, bool tracking = true)
+    public Task<IPaginate<TEntity>> GetAllAsPaginateAsync(int index = 0, int size = 10, bool tracking = true, CancellationToken cancellationToken = default)
     {
-        return GetAllActives(tracking).ToPaginateAsync(index, size);
+        return GetAllActives(tracking).ToPaginateAsync(index, size, cancellationToken);
     }
 
-    public Task<IPaginate<TEntity>> GetAllAsPaginateAsync(Expression<Func<TEntity, bool>> expression, int index = 0, int size = 10, bool tracking = true)
+    public Task<IPaginate<TEntity>> GetAllAsPaginateAsync(Expression<Func<TEntity, bool>> expression, int index = 0, int size = 10, bool tracking = true, CancellationToken cancellationToken = default)
     {
-        return GetAllActives(tracking).Where(expression).ToPaginateAsync(index, size);
+        return GetAllActives(tracking).Where(expression).ToPaginateAsync(index, size, cancellationToken);
     }
 
     protected IQueryable<TEntity> GetAllActives(bool tracking = true)

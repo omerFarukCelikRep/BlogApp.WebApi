@@ -7,7 +7,6 @@ using BlogApp.Core.Utilities.Constants;
 using BlogApp.DataAccess.Interfaces.Repositories;
 using BlogApp.Entities.DbSets;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -20,47 +19,32 @@ public class TokenService : ITokenService
 {
     private readonly JwtOptions _jwtOptions;
     private readonly IRefreshTokenRepository _refreshTokenRepository;
-    //private readonly TokenValidationParameters _tokenValidationParameters;
     private readonly JwtBearerOptions _jwtBearerOptions;
     public TokenService(IOptions<JwtOptions> options,
                         IRefreshTokenRepository refreshTokenRepository,
-                        //TokenValidationParameters tokenValidationParameters,
                         IOptions<JwtBearerOptions> jwtBearerOptions)
     {
         _jwtOptions = options.Value;
         _refreshTokenRepository = refreshTokenRepository;
-        //_tokenValidationParameters = tokenValidationParameters;
         _jwtBearerOptions = jwtBearerOptions.Value;
     }
-    public string GenerateJwtToken(IdentityUser<Guid> identityUser, Guid userId)
+    public string GenerateJwtToken(User user)
     {
-        var jwtHandler = new JwtSecurityTokenHandler();
+        var claims = new Claim[]
+       {
+            new (ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new(JwtRegisteredClaimNames.Email, user.Email!),
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()) //Used by the refreshed token
+       };
 
-        //Get security key
-        var key = Encoding.ASCII.GetBytes(_jwtOptions.Secret!);
+        var signInCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Secret!)), SecurityAlgorithms.HmacSha256);
 
-        var tokenDescriptor = new SecurityTokenDescriptor
-        {
-            Subject = new ClaimsIdentity(new[]
-            {
-                    new Claim("Id", userId.ToString()),
-                    new Claim(ClaimTypes.NameIdentifier, identityUser.Id.ToString()),
-                    new Claim(JwtRegisteredClaimNames.Sub, identityUser.Email!),
-                    new Claim(JwtRegisteredClaimNames.Email, identityUser.Email!),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()) //Used by the refreshed token
-            }),
-            Expires = DateTime.Now.Add(_jwtOptions.ExpiryTimeFrame), //TODO: Update expiration time
-            SigningCredentials = new SigningCredentials(
-                new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature //TODO: Review the algorithm
-            )
-        };
+        var token = new JwtSecurityToken(_jwtOptions.Issuer, _jwtOptions.Audience, claims, null, DateTime.Now.Add(_jwtOptions.ExpiryTimeFrame), signInCredentials);
 
-        var token = jwtHandler.CreateToken(tokenDescriptor);
-
-        return jwtHandler.WriteToken(token);
+        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    public async Task<AuthResult> VerifyTokenAsync(TokenRequestDto tokenRequestDto)
+    public async Task<AuthResult> VerifyTokenAsync(TokenRequestDto tokenRequestDto, CancellationToken cancellationToken = default)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
 
@@ -69,31 +53,20 @@ public class TokenService : ITokenService
             var validationResult = await tokenHandler.ValidateTokenAsync(tokenRequestDto.Token, _jwtBearerOptions.TokenValidationParameters);
 
             if (!ValidateEncryptionAlg(validationResult.SecurityToken))
-            {
                 return new AuthResult(false, validationResult.Exception.Message);
-            }
 
             if (!CheckTokenExpired(validationResult.Claims))
-            {
                 return new AuthResult(false, AuthenticationMessages.JWTTokenNotExpired);
-            }
 
-            var refreshToken = await CheckRefreshTokenExist(tokenRequestDto.RefreshToken);
-
+            var refreshToken = await CheckRefreshTokenExist(tokenRequestDto.RefreshToken, cancellationToken);
             if (refreshToken == null)
-            {
                 return new AuthResult(false, AuthenticationMessages.InvalidRefreshToken);
-            }
 
             if (refreshToken.IsExpired)
-            {
                 return new AuthResult(false, AuthenticationMessages.UsedRefreshToken);
-            }
 
             if (refreshToken.IsRevoked)
-            {
                 return new AuthResult(false, AuthenticationMessages.RevokedRefreshToken);
-            }
 
             return new AuthResult()
             {
@@ -106,11 +79,10 @@ public class TokenService : ITokenService
         {
             //TODO: Add logger
             return new AuthResult(false, ExceptionMessages.SomethingWentWrong, ex.Message);
-
         }
     }
 
-    public async Task<RefreshToken> GenerateRefreshTokenAsync(IdentityUser<Guid> user, string ipAddress)
+    public async Task<RefreshToken> GenerateRefreshTokenAsync(User user, string ipAddress, CancellationToken cancellationToken = default)
     {
         var refreshToken = new RefreshToken()
         {
@@ -119,74 +91,56 @@ public class TokenService : ITokenService
             UserId = user.Id
         };
 
-        var tokenIsNotUnique = await _refreshTokenRepository.AnyAsync(x => x.Token == refreshToken.Token);
-
-        if (tokenIsNotUnique)
-        {
-            return await GenerateRefreshTokenAsync(user, ipAddress);
-        }
-
-        return await _refreshTokenRepository.AddAsync(refreshToken);
+        var tokenIsNotUnique = await _refreshTokenRepository.AnyAsync(x => x.Token == refreshToken.Token, cancellationToken);
+        return tokenIsNotUnique ? await GenerateRefreshTokenAsync(user, ipAddress, cancellationToken) : await _refreshTokenRepository.AddAsync(refreshToken, cancellationToken);
     }
 
-    public async Task<RefreshToken?> GetActiveRefreshTokenAsync(IdentityUser<Guid> user)
-    {
-        var refreshTokens = await _refreshTokenRepository.GetAllAsync(x => x.UserId == user.Id, false);
-
-        return refreshTokens.FirstOrDefault(x => x.IsActive);
-    }
-
-    public async Task<Guid?> ValidateJwtTokenAsync(string token)
+    public async Task<Guid?> ValidateJwtTokenAsync(string token, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(token))
-        {
             return null;
-        }
 
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.UTF8.GetBytes(_jwtOptions.Secret!);
 
         var validationResult = await tokenHandler.ValidateTokenAsync(token, _jwtBearerOptions.TokenValidationParameters);
 
-        var jwtToken = (JwtSecurityToken)validationResult.SecurityToken;
-        bool parseResult = Guid.TryParse(jwtToken.Claims.FirstOrDefault(x => x.Type == "Id")?.Value, out Guid result);
-        if (!parseResult)
-        {
+        var jwtToken = validationResult?.SecurityToken;
+        if (jwtToken is null or not JwtSecurityToken)
             return null;
-        }
 
-        return result;
+        var userId = ((JwtSecurityToken)jwtToken).Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+        if (userId is null)
+            return null;
+
+        bool parseResult = Guid.TryParse(userId, out Guid result);
+        return parseResult ? result : null;
     }
 
-    public async Task<bool> UpdateRefreshTokenAsUsedAsync(string token)
+    public async Task<bool> UpdateRefreshTokenAsUsedAsync(string token, CancellationToken cancellationToken = default)
     {
-        var refreshToken = await _refreshTokenRepository.GetByRefreshTokenAsync(token);
+        var refreshToken = await _refreshTokenRepository.GetByRefreshTokenAsync(token, cancellationToken);
         if (refreshToken is null)
         {
             return false;
         }
 
-        return await _refreshTokenRepository.UpdateRefreshTokenAsUsedAsync(refreshToken);
+        return await _refreshTokenRepository.UpdateRefreshTokenAsUsedAsync(refreshToken, cancellationToken);
     }
 
     private bool ValidateEncryptionAlg(SecurityToken validatedToken)
     {
-        if (validatedToken is JwtSecurityToken jwtSecurityToken)
-        {
-            var result = jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase);
+        if (validatedToken is not JwtSecurityToken jwtSecurityToken)
+            return true;
 
-            if (!result)
-            {
-                return false;
-            }
-        }
-        return true;
+        var result = jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase);
+
+        return result;
     }
 
     private DateTime UnixTimeStampToDateTime(long unixDate)
     {
         DateTime dateTime = new(1970, 1, 1, 0, 0, 0, DateTimeKind.Local);
-
         dateTime = dateTime.AddSeconds(unixDate).ToUniversalTime();
 
         return dateTime;
@@ -196,29 +150,20 @@ public class TokenService : ITokenService
     {
         bool result = long.TryParse(claims.FirstOrDefault(x => x.Key == JwtRegisteredClaimNames.Exp).Value.ToString(), out long expiryUnixDate);
         if (!result)
-        {
             return result;
-        }
 
         var expiryDate = UnixTimeStampToDateTime(expiryUnixDate);
 
-        if (expiryDate > DateTime.Now)
-        {
-            return false;
-        }
-
-        return true;
+        return expiryDate <= DateTime.Now;
     }
 
-    private async Task<RefreshToken?> CheckRefreshTokenExist(string refreshToken)
+    private Task<RefreshToken?> CheckRefreshTokenExist(string refreshToken, CancellationToken cancellationToken = default)
     {
-        var refreshTokenExist = await _refreshTokenRepository.GetByRefreshTokenAsync(refreshToken);
+        return _refreshTokenRepository.GetByRefreshTokenAsync(refreshToken, cancellationToken);
+    }
 
-        if (refreshTokenExist == null)
-        {
-            return null;
-        }
-
-        return refreshTokenExist;
+    public Task<RefreshToken?> GetActiveRefreshTokenAsync(User user, CancellationToken cancellationToken = default)
+    {
+        return _refreshTokenRepository.GetAsync(x => x.UserId == user.Id, false, cancellationToken);
     }
 }

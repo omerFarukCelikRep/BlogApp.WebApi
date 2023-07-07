@@ -1,15 +1,14 @@
 ﻿using BlogApp.Authentication.Dtos.Incoming;
 using BlogApp.Authentication.Dtos.Outgoing;
 using BlogApp.Entities.DbSets;
-using Microsoft.AspNetCore.Identity;
 
 namespace BlogApp.Authentication.Interfaces.Services;
 public interface ITokenService
 {
-    string GenerateJwtToken(IdentityUser<Guid> identityUser, Guid userId);
-    Task<RefreshToken> GenerateRefreshTokenAsync(IdentityUser<Guid> user, string ipAddress);
-    Task<RefreshToken?> GetActiveRefreshTokenAsync(IdentityUser<Guid> user);
-    Task<bool> UpdateRefreshTokenAsUsedAsync(string token);
-    Task<Guid?> ValidateJwtTokenAsync(string token);
-    Task<AuthResult> VerifyTokenAsync(TokenRequestDto tokenRequestDto);
+    string GenerateJwtToken(User user);
+    Task<RefreshToken> GenerateRefreshTokenAsync(User user, string ipAddress, CancellationToken cancellationToken = default);
+    Task<RefreshToken?> GetActiveRefreshTokenAsync(User user, CancellationToken cancellationToken = default);
+    Task<bool> UpdateRefreshTokenAsUsedAsync(string token, CancellationToken cancellationToken = default);
+    Task<Guid?> ValidateJwtTokenAsync(string token, CancellationToken cancellationToken = default);
+    Task<AuthResult> VerifyTokenAsync(TokenRequestDto tokenRequestDto, CancellationToken cancellationToken = default);
 }

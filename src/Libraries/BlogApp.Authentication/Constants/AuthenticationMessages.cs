@@ -10,6 +10,6 @@ public struct AuthenticationMessages
 
     public const string EmailAlredyTaken = "Email already taken";
 
-    public const string PasswordIsNotValid = """Please choose a valid password. At least one digit [0-9]. At least one lowercase character [a-z]. At least one uppercase character [A-Z]. At least one special character [*.!@#$%^&(){}[]:;<>,.?/~_+-=|\]. At least 8 characters in length, but no more than 32.""";
+    public const string PasswordIsNotValid = "Please choose a valid password. At least one digit [0-9]. At least one lowercase character [a-z]. At least one uppercase character [A-Z]. At least one special character [#?!@$%^&*+-]. At least 8 characters in length, but no more than 32.";
     public const string PasswordMustMatch = "Password must match";
 }

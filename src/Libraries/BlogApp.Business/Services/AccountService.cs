@@ -112,10 +112,5 @@ public class AccountService : IAccountService
     }
 
 
-    private bool ValidatePassword(string password)
-    {
-        var regex = new Regex("""^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[*.!@$%^&(){}[]:;<>,.?/~_+-=|\]).{8,32}$""");
-
-        return regex.IsMatch(password);
-    }
+    private bool ValidatePassword(string password) => new Regex("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*+-]).{8,32}$").IsMatch(password);
 }

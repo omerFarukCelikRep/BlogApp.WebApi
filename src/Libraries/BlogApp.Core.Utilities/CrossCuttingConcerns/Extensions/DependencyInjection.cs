@@ -1,19 +1,22 @@
 ﻿using BlogApp.Core.Utilities.Caching.InMemory;
+using BlogApp.Core.Utilities.Caching.Interfaces;
 using BlogApp.Core.Utilities.Caching.Redis;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BlogApp.Core.Utilities.Caching.Extensions;
 public static class DependencyInjection
 {
-    public static IServiceCollection AddCacheServices(this IServiceCollection services)
+    public static IServiceCollection AddCacheServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddStackExchangeRedisCache(options =>
         {
             options.InstanceName = nameof(RedisCacheService);
-            options.Configuration = "127.0.0.1:6379";
+            options.Configuration = configuration["Redis:Host"];
         });
 
-        services.AddSingleton<AppMemoryCache>();
+        services.AddMemoryCache();
+        services.AddSingleton<ICacheService, InMemoryCacheService>();
         return services;
     }
 }

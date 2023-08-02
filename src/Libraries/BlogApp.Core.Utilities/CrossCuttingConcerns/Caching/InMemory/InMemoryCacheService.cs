@@ -10,8 +10,29 @@ public class InMemoryCacheService : ICacheService
         _memoryCache = memoryCache;
     }
 
+    public Task<TResult> ExecuteAsync<TResult>(Func<TResult> func, string key, DateTimeOffset expirationTime, CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+        var hasValue = _memoryCache.TryGetValue(key, out TResult cachedResult);
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+        if (hasValue && cachedResult is not null)
+            return Task.FromResult(cachedResult);
+
+        TResult? result = func();
+        var cacheEntryOptions = new MemoryCacheEntryOptions
+        {
+            AbsoluteExpiration = expirationTime
+        };
+
+        _memoryCache.Set(key, cacheEntryOptions);
+        return Task.FromResult(result);
+    }
+
     public Task<T?> Get<T>(string key, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         return Task.FromResult(_memoryCache.Get<T>(key));
     }
 

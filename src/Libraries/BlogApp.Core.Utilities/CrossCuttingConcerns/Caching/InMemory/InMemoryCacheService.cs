@@ -38,11 +38,13 @@ public class InMemoryCacheService : ICacheService
 
     public Task Remove(string key, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         return Task.FromResult(() => _memoryCache.Remove(key));
     }
 
     public Task Set<T>(string key, T value, DateTimeOffset expirationTime, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         var options = new MemoryCacheEntryOptions().SetAbsoluteExpiration(expirationTime);
 
         return Task.FromResult(_memoryCache.Set(key, value, options));

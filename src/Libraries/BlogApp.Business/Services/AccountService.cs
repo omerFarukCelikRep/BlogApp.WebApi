@@ -44,12 +44,7 @@ public class AccountService : IAccountService
         var refreshToken = await _tokenService.GenerateRefreshTokenAsync(user, registrationRequestDto.IpAddress, cancellationToken);
         await _userRepository.SaveChangesAsync(cancellationToken);
 
-        return new AuthResult
-        {
-            Success = true,
-            Token = jwtToken,
-            RefreshToken = refreshToken.Token!
-        };
+        return new AuthResult(success: true, token: jwtToken, refreshToken: refreshToken.Token!);
     }
 
     public async Task<AuthResult> AuthenticateAsync(UserLoginRequestDto loginRequestDto, string ipAddress, CancellationToken cancellationToken = default)
@@ -63,15 +58,10 @@ public class AccountService : IAccountService
             return new AuthResult(false, AuthenticationMessages.InvalidRequest);
 
         var jwtToken = _tokenService.GenerateJwtToken(user);
-        var refreshToken = await _tokenService.GetActiveRefreshTokenAsync(user)
+        var refreshToken = await _tokenService.GetActiveRefreshTokenAsync(user, cancellationToken)
                            ?? await _tokenService.GenerateRefreshTokenAsync(user, ipAddress, cancellationToken);
 
-        return new AuthResult
-        {
-            Success = true,
-            Token = jwtToken,
-            RefreshToken = refreshToken.Token!
-        };
+        return new AuthResult(success: true, token: jwtToken, refreshToken: refreshToken.Token!);
     }
 
     public async Task<IDataResult<User>> FindByEmailAsync(string email, CancellationToken cancellationToken = default)
@@ -88,9 +78,7 @@ public class AccountService : IAccountService
 
         var verifyResult = await _tokenService.VerifyTokenAsync(tokenRequestDto, cancellationToken);
         if (!verifyResult.Success)
-        {
             return verifyResult;
-        }
 
         bool markedAsUsed = await _tokenService.UpdateRefreshTokenAsUsedAsync(tokenRequestDto.RefreshToken, cancellationToken);
         if (!markedAsUsed)
@@ -101,14 +89,9 @@ public class AccountService : IAccountService
             return new AuthResult(false, ServiceMessages.UserNotFound);
 
         var jwtToken = _tokenService.GenerateJwtToken(user);
-        var refreshToken = await _tokenService.GenerateRefreshTokenAsync(user, tokenRequestDto.IpAddress);
+        var refreshToken = await _tokenService.GenerateRefreshTokenAsync(user, tokenRequestDto.IpAddress, cancellationToken);
 
-        return new AuthResult
-        {
-            Success = true,
-            Token = jwtToken,
-            RefreshToken = refreshToken.Token!
-        };
+        return new(success: true, token: jwtToken, refreshToken: refreshToken.Token!);
     }
 
 

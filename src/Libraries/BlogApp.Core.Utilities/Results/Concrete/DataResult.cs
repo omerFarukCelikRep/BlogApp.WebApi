@@ -2,7 +2,7 @@
 using System.Text.Json.Serialization;
 
 namespace BlogApp.Core.Utilities.Results.Concrete;
-public class DataResult<T> : Result, IDataResult<T>
+public record DataResult<T> : Result, IDataResult<T>
 {
     public T? Data { get; init; }
     public DataResult(T? data, bool isSuccess) : base(isSuccess)

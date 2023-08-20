@@ -68,17 +68,12 @@ public class TokenService : ITokenService
             if (refreshToken.IsRevoked)
                 return new AuthResult(false, AuthenticationMessages.RevokedRefreshToken);
 
-            return new AuthResult()
-            {
-                Success = true,
-                Token = tokenRequestDto.Token,
-                RefreshToken = tokenRequestDto.RefreshToken
-            };
+            return new AuthResult(success: true, token: tokenRequestDto.Token, refreshToken: tokenRequestDto.RefreshToken);
         }
         catch (Exception ex)
         {
             //TODO: Add logger
-            return new AuthResult(false, ExceptionMessages.SomethingWentWrong, ex.Message);
+            return new AuthResult(false, new string[] { ExceptionMessages.SomethingWentWrong, ex.Message });
         }
     }
 

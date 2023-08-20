@@ -1,24 +1,14 @@
 ﻿using BlogApp.Core.Utilities.Results.Interfaces;
 
 namespace BlogApp.Core.Utilities.Results.Concrete;
-public class Result : IResult
+public record Result : IResult
 {
     public bool IsSuccess { get; set; }
 
     public string Message { get; set; }
-    public Result()
+    public Result(bool success = false,string message = "")
     {
-        IsSuccess = false;
-        Message = string.Empty;
-    }
-
-    public Result(bool isSuccess) : this()
-    {
-        IsSuccess = isSuccess;
-    }
-
-    public Result(bool isSuccess, string message) : this(isSuccess)
-    {
+        IsSuccess = success;
         Message = message;
     }
 }

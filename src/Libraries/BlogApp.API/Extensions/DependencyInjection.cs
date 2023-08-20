@@ -1,5 +1,5 @@
-﻿using BlogApp.DataAccess.Contexts;
-using Microsoft.AspNetCore.RateLimiting;
+﻿using BlogApp.API.Constants;
+using BlogApp.DataAccess.Contexts;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Models;
 using System.Threading.RateLimiting;
@@ -54,13 +54,16 @@ public static class DependencyInjection
     {
         services.AddRateLimiter(options =>
         {
-            options.AddFixedWindowLimiter("Basic", fixedWindowsOptions =>
-            {
-                fixedWindowsOptions.Window = TimeSpan.FromSeconds(12);
-                fixedWindowsOptions.PermitLimit = 5;
-                fixedWindowsOptions.QueueLimit = 2;
-                fixedWindowsOptions.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-            });
+            options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+            options.AddPolicy(ServiceCollectionConstants.RateLimitConstans.PolicyName, context => RateLimitPartition.GetFixedWindowLimiter(
+                partitionKey: context.User.Identity?.Name?.ToString(),
+                factory: _ => new FixedWindowRateLimiterOptions
+                {
+                    PermitLimit = ServiceCollectionConstants.RateLimitConstans.PermitLimit,
+                    Window = TimeSpan.FromSeconds(ServiceCollectionConstants.RateLimitConstans.TimeWindow),
+                    QueueLimit = ServiceCollectionConstants.RateLimitConstans.QueueLimit,
+                    QueueProcessingOrder = QueueProcessingOrder.OldestFirst
+                }));
         });
 
         return services;

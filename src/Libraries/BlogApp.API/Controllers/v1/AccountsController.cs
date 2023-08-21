@@ -61,11 +61,12 @@ public class AccountsController : BaseController
 
     [HttpPost]
     [ProducesResponseType((int)HttpStatusCode.NoContent)]
-    public async Task<IActionResult> Logout(CancellationToken cancellationToken = default)
+    public Task<IActionResult> Logout(CancellationToken cancellationToken = default)
     {
-        RemoveRememberMe();
+        cancellationToken.ThrowIfCancellationRequested();
 
-        return NoContent();
+        RemoveRememberMe();
+        return Task.FromResult((IActionResult)NoContent());
     }
 
     private void SetRememberMe(string email)

@@ -50,7 +50,9 @@ public class BlogAppDbContext : DbContext
     private void AssignBaseProperties()
     {
         var entries = ChangeTracker.Entries<BaseEntity>();
-        var token = _context.HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").LastOrDefault();
+        var token = _context.HttpContext?.Request.Headers["Authorization"]
+            .FirstOrDefault()?.Split(" ")
+            .LastOrDefault();
         var userId = "UserNotFound";
         if (token != null)
         {

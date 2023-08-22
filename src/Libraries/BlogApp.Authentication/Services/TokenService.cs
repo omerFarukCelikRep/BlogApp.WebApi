@@ -28,8 +28,10 @@ public class TokenService : ITokenService
         _refreshTokenRepository = refreshTokenRepository;
         _jwtBearerOptions = jwtBearerOptions.Value;
     }
-    public string GenerateJwtToken(User user)
+    public Task<string> GenerateJwtToken(User user, bool rememberMe = false, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
+
         var claims = new Claim[]
        {
             new (ClaimTypes.NameIdentifier, user.Id.ToString()),
@@ -39,9 +41,14 @@ public class TokenService : ITokenService
 
         var signInCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Secret!)), SecurityAlgorithms.HmacSha256);
 
-        var token = new JwtSecurityToken(_jwtOptions.Issuer, _jwtOptions.Audience, claims, null, DateTime.Now.Add(_jwtOptions.ExpiryTimeFrame), signInCredentials);
+        var token = new JwtSecurityToken(_jwtOptions.Issuer,
+                                         _jwtOptions.Audience,
+                                         claims,
+                                         null,
+                                         rememberMe ? DateTime.Now.AddDays(15) : DateTime.Now.Add(_jwtOptions.ExpiryTimeFrame),
+                                         signInCredentials);
 
-        return new JwtSecurityTokenHandler().WriteToken(token);
+        return Task.FromResult(new JwtSecurityTokenHandler().WriteToken(token));
     }
 
     public async Task<AuthResult> VerifyTokenAsync(TokenRequestDto tokenRequestDto, CancellationToken cancellationToken = default)
@@ -81,13 +88,15 @@ public class TokenService : ITokenService
     {
         var refreshToken = new RefreshToken()
         {
-            Token = Convert.ToHexString(RandomNumberGenerator.GetBytes(64)),
-            ExpiryDate = DateTime.Now.AddDays(7),
+            Token = Convert.ToHexString(RandomNumberGenerator.GetBytes(64)),//TODO:Magic number
+            ExpiryDate = DateTime.Now.AddDays(7), //TODO:Magic number
             UserId = user.Id
         };
 
         var tokenIsNotUnique = await _refreshTokenRepository.AnyAsync(x => x.Token == refreshToken.Token, cancellationToken);
-        return tokenIsNotUnique ? await GenerateRefreshTokenAsync(user, ipAddress, cancellationToken) : await _refreshTokenRepository.AddAsync(refreshToken, cancellationToken);
+        return tokenIsNotUnique
+            ? await GenerateRefreshTokenAsync(user, ipAddress, cancellationToken)
+            : await _refreshTokenRepository.AddAsync(refreshToken, cancellationToken);
     }
 
     public async Task<Guid?> ValidateJwtTokenAsync(string token, CancellationToken cancellationToken = default)

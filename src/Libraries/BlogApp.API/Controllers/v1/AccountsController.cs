@@ -7,7 +7,6 @@ using System.Net;
 namespace BlogApp.API.Controllers.v1;
 public class AccountsController : BaseController
 {
-    private const int DefaultCookieExpireTime = 30;
     private const string RememberMeKey = "RememberMe";
 
     private readonly IAccountService _accountService;
@@ -39,9 +38,6 @@ public class AccountsController : BaseController
         if (!authenticationResult.Success)
             return Unauthorized(authenticationResult);
 
-        if (loginRequestDto.RememberMe)
-            SetRememberMe(loginRequestDto.Email);
-
         return Ok(authenticationResult);
     }
 
@@ -67,16 +63,6 @@ public class AccountsController : BaseController
 
         RemoveRememberMe();
         return Task.FromResult((IActionResult)NoContent());
-    }
-
-    private void SetRememberMe(string email)
-    {
-        var options = new CookieOptions
-        {
-            Expires = DateTimeOffset.Now.AddDays(DefaultCookieExpireTime)
-        };
-
-        Response.Cookies.Append(RememberMeKey, email, options);
     }
 
     private void RemoveRememberMe() => Response.Cookies.Delete(RememberMeKey);

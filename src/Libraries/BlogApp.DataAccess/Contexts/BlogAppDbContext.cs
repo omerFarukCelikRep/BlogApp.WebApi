@@ -3,8 +3,6 @@ using BlogApp.Core.Utilities.Authentication;
 using BlogApp.Entities.Configurations;
 using BlogApp.Entities.DbSets;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
@@ -26,6 +24,7 @@ public class BlogAppDbContext : DbContext
     public DbSet<PublishedArticle> PublishedArticles { get; set; } = null!;
     public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
     public DbSet<Topic> Topics { get; set; } = null!;
+    public DbSet<UserSession> UserSessions { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

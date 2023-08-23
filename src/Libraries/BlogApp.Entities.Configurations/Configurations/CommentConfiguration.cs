@@ -1,4 +1,4 @@
-﻿namespace BlogApp.Entities.Configurations;
+﻿namespace BlogApp.Entities.Configurations.Configurations;
 public class CommentConfiguration : AuditableEntityConfiguration<Comment>
 {
     private const string TableName = "Comments";

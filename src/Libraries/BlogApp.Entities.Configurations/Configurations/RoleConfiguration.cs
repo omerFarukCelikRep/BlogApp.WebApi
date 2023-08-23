@@ -1,4 +1,4 @@
-﻿namespace BlogApp.Entities.Configurations;
+﻿namespace BlogApp.Entities.Configurations.Configurations;
 public class RoleConfiguration : AuditableEntityConfiguration<Role>
 {
     public const string TableName = "Roles";

@@ -1,6 +1,6 @@
 ﻿using BlogApp.Entities.Configurations.SeedData;
 
-namespace BlogApp.Entities.Configurations;
+namespace BlogApp.Entities.Configurations.Configurations;
 
 public class ArticleConfiguration : AuditableEntityConfiguration<Article>
 {

@@ -1,4 +1,4 @@
-﻿namespace BlogApp.Entities.Configurations;
+﻿namespace BlogApp.Entities.Configurations.Configurations;
 public class UserFollowedTopicConfiguration : BaseEntityConfiguration<UserFollowedTopic>
 {
     private const string TableName = "UserFollowedTopics";

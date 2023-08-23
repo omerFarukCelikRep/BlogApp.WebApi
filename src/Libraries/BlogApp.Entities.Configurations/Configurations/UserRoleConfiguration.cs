@@ -1,4 +1,4 @@
-﻿namespace BlogApp.Entities.Configurations;
+﻿namespace BlogApp.Entities.Configurations.Configurations;
 public class UserRoleConfiguration : BaseEntityConfiguration<UserRole>
 {
     public const string TableName = "UserRoles";

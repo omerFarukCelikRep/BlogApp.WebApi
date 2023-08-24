@@ -17,10 +17,12 @@ namespace BlogApp.Business.Services;
 public class AccountService : IAccountService
 {
     private readonly IUserRepository _userRepository;
+    private readonly IUserSessionRepository _userSessionRepository;
     private readonly ITokenService _tokenService;
-    public AccountService(IUserRepository userRepository, ITokenService tokenService)
+    public AccountService(IUserRepository userRepository, IUserSessionRepository userSessionRepository, ITokenService tokenService)
     {
         _userRepository = userRepository;
+        _userSessionRepository = userSessionRepository;
         _tokenService = tokenService;
     }
 
@@ -60,6 +62,15 @@ public class AccountService : IAccountService
         var jwtToken = await _tokenService.GenerateJwtToken(user, loginRequestDto.RememberMe, cancellationToken);
         var refreshToken = await _tokenService.GetActiveRefreshTokenAsync(user, cancellationToken)
                            ?? await _tokenService.GenerateRefreshTokenAsync(user, ipAddress, cancellationToken);
+
+        var userSession = new UserSession
+        {
+            ExpireDate = loginRequestDto.RememberMe ? DateTime.Now.AddDays(30) : DateTime.Now.AddMinutes(30),
+            IpAddress = ipAddress,
+            Token = jwtToken,
+            UserId = user.Id,
+        };
+        await _userSessionRepository.AddAsync(userSession, cancellationToken);
 
         return new AuthResult(success: true, token: jwtToken, refreshToken: refreshToken.Token!);
     }

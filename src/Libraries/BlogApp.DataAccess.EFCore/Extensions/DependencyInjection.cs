@@ -12,6 +12,7 @@ public static class DependencyInjection
         services.AddTransient<IArticleRepository, ArticleRepository>();
         services.AddTransient<IPublishedArticleRepository, PublishedArticleRepository>();
         services.AddTransient<ICommentRepository, CommentRepository>();
+        services.AddTransient<IUserSessionRepository, UserSessionRepository>();
 
         return services;
     }

@@ -10,7 +10,7 @@ public class DatabaseValidationException : Exception
 
     public DatabaseValidationException(string? message, Exception? innerException) : base(message, innerException) { }
 
-    public DatabaseValidationException(string message, params object[] args) : base(String.Format(CultureInfo.CurrentCulture, message, args)) { }
+    public DatabaseValidationException(string message, params object[] args) : base(string.Format(CultureInfo.CurrentCulture, message, args)) { }
 
     protected DatabaseValidationException(SerializationInfo info, StreamingContext context) : base(info, context) { }
 }

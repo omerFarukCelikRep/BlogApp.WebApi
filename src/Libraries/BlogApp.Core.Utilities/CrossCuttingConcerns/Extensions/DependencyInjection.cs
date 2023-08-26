@@ -1,4 +1,5 @@
 ﻿using BlogApp.Core.Utilities.Caching.Interfaces;
+using BlogApp.Core.Utilities.Constants;
 using BlogApp.Core.Utilities.CrossCuttingConcerns.Caching;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,7 +12,7 @@ public static class DependencyInjection
         services.AddStackExchangeRedisCache(options =>
         {
             options.InstanceName = nameof(DistributedCacheService);
-            options.Configuration = configuration["Redis:Connection"];
+            options.Configuration = configuration[DatabaseConstants.RedisConnection];
         });
 
         //services.AddMemoryCache();

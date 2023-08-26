@@ -39,7 +39,8 @@ public class DistributedCacheService : ICacheService
 
     public Task Set<T>(string key, T value, DateTimeOffset expirationTime, CancellationToken cancellationToken = default)
     {
-        cancellationToken.ThrowIfCancellationRequested();
+        if (cancellationToken.IsCancellationRequested)
+            return Task.FromCanceled<T>(cancellationToken);
 
         return _database.StringSetAsync(key, JsonSerializer.Serialize(value), expirationTime.Offset);
     }

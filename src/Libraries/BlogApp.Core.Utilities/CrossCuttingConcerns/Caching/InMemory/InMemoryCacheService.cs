@@ -12,7 +12,8 @@ public class InMemoryCacheService : ICacheService
 
     public Task<TResult> ExecuteAsync<TResult>(Func<TResult> func, string key, DateTimeOffset expirationTime, CancellationToken cancellationToken = default)
     {
-        cancellationToken.ThrowIfCancellationRequested();
+        if (cancellationToken.IsCancellationRequested)
+            return Task.FromCanceled<TResult>(cancellationToken);
 
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
         var hasValue = _memoryCache.TryGetValue(key, out TResult cachedResult);
@@ -32,19 +33,25 @@ public class InMemoryCacheService : ICacheService
 
     public Task<T?> Get<T>(string key, CancellationToken cancellationToken = default)
     {
-        cancellationToken.ThrowIfCancellationRequested();
+        if (cancellationToken.IsCancellationRequested)
+            return Task.FromCanceled<T?>(cancellationToken);
+
         return Task.FromResult(_memoryCache.Get<T>(key));
     }
 
     public Task Remove(string key, CancellationToken cancellationToken = default)
     {
-        cancellationToken.ThrowIfCancellationRequested();
+        if (cancellationToken.IsCancellationRequested)
+            return Task.FromCanceled(cancellationToken);
+
         return Task.FromResult(() => _memoryCache.Remove(key));
     }
 
     public Task Set<T>(string key, T value, DateTimeOffset expirationTime, CancellationToken cancellationToken = default)
     {
-        cancellationToken.ThrowIfCancellationRequested();
+        if (cancellationToken.IsCancellationRequested)
+            return Task.FromCanceled<T>(cancellationToken);
+
         var options = new MemoryCacheEntryOptions().SetAbsoluteExpiration(expirationTime);
 
         return Task.FromResult(_memoryCache.Set(key, value, options));

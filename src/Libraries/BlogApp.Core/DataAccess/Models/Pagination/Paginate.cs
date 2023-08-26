@@ -5,6 +5,8 @@ public class Paginate<TModel> : IPaginate<TModel>
 {
     internal Paginate(IEnumerable<TModel> source, int index, int size)
     {
+        ArgumentNullException.ThrowIfNull(source);
+
         if (source is IQueryable<TModel> querable)
         {
             Index = index;

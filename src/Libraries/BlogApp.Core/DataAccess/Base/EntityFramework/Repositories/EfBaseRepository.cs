@@ -83,7 +83,7 @@ public class EFBaseRepository<TEntity> : IAsyncPaginateRepository<TEntity>, IAsy
     public async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> expression, bool tracking = true, CancellationToken cancellationToken = default)
     {
         return await GetAll(tracking).Where(expression)
-                                            .ToListAsync(cancellationToken);
+                                     .ToListAsync(cancellationToken);
     }
 
     /// <summary>
@@ -124,8 +124,10 @@ public class EFBaseRepository<TEntity> : IAsyncPaginateRepository<TEntity>, IAsy
                               .Where(expression);
 
         return !orderDesc
-            ? await values.OrderBy(orderby).ToListAsync(cancellationToken)
-            : await values.OrderByDescending(orderby).ToListAsync(cancellationToken);
+            ? await values.OrderBy(orderby)
+                          .ToListAsync(cancellationToken)
+            : await values.OrderByDescending(orderby)
+                          .ToListAsync(cancellationToken);
     }
 
     /// <summary>
@@ -273,7 +275,7 @@ public class EFBaseRepository<TEntity> : IAsyncPaginateRepository<TEntity>, IAsy
     public Task<IPaginate<TEntity>> GetAllAsPaginateAsync(Expression<Func<TEntity, bool>> expression, int index = 0, int size = 10, bool tracking = true, CancellationToken cancellationToken = default)
     {
         return GetAll(tracking).Where(expression)
-                                      .ToPaginateAsync(index, size, cancellationToken);
+                               .ToPaginateAsync(index, size, cancellationToken);
     }
 
     /// <summary>

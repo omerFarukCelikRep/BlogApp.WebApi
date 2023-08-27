@@ -14,7 +14,7 @@ public class Paginate<TModel> : IPaginate<TModel>
             Count = querable.Count();
             Pages = (int)Math.Ceiling(Count / (double)Size);
 
-            Items = querable.Skip(Index * Size).Take(Size).ToList().AsReadOnly();
+            Items = querable.Take((Index * Size)..Size).ToList().AsReadOnly();
         }
         else
         {
@@ -23,7 +23,7 @@ public class Paginate<TModel> : IPaginate<TModel>
             Size = size;
             Count = enumerable.Length;
             Pages = (int)Math.Ceiling(Count / (double)Size);
-            Items = enumerable.Skip(Index * Size).Take(Size).ToList();
+            Items = enumerable.Take((Index * Size)..Size).ToList();
         }
     }
     internal Paginate(IEnumerable<TModel> source, int index, int size, int count) : this(source, index, size)

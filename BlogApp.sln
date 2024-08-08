@@ -8,6 +8,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{FB464ADA-526A-49CB-B31D-730D808EDED0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8CE948F1-FA91-41B2-9C7B-088C1B5AC1F8}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Packages.props = Directory.Packages.props
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{9F63B3C1-88FE-407B-84A1-5D505582CAE0}"
 EndProject

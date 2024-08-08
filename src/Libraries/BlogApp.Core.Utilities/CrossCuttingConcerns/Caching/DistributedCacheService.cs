@@ -3,13 +3,10 @@ using StackExchange.Redis;
 using System.Text.Json;
 
 namespace BlogApp.Core.Utilities.CrossCuttingConcerns.Caching;
-public class DistributedCacheService : ICacheService
+public class DistributedCacheService(IConnectionMultiplexer redisConnection)
+    : ICacheService
 {
-    private readonly IDatabase _database;
-    public DistributedCacheService(IConnectionMultiplexer redisConnection)
-    {
-        _database = redisConnection.GetDatabase();
-    }
+    private readonly IDatabase _database = redisConnection.GetDatabase();
 
     public Task<TResult> ExecuteAsync<TResult>(Func<TResult> func, string key, DateTimeOffset expirationTime, CancellationToken cancellationToken = default)
     {
@@ -24,7 +21,7 @@ public class DistributedCacheService : ICacheService
         if (string.IsNullOrWhiteSpace(value))
             return default;
 
-        var result = JsonSerializer.Deserialize<T>(value);
+        var result = JsonSerializer.Deserialize<T>(value!);
         return result;
     }
 

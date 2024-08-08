@@ -1,7 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace BlogApp.DataAccess.EFCore.Repositories;
+﻿namespace BlogApp.DataAccess.EFCore.Repositories;
 public class UserSessionRepository : EFBaseRepository<UserSession>, IUserSessionRepository
 {
-    public UserSessionRepository(DbContext context) : base(context) { }
+    public UserSessionRepository(BlogAppDbContext context) : base(context) { }
 }

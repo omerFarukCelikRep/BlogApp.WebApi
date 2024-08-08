@@ -5,17 +5,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BlogApp.API.Controllers.v1;
 
-public class CommentsController : BaseController
+public class CommentsController(ICommentService commentService)
+    : BaseController
 {
-    private readonly ICommentService _commentService;
-    public CommentsController(ICommentService commentService)
-    {
-        _commentService = commentService;
-    }
-
     [HttpPost]
     [AllowAnonymous]
-    public async Task<IActionResult> Add([FromBody] CommentCreateDto commentCreateDto)
+    public async Task<IActionResult> Add([FromBody] CommentCreateDto commentCreateDto, CancellationToken cancellationToken = default)
     {
         if (!ModelState.IsValid)
         {
@@ -28,16 +23,16 @@ public class CommentsController : BaseController
         }
 
         commentCreateDto.UserIpAdress = GetIpAddress();
-        var result = await _commentService.AddAsync(commentCreateDto);
+        var result = await commentService.AddAsync(commentCreateDto, cancellationToken);
 
         return GetDataResult(result);
     }
 
     [HttpGet("{articleId:guid}")]
     [AllowAnonymous]
-    public async Task<IActionResult> GetAllByArticleId([FromRoute] Guid articleId)
+    public async Task<IActionResult> GetAllByArticleId([FromRoute] Guid articleId, CancellationToken cancellationToken = default)
     {
-        var result = await _commentService.GetAllByArticleIdAsync(articleId);
+        var result = await commentService.GetAllByArticleIdAsync(articleId, cancellationToken);
 
         return GetDataResult(result);
     }

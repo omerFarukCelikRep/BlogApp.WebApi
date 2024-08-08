@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Elastic.Serilog.Sinks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Serilog;
-using Serilog.Sinks.Elasticsearch;
 using System.Reflection;
 
 namespace BlogApp.Core.Utilities.LoggerServices.Serilog.Extensions;
@@ -23,6 +23,7 @@ public static class DependencyInjection
 
     private static ElasticsearchSinkOptions ConfigureElasticSink(IConfiguration configuration, string environment)
     {
+        new ElasticsearchSinkOptions()
         return new ElasticsearchSinkOptions(new Uri(configuration["ElasticConfiguration:Uri"]!))
         {
             AutoRegisterTemplate = true,

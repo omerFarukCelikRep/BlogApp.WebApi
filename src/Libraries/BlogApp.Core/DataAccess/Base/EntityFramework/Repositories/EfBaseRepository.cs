@@ -166,11 +166,11 @@ public class EFBaseRepository<TEntity> : IAsyncPaginateRepository<TEntity>, IAsy
     /// <returns>
     /// <see cref="TEntity"/>
     /// </returns>
-    public Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
+    public ValueTask<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
-        return cancellationToken.IsCancellationRequested
-            ? Task.FromCanceled<TEntity>(cancellationToken)
-            : Task.FromResult(_table.Update(entity).Entity);
+        cancellationToken.ThrowIfCancellationRequested();
+
+        return new ValueTask<TEntity>(_table.Update(entity).Entity);
     }
 
     /// <summary>

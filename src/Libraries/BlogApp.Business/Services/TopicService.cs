@@ -8,115 +8,102 @@ using BlogApp.Entities.Dtos.Topics;
 using System.Linq.Expressions;
 
 namespace BlogApp.Business.Concrete;
-public class TopicService : ITopicService
+public class TopicService(ITopicRepository topicRepository)
+    : ITopicService
 {
-    private readonly ITopicRepository _topicRepository;
-
-    public TopicService(ITopicRepository topicRepository)
+    public async Task<IResult<TopicDto?>> AddAsync(TopicCreateDto createDto, CancellationToken cancellationToken = default)
     {
-        _topicRepository = topicRepository;
-    }
-    public async Task<IDataResult<TopicDto>> AddAsync(TopicCreateDto createDto)
-    {
-        if (await _topicRepository.AnyAsync(x => string.Equals(x.Name, createDto.Name)))
-        {
-            return new ErrorDataResult<TopicDto>("Duplicate Name"); //TODO: Magic string
-        }
+        if (await topicRepository.AnyAsync(x => string.Equals(x.Name, createDto.Name, StringComparison.OrdinalIgnoreCase), cancellationToken))
+            return Result<TopicDto?>.Failure(new("400", "Duplicate Name")); //TODO: Magic string
 
         var topic = ObjectMapper.Mapper.Map<Topic>(createDto);
-
-        var addedTopic = await _topicRepository.AddAsync(topic);
-
-        _ = await _topicRepository.SaveChangesAsync();
+        var addedTopic = await topicRepository.AddAsync(topic, cancellationToken);
+        _ = await topicRepository.SaveChangesAsync(cancellationToken);
 
         var topicDto = ObjectMapper.Mapper.Map<TopicDto>(addedTopic);
-
-        return new SuccessDataResult<TopicDto>(topicDto, "Successfully Added");  //TODO:Magic string
+        return Result<TopicDto>.Success(topicDto, "Successfully Added");  //TODO:Magic string
     }
 
-    public async Task<IResult> DeleteAsync(Guid id)
+    public async Task<IResult> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var topic = await _topicRepository.GetByIdAsync(id);
+        var topic = await topicRepository.GetByIdAsync(id, cancellationToken: cancellationToken);
         if (topic is null)
+            return Result.Failure(new("404", "Topic Not Found")); //TODO: Magic string
+
+        await topicRepository.DeleteAsync(topic, cancellationToken);
+        await topicRepository.SaveChangesAsync(cancellationToken);
+
+        return Result.Success("Successfully Deleted"); // TODO: Magic string
+    }
+
+    public async Task<IResult<List<TopicListDto>?>> GetAllAsync(CancellationToken cancellationToken = default)
+    {
+        var dbTopicList = await topicRepository.GetAllAsync(false, cancellationToken);
+
+        var topics = ObjectMapper.Mapper.Map<List<TopicListDto>>(dbTopicList);
+
+        return Result<List<TopicListDto>>.Success(topics, "Topics Listed"); //TODO: Magic string
+    }
+
+    public async Task<IResult<List<TopicListDto>?>> GetAllAsync(Expression<Func<Topic, bool>> expression, CancellationToken cancellationToken = default)
+    {
+        var dbTopicList = await topicRepository.GetAllAsync(expression, false, cancellationToken);
+
+        if (dbTopicList == null || !dbTopicList.Any())
         {
-            return new ErrorResult("Topic Not Found"); //TODO: Magic string
+            return Result<List<TopicListDto>>.Failure(new("404", "Topics couldn't find")); //TODO: Magic string
         }
 
-        await _topicRepository.DeleteAsync(topic);
-        await _topicRepository.SaveChangesAsync();
+        var topics = ObjectMapper.Mapper.Map<List<TopicListDto>>(dbTopicList);
 
-        return new SuccessResult("Successfully Deleted"); // TODO: Magic string
+        return Result<List<TopicListDto>>.Success(topics, "Topics Listed"); //TODO: Magic string
     }
 
-    public async Task<IDataResult<IEnumerable<TopicListDto>>> GetAllAsync()
+    public async Task<IResult<TopicDto?>> GetAsync(Expression<Func<Topic, bool>> expression, CancellationToken cancellationToken = default)
     {
-        var dbTopicList = await _topicRepository.GetAllAsync(false);
-
-        var topics = ObjectMapper.Mapper.Map<IEnumerable<TopicListDto>>(dbTopicList);
-
-        return new SuccessDataResult<IEnumerable<TopicListDto>>(topics, "Topics Listed"); //TODO: Magic string
-    }
-
-    public async Task<IDataResult<IEnumerable<TopicListDto>>> GetAllAsync(Expression<Func<Topic, bool>> expression)
-    {
-        var dbTopicList = await _topicRepository.GetAllAsync(expression, false);
-
-        //if (dbTopicList is not List<Topic> { Count: <= 0 }) null ve eleman sayısı kontrolü
-        if (dbTopicList == null || dbTopicList.Count() <= 0)
-        {
-            return new ErrorDataResult<IEnumerable<TopicListDto>>("Topics couldn't find"); //TODO: Magic string
-        }
-
-        var topics = ObjectMapper.Mapper.Map<IEnumerable<TopicListDto>>(dbTopicList);
-
-        return new SuccessDataResult<IEnumerable<TopicListDto>>(topics, "Topics Listed"); //TODO: Magic string
-    }
-
-    public async Task<IDataResult<TopicDto>> GetAsync(Expression<Func<Topic, bool>> expression)
-    {
-        var dbTopic = await _topicRepository.GetAsync(expression, false);
+        var dbTopic = await topicRepository.GetAsync(expression, false, cancellationToken);
 
         if (dbTopic == null)
         {
-            return new ErrorDataResult<TopicDto>("Topic couldn't find"); //TODO: Magic string
+            return Result<TopicDto>.Failure(new("404", "Topic couldn't find")); //TODO: Magic string
         }
 
         var topic = ObjectMapper.Mapper.Map<TopicDto>(dbTopic);
 
-        return new SuccessDataResult<TopicDto>(topic, "Successfully getted"); //TODO: Magic string
+        return Result<TopicDto>.Success(topic, "Successfully getted"); //TODO: Magic string
     }
 
-    public async Task<IDataResult<TopicDto>> GetByIdAsync(Guid id)
+    public async Task<IResult<TopicDto?>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var dbTopic = await _topicRepository.GetByIdAsync(id, false);
+        var dbTopic = await topicRepository.GetByIdAsync(id, false, cancellationToken);
 
         if (dbTopic == null)
         {
-            return new ErrorDataResult<TopicDto>("Topic couldn't find"); //TODO: Magic string
+            return Result<TopicDto>.Failure(new("404", "Topic couldn't find")); //TODO: Magic string
         }
 
         var topic = ObjectMapper.Mapper.Map<TopicDto>(dbTopic);
 
-        return new SuccessDataResult<TopicDto>(topic, "Topic Successfully getted"); //TODO: Magic string
+        return Result<TopicDto>.Success(topic, "Topic Successfully getted"); //TODO: Magic string
     }
 
-    public async Task<IDataResult<TopicDto>> UpdateAsync(TopicUpdateDto updateDto)
+    public async Task<IResult<TopicDto?>> UpdateAsync(TopicUpdateDto updateDto, CancellationToken cancellationToken = default)
     {
-        var dbTopic = await _topicRepository.GetByIdAsync(updateDto.Id);
+        var dbTopic = await topicRepository.GetByIdAsync(updateDto.Id, cancellationToken: cancellationToken);
 
-        if (dbTopic == null)
+        if (dbTopic is null)
         {
-            return new ErrorDataResult<TopicDto>("Topic couldn't find"); //TODO: Magic string
+            return Result<TopicDto>.Failure(new("404", "Topic couldn't find")); //TODO: Magic string
         }
 
         var updatedTopic = ObjectMapper.Mapper.Map(updateDto, dbTopic);
 
-        updatedTopic = await _topicRepository.UpdateAsync(updatedTopic);
+        updatedTopic = await topicRepository.UpdateAsync(updatedTopic, cancellationToken);
 
-        _ = await _topicRepository.SaveChangesAsync();
+        _ = await topicRepository.SaveChangesAsync(cancellationToken);
 
         var topic = ObjectMapper.Mapper.Map<TopicDto>(updatedTopic);
 
-        return new SuccessDataResult<TopicDto>(topic, "Topic Successfully updated"); //TODO: Magic string
+        return Result<TopicDto>.Success(topic, "Topic Successfully updated"); //TODO: Magic string
     }
 }

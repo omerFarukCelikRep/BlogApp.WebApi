@@ -1,16 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="NLog.Extensions.Logging" Version="5.3.3" />
-		<PackageReference Include="Serilog.AspNetCore" Version="7.0.0" />
-		<PackageReference Include="Serilog.Sinks.Elasticsearch" Version="9.0.3" />
-		<PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+		<PackageReference Include="Elastic.Serilog.Sinks" />
+		<PackageReference Include="NLog.Extensions.Logging" />
+		<PackageReference Include="Serilog.AspNetCore" />
+		<PackageReference Include="Serilog.Sinks.File" />
 	</ItemGroup>
 
 </Project>

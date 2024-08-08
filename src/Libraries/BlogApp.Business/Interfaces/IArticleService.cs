@@ -5,14 +5,14 @@ using BlogApp.Entities.Dtos.PublishedArticles;
 namespace BlogApp.Business.Interfaces;
 public interface IArticleService
 {
-    Task<IDataResult<List<PublishedArticleByUserListDto>>> GetAllPublishedAsync();
-    Task<IDataResult<List<PublishedArticleByUserListDto>>> GetAllPublishedByUserIdAsync(Guid userId);
-    Task<IDataResult<List<ArticleDto>>> GetTrendsAsync(CancellationToken cancellationToken = default);
-    Task<IDataResult<PublishedArticleDetailsDto>> GetByIdAsync(Guid id);
-    Task<IResult> PublishAsync(Guid articleId);
-    Task<IResult> AddAsync(ArticleCreateDto createArticleDto);
-    Task<IDataResult<List<ArticleUnpublishedListDto>>> GetAllUnpublishedByUserIdAsync(Guid userId);
-    Task<IDataResult<ArticleUnpublishedDetailsDto>> GetUnpublishedByIdAsync(Guid id);
-    Task<IDataResult<List<PublishedArticleListDto>>> GetAllPublishedByTopicNameAsync(string topicName);
-    Task<IDataResult<List<PublishedArticleShortDetailsDto>>> GetRandomArticlesWithShortDetails();
+    Task<IResult<List<PublishedArticleByUserListDto>?>> GetAllPublishedAsync(CancellationToken cancellationToken = default);
+    Task<IResult<List<PublishedArticleByUserListDto>?>> GetAllPublishedByUserIdAsync(Guid userId, CancellationToken cancellationToken = default);
+    Task<IResult<List<ArticleDto>?>> GetTrendsAsync(CancellationToken cancellationToken = default);
+    Task<IResult<PublishedArticleDetailsDto?>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<IResult> PublishAsync(Guid articleId, CancellationToken cancellationToken = default);
+    Task<IResult> AddAsync(ArticleCreateDto createArticleDto, CancellationToken cancellationToken = default);
+    Task<IResult<List<ArticleUnpublishedListDto>?>> GetAllUnpublishedByUserIdAsync(Guid userId, CancellationToken cancellationToken = default);
+    Task<IResult<ArticleUnpublishedDetailsDto?>> GetUnpublishedByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<IResult<List<PublishedArticleListDto>?>> GetAllPublishedByTopicNameAsync(string topicName, CancellationToken cancellationToken = default);
+    Task<IResult<List<PublishedArticleShortDetailsDto>?>> GetRandomArticlesWithShortDetails(CancellationToken cancellationToken = default);
 }

@@ -8,26 +8,24 @@ public class DataGenerator
     private const string DefaultPassword = "newPassword+0";
     private static (byte[], string) DefaultHash = PasswordHelper.HashPassword(DefaultPassword);
 
-    private static List<Topic> _topics = TopicGenerator.Generate(20);
-    private static List<User> _users = UserGenerator.Generate(20);
-    private static List<Article> _articles = ArticleGenerator.Generate(100);
-    private static List<ArticleTopic> _articleTopics = ArticleTopicGenerator.Generate(20);
+    private static readonly List<Topic> _topics = TopicGenerator.Generate(20);
+    private static readonly List<User> _users = UserGenerator.Generate(20);
+    private static readonly List<Article> _articles = ArticleGenerator.Generate(100);
+    private static readonly List<ArticleTopic> _articleTopics = ArticleTopicGenerator.Generate(20);
 
     public static IReadOnlyCollection<Topic> Topics => _topics.AsReadOnly();
     public static IReadOnlyCollection<User> Users => _users.AsReadOnly();
     public static IReadOnlyCollection<Article> Articles => _articles.AsReadOnly();
     public static IReadOnlyCollection<ArticleTopic> ArticleTopics => _articleTopics.DistinctBy(at => new { at.TopicId, at.ArticleId }).ToList().AsReadOnly();
 
-#pragma warning disable CS0618 // Type or member is obsolete
     public static Faker<Topic> TopicGenerator => new Faker<Topic>()
          .RuleFor(t => t.Id, _ => Guid.NewGuid())
          .RuleFor(t => t.CreatedBy, _ => Guid.Empty.ToString())
          .RuleFor(t => t.CreatedDate, f => f.Date.Past())
          .RuleFor(t => t.Description, f => f.Lorem.Text())
          .RuleFor(t => t.Status, _ => Status.Added)
-         .RuleFor(t => t.Thumbnail, f => f.Image.Abstract())
+         .RuleFor(t => t.Thumbnail, f => f.Image.PicsumUrl())
          .RuleFor(t => t.Name, f => f.Hacker.Adjective());
-#pragma warning restore CS0618 // Type or member is obsolete
 
     public static Faker<ArticleTopic> ArticleTopicGenerator => new Faker<ArticleTopic>()
         .RuleFor(at => at.Id, _ => Guid.NewGuid())

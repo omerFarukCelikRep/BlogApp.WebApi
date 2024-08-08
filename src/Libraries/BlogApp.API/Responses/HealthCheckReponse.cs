@@ -3,6 +3,6 @@
 public class HealthCheckReponse
 {
     public string Status { get; set; } = string.Empty;
-    public IEnumerable<IndividualHealthCheckResponse> HealthChecks { get; set; } = Enumerable.Empty<IndividualHealthCheckResponse>();
+    public IEnumerable<IndividualHealthCheckResponse> HealthChecks { get; set; } = [];
     public TimeSpan HealthCheckDuration { get; set; }
 }

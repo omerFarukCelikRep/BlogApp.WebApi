@@ -1,5 +1,4 @@
-﻿using BlogApp.API.Constants;
-using BlogApp.Core.Utilities.Constants;
+﻿using BlogApp.Core.Utilities.Constants;
 using BlogApp.DataAccess.Contexts;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Models;
@@ -27,7 +26,7 @@ public static class DependencyInjection
                           name: HealthCheckConstans.Name,
                           failureStatus: HealthStatus.Degraded,
                           timeout: TimeSpan.FromSeconds(HealthCheckConstans.TimeoutAsSeconds),
-                          tags: new string[] { "services" }
+                          tags: ["services"]
                           )
             .AddDbContextCheck<BlogAppDbContext>();
 
@@ -112,7 +111,7 @@ public static class DependencyInjection
                         Id = "Bearer"
                         }
                     },
-                    Array.Empty<string>()
+                    []
                 }
             });
         });

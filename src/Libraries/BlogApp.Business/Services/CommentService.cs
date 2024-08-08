@@ -6,37 +6,32 @@ using BlogApp.Core.Utilities.Results.Interfaces;
 using BlogApp.DataAccess.Interfaces.Repositories;
 using BlogApp.Entities.DbSets;
 using BlogApp.Entities.Dtos.Comments;
+using CommentMessages = BlogApp.Business.Constants.ServiceMessages.Comment;
 
 namespace BlogApp.Business.Concrete;
-public class CommentService : ICommentService
+public class CommentService(ICommentRepository commentRepository,
+                            IUserRepository userRepository)
+    : ICommentService
 {
-    private readonly ICommentRepository _commentRepository;
-    private readonly IUserRepository _userRepository;
-    public CommentService(ICommentRepository commentRepository, IUserRepository userRepository)
+    public async Task<IResult<List<ArticleCommentListDto>?>> GetAllByArticleIdAsync(Guid articleId, CancellationToken cancellationToken = default)
     {
-        _commentRepository = commentRepository;
-        _userRepository = userRepository;
+        var comments = await commentRepository.GetAllAsync(x => x.ArticleId == articleId, false, cancellationToken);
+
+        return Result<List<ArticleCommentListDto>?>.Success(ObjectMapper.Mapper.Map<List<ArticleCommentListDto>>(comments), CommentMessages.Listed);
     }
 
-    public async Task<IDataResult<List<ArticleCommentListDto>>> GetAllByArticleIdAsync(Guid articleId)
-    {
-        var comments = await _commentRepository.GetAllAsync(x => x.ArticleId == articleId, false);
-
-        return new SuccessDataResult<List<ArticleCommentListDto>>(ObjectMapper.Mapper.Map<List<ArticleCommentListDto>>(comments), ServiceMessages.CommentsListed);
-    }
-
-    public async Task<IDataResult<CommentCreatedDto>> AddAsync(CommentCreateDto commentCreateDto)
+    public async Task<IResult<CommentCreatedDto?>> AddAsync(CommentCreateDto commentCreateDto, CancellationToken cancellationToken = default)
     {
         var comment = ObjectMapper.Mapper.Map<Comment>(commentCreateDto);
         if (commentCreateDto.UserId.HasValue)
         {
-            var user = await _userRepository.GetByIdAsync(commentCreateDto.UserId.Value, false);
+            var user = await userRepository.GetByIdAsync(commentCreateDto.UserId.Value, false, cancellationToken);
             comment.UserName = $"{user?.FirstName} {user?.LastName}";
         }
 
-        await _commentRepository.AddAsync(comment);
-        await _commentRepository.SaveChangesAsync();
+        await commentRepository.AddAsync(comment, cancellationToken);
+        await commentRepository.SaveChangesAsync(cancellationToken);
 
-        return new SuccessDataResult<CommentCreatedDto>(ObjectMapper.Mapper.Map<CommentCreatedDto>(comment));
+        return Result<CommentCreatedDto?>.Success(ObjectMapper.Mapper.Map<CommentCreatedDto>(comment));
     }
 }

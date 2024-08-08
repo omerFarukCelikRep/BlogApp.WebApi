@@ -6,11 +6,11 @@ using System.Linq.Expressions;
 namespace BlogApp.Business.Interfaces;
 public interface ITopicService
 {
-    Task<IDataResult<IEnumerable<TopicListDto>>> GetAllAsync();
-    Task<IDataResult<IEnumerable<TopicListDto>>> GetAllAsync(Expression<Func<Topic, bool>> expression);
-    Task<IDataResult<TopicDto>> GetAsync(Expression<Func<Topic, bool>> expression);
-    Task<IDataResult<TopicDto>> GetByIdAsync(Guid id);
-    Task<IDataResult<TopicDto>> AddAsync(TopicCreateDto createDto);
-    Task<IDataResult<TopicDto>> UpdateAsync(TopicUpdateDto updateDto);
-    Task<IResult> DeleteAsync(Guid id);
+    Task<IResult<List<TopicListDto>?>> GetAllAsync(CancellationToken cancellationToken = default);
+    Task<IResult<List<TopicListDto>?>> GetAllAsync(Expression<Func<Topic, bool>> expression, CancellationToken cancellationToken = default);
+    Task<IResult<TopicDto?>> GetAsync(Expression<Func<Topic, bool>> expression, CancellationToken cancellationToken = default);
+    Task<IResult<TopicDto?>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<IResult<TopicDto?>> AddAsync(TopicCreateDto createDto, CancellationToken cancellationToken = default);
+    Task<IResult<TopicDto?>> UpdateAsync(TopicUpdateDto updateDto, CancellationToken cancellationToken = default);
+    Task<IResult> DeleteAsync(Guid id, CancellationToken cancellationToken = default);
 }

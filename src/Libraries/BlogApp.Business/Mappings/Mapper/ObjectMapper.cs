@@ -4,7 +4,7 @@ using BlogApp.Business.Mappings.Profiles;
 namespace BlogApp.Business.Mappings.Mapper;
 public static class ObjectMapper
 {
-    private static readonly Lazy<IMapper> _mapper = new Lazy<IMapper>(() =>
+    private static readonly Lazy<IMapper> _mapper = new(() =>
     {
         var configuration = new MapperConfiguration(config =>
         {

@@ -4,40 +4,34 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace BlogApp.API.Controllers.v1;
-public class TopicsController : BaseController
+public class TopicsController(ITopicService topicService)
+    : BaseController
 {
-    private readonly ITopicService _topicService;
-
-    public TopicsController(ITopicService topicService)
-    {
-        _topicService = topicService;
-    }
-
     [HttpGet]
-    public async Task<IActionResult> GetAllAsync()
+    public async Task<IActionResult> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        var result = await _topicService.GetAllAsync();
+        var result = await topicService.GetAllAsync(cancellationToken);
 
         return GetDataResult(result);
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetByIdAsync(Guid id)
+    public async Task<IActionResult> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var result = await _topicService.GetByIdAsync(id);
+        var result = await topicService.GetByIdAsync(id, cancellationToken);
 
         return GetDataResult(result);
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateAsync([FromBody] TopicCreateDto createTopicDto)
+    public async Task<IActionResult> CreateAsync([FromBody] TopicCreateDto createTopicDto, CancellationToken cancellationToken = default)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        var result = await _topicService.AddAsync(createTopicDto);
+        var result = await topicService.AddAsync(createTopicDto, cancellationToken);
 
         if (!result.IsSuccess)
         {
@@ -48,22 +42,22 @@ public class TopicsController : BaseController
     }
 
     [HttpPut]
-    public async Task<IActionResult> UpdateAsync([FromBody] TopicUpdateDto updateTopicDto)
+    public async Task<IActionResult> UpdateAsync([FromBody] TopicUpdateDto updateTopicDto, CancellationToken cancellationToken = default)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        var result = await _topicService.UpdateAsync(updateTopicDto);
+        var result = await topicService.UpdateAsync(updateTopicDto, cancellationToken);
 
         return GetDataResult(result);
     }
 
     [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> DeleteAsync(Guid id)
+    public async Task<IActionResult> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var result = await _topicService.DeleteAsync(id);
+        var result = await topicService.DeleteAsync(id, cancellationToken);
 
         return GetResult(result);
     }

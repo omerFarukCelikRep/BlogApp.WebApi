@@ -36,10 +36,8 @@ public static class IQueryablePaginateExtensions
 
     private static void EnsureInRange(int index, int size)
     {
-        if (index < 0)
-            throw new ArgumentOutOfRangeException(nameof(index));
+        ArgumentOutOfRangeException.ThrowIfNegative(index);
 
-        if (size < 0)
-            throw new ArgumentOutOfRangeException(nameof(size));
+        ArgumentOutOfRangeException.ThrowIfNegative(size);
     }
 }

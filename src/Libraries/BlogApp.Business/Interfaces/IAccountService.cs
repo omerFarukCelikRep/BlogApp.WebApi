@@ -8,6 +8,6 @@ public interface IAccountService
 {
     Task<AuthResult> AddAsync(UserRegistrationRequestDto registrationRequestDto, CancellationToken cancellationToken = default);
     Task<AuthResult> AuthenticateAsync(UserLoginRequestDto loginRequestDto, string ipAddress, CancellationToken cancellationToken = default);
-    Task<IDataResult<User>> FindByEmailAsync(string email, CancellationToken cancellationToken = default);
+    Task<IResult<User?>> FindByEmailAsync(string email, CancellationToken cancellationToken = default);
     Task<AuthResult> RefreshTokenAsync(TokenRequestDto tokenRequestDto, CancellationToken cancellationToken = default);
 }

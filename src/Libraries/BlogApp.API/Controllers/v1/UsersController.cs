@@ -4,43 +4,37 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BlogApp.API.Controllers.v1;
 
-public class UsersController : BaseController
+public class UsersController(IUserService userService)
+    : BaseController
 {
-    private readonly IUserService _userService;
-
-    public UsersController(IUserService userService)
-    {
-        _userService = userService;
-    }
-
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll(CancellationToken cancellationToken = default)
     {
-        var result = await _userService.GetAllAsync();
+        var result = await userService.GetAllAsync(cancellationToken);
 
         return GetDataResult(result);
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetById([FromRoute] Guid id)
+    public async Task<IActionResult> GetById([FromRoute] Guid id, CancellationToken cancellationToken = default)
     {
-        var result = await _userService.GetByIdAsync(id);
+        var result = await userService.GetByIdAsync(id, cancellationToken);
 
         return GetDataResult(result);
     }
 
     [HttpGet("GetUserInfo")]
-    public async Task<IActionResult> GetUserInfoById([FromQuery] Guid userId)
+    public async Task<IActionResult> GetUserInfoById([FromQuery] Guid userId, CancellationToken cancellationToken = default)
     {
-        var result = await _userService.GetArticleUserInfoById(userId);
+        var result = await userService.GetArticleUserInfoById(userId, cancellationToken);
 
         return GetDataResult(result);
     }
 
     [HttpPut]
-    public async Task<IActionResult> Update([FromBody] UserUpdateDto updateMember)
+    public async Task<IActionResult> Update([FromBody] UserUpdateDto updateMember, CancellationToken cancellationToken = default)
     {
-        var result = await _userService.UpdateAsync(updateMember);
+        var result = await userService.UpdateAsync(updateMember, cancellationToken);
 
         return GetDataResult(result);
     }

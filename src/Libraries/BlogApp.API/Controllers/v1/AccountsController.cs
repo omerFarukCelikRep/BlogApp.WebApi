@@ -5,15 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace BlogApp.API.Controllers.v1;
-public class AccountsController : BaseController
+public class AccountsController(IAccountService accountService) 
+    : BaseController
 {
     private const string RememberMeKey = "RememberMe";
-
-    private readonly IAccountService _accountService;
-    public AccountsController(IAccountService accountService)
-    {
-        _accountService = accountService;
-    }
 
     [HttpPost("Register")]
     [AllowAnonymous]
@@ -23,7 +18,7 @@ public class AccountsController : BaseController
             return BadRequest(ModelState);
 
         registrationRequestDto.IpAddress = GetIpAddress();
-        var registerResult = await _accountService.AddAsync(registrationRequestDto, cancellationToken);
+        var registerResult = await accountService.AddAsync(registrationRequestDto, cancellationToken);
         return !registerResult.Success ? BadRequest(registerResult) : Ok(registerResult);
     }
 
@@ -34,7 +29,7 @@ public class AccountsController : BaseController
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var authenticationResult = await _accountService.AuthenticateAsync(loginRequestDto, GetIpAddress(), cancellationToken);
+        var authenticationResult = await accountService.AuthenticateAsync(loginRequestDto, GetIpAddress(), cancellationToken);
         if (!authenticationResult.Success)
             return Unauthorized(authenticationResult);
 
@@ -48,7 +43,7 @@ public class AccountsController : BaseController
             return BadRequest(ModelState);
 
         tokenRequestDto.IpAddress = GetIpAddress();
-        var result = await _accountService.RefreshTokenAsync(tokenRequestDto, cancellationToken);
+        var result = await accountService.RefreshTokenAsync(tokenRequestDto, cancellationToken);
         if (!result.Success)
             return BadRequest(result);
 

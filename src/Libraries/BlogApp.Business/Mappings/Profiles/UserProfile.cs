@@ -16,12 +16,10 @@ public class UserProfile : Profile
         CreateMap<User, UserDto>();
 
         CreateMap<User, PublishedArticleUserInfoDto>()
-            .ForMember(
-                dest => dest.AuthorName,
+            .ForMember(dest => dest.AuthorName,
                 config => config.MapFrom(src => $"{src.FirstName} {src.LastName}")
             )
-            .ForMember(
-                dest => dest.Image,
+            .ForMember(dest => dest.Image,
                 config => config.MapFrom(src => src.ProfilePicture)
             );
 

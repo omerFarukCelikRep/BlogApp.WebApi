@@ -1,7 +1,7 @@
 ﻿namespace BlogApp.Authentication.Dtos.Outgoing;
 public class AuthResult
 {
-    private List<string> _errors = new();
+    private readonly List<string> _errors = [];
     public AuthResult() { }
 
     public AuthResult(bool success, params string[] errors)

@@ -1,7 +1,6 @@
 ﻿using BlogApp.Core.Utilities.Configurations;
 using BlogApp.Core.Utilities.Constants;
 using BlogApp.DataAccess.Contexts;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
@@ -14,6 +13,6 @@ public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<BlogAppDbC
 
         optionsBuilder.UseSqlServer(Configuration.GetConnectionString(DatabaseConstants.DefaultConnectionString));
 
-        return new(optionsBuilder.Options, new HttpContextAccessor());
+        return new(optionsBuilder.Options);
     }
 }

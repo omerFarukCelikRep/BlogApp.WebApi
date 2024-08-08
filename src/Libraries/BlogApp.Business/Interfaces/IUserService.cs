@@ -5,8 +5,8 @@ using BlogApp.Entities.Dtos.Users;
 namespace BlogApp.Business.Interfaces;
 public interface IUserService
 {
-    Task<IDataResult<List<UserListDto>>> GetAllAsync();
-    Task<IDataResult<PublishedArticleUserInfoDto>> GetArticleUserInfoById(Guid userId);
-    Task<IDataResult<UserDto>> GetByIdAsync(Guid id);
-    Task<IDataResult<UserUpdatedDto>> UpdateAsync(UserUpdateDto updateMemberDto);
+    Task<IResult<List<UserListDto>?>> GetAllAsync(CancellationToken cancellationToken = default);
+    Task<IResult<PublishedArticleUserInfoDto?>> GetArticleUserInfoById(Guid userId, CancellationToken cancellationToken = default);
+    Task<IResult<UserDto?>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<IResult<UserUpdatedDto?>> UpdateAsync(UserUpdateDto updateMemberDto, CancellationToken cancellationToken = default);
 }

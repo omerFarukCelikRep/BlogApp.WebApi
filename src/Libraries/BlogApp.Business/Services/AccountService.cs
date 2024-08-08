@@ -2,7 +2,6 @@
 using BlogApp.Authentication.Dtos.Incoming;
 using BlogApp.Authentication.Dtos.Outgoing;
 using BlogApp.Authentication.Interfaces.Services;
-using BlogApp.Business.Constants;
 using BlogApp.Business.Interfaces;
 using BlogApp.Business.Mappings.Mapper;
 using BlogApp.Core.Utilities.Authentication;
@@ -12,20 +11,14 @@ using BlogApp.Core.Utilities.Results.Interfaces;
 using BlogApp.DataAccess.Interfaces.Repositories;
 using BlogApp.Entities.DbSets;
 using System.Text.RegularExpressions;
+using UserMessages = BlogApp.Business.Constants.ServiceMessages.User;
 
 namespace BlogApp.Business.Services;
-public class AccountService : IAccountService
+public partial class AccountService(IUserRepository userRepository,
+                            IUserSessionRepository userSessionRepository,
+                            ITokenService tokenService)
+    : IAccountService
 {
-    private readonly IUserRepository _userRepository;
-    private readonly IUserSessionRepository _userSessionRepository;
-    private readonly ITokenService _tokenService;
-    public AccountService(IUserRepository userRepository, IUserSessionRepository userSessionRepository, ITokenService tokenService)
-    {
-        _userRepository = userRepository;
-        _userSessionRepository = userSessionRepository;
-        _tokenService = tokenService;
-    }
-
     public async Task<AuthResult> AddAsync(UserRegistrationRequestDto registrationRequestDto, CancellationToken cancellationToken = default)
     {
         var existUser = await GetByEmailAsync(registrationRequestDto.Email, cancellationToken);
@@ -40,11 +33,11 @@ public class AccountService : IAccountService
         user.PasswordSalt = salt;
         user.PasswordHash = hash;
 
-        await _userRepository.AddAsync(user, cancellationToken);
+        await userRepository.AddAsync(user, cancellationToken);
 
-        var jwtToken = await _tokenService.GenerateJwtToken(user, cancellationToken: cancellationToken);
-        var refreshToken = await _tokenService.GenerateRefreshTokenAsync(user, registrationRequestDto.IpAddress, cancellationToken);
-        await _userRepository.SaveChangesAsync(cancellationToken);
+        var jwtToken = await tokenService.GenerateJwtToken(user, cancellationToken: cancellationToken);
+        var refreshToken = await tokenService.GenerateRefreshTokenAsync(user, registrationRequestDto.IpAddress, cancellationToken);
+        await userRepository.SaveChangesAsync(cancellationToken);
 
         return new AuthResult(success: true, token: jwtToken, refreshToken: refreshToken.Token!);
     }
@@ -59,9 +52,9 @@ public class AccountService : IAccountService
         if (!checkPasswordResult)
             return new AuthResult(false, AuthenticationMessages.InvalidRequest);
 
-        var jwtToken = await _tokenService.GenerateJwtToken(user, loginRequestDto.RememberMe, cancellationToken);
-        var refreshToken = await _tokenService.GetActiveRefreshTokenAsync(user, cancellationToken)
-                           ?? await _tokenService.GenerateRefreshTokenAsync(user, ipAddress, cancellationToken);
+        var jwtToken = await tokenService.GenerateJwtToken(user, loginRequestDto.RememberMe, cancellationToken);
+        var refreshToken = await tokenService.GetActiveRefreshTokenAsync(user, cancellationToken)
+                           ?? await tokenService.GenerateRefreshTokenAsync(user, ipAddress, cancellationToken);
 
         var userSession = new UserSession
         {
@@ -70,41 +63,44 @@ public class AccountService : IAccountService
             Token = jwtToken,
             UserId = user.Id,
         };
-        await _userSessionRepository.AddAsync(userSession, cancellationToken);
+        await userSessionRepository.AddAsync(userSession, cancellationToken);
 
         return new AuthResult(success: true, token: jwtToken, refreshToken: refreshToken.Token!);
     }
 
-    public async Task<IDataResult<User>> FindByEmailAsync(string email, CancellationToken cancellationToken = default)
+    public async Task<IResult<User?>> FindByEmailAsync(string email, CancellationToken cancellationToken = default)
     {
         var user = await GetByEmailAsync(email, cancellationToken);
-        return user is null ? new ErrorDataResult<User>(ServiceMessages.UserNotFound) : new SuccessDataResult<User>(user);
+        return user is null ? Result<User>.Failure(new Error(string.Empty, UserMessages.NotFound)) : Result<User>.Success(user);
     }
 
     public async Task<AuthResult> RefreshTokenAsync(TokenRequestDto tokenRequestDto, CancellationToken cancellationToken = default)
     {
-        var userId = await _tokenService.ValidateJwtTokenAsync(tokenRequestDto.Token, cancellationToken);
+        var userId = await tokenService.ValidateJwtTokenAsync(tokenRequestDto.Token, cancellationToken);
         if (userId is null)
             return new AuthResult(false, ExceptionMessages.SomethingWentWrong);
 
-        var verifyResult = await _tokenService.VerifyTokenAsync(tokenRequestDto, cancellationToken);
+        var verifyResult = await tokenService.VerifyTokenAsync(tokenRequestDto, cancellationToken);
         if (!verifyResult.Success)
             return verifyResult;
 
-        bool markedAsUsed = await _tokenService.UpdateRefreshTokenAsUsedAsync(tokenRequestDto.RefreshToken, cancellationToken);
+        bool markedAsUsed = await tokenService.UpdateRefreshTokenAsUsedAsync(tokenRequestDto.RefreshToken, cancellationToken);
         if (!markedAsUsed)
             return new AuthResult(false, ExceptionMessages.SomethingWentWrong);
 
-        var user = await _userRepository.GetByIdAsync(userId.Value, false, cancellationToken);
+        var user = await userRepository.GetByIdAsync(userId.Value, false, cancellationToken);
         if (user is null)
-            return new AuthResult(false, ServiceMessages.UserNotFound);
+            return new AuthResult(false, UserMessages.NotFound);
 
-        var jwtToken = await _tokenService.GenerateJwtToken(user, cancellationToken: cancellationToken);
-        var refreshToken = await _tokenService.GenerateRefreshTokenAsync(user, tokenRequestDto.IpAddress, cancellationToken);
+        var jwtToken = await tokenService.GenerateJwtToken(user, cancellationToken: cancellationToken);
+        var refreshToken = await tokenService.GenerateRefreshTokenAsync(user, tokenRequestDto.IpAddress, cancellationToken);
 
         return new(success: true, token: jwtToken, refreshToken: refreshToken.Token!);
     }
 
-    private Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default) => _userRepository.GetByEmailAsync(email, false, cancellationToken);
-    private bool ValidatePassword(string password) => new Regex("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*+-]).{8,32}$").IsMatch(password);
+    private Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default) => userRepository.GetByEmailAsync(email, false, cancellationToken);
+    private static bool ValidatePassword(string password) => ValidatePassword().IsMatch(password);
+
+    [GeneratedRegex("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*+-]).{8,32}$")]
+    private static partial Regex ValidatePassword();
 }

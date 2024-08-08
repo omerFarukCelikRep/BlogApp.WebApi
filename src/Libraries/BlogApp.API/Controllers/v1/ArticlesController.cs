@@ -1,7 +1,5 @@
 ﻿using BlogApp.Business.Interfaces;
-using BlogApp.Core.Utilities.Results.Interfaces;
 using BlogApp.Entities.Dtos.Articles;
-using BlogApp.Entities.Dtos.PublishedArticles;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.AspNetCore.RateLimiting;
@@ -9,84 +7,78 @@ using Microsoft.AspNetCore.RateLimiting;
 namespace BlogApp.API.Controllers.v1;
 
 [EnableRateLimiting("Basic")]
-public class ArticlesController : BaseController
+public class ArticlesController(IArticleService articleService)
+    : BaseController
 {
-    private readonly IArticleService _articleService;
-
-    public ArticlesController(IArticleService articleService)
-    {
-        _articleService = articleService;
-    }
-
     [HttpGet]
     [OutputCache]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll(CancellationToken cancellationToken = default)
     {
-        var result = await _articleService.GetAllPublishedAsync();
+        var result = await articleService.GetAllPublishedAsync(cancellationToken);
 
         return GetDataResult(result);
     }
 
     [HttpGet("Published")]
-    public async Task<IActionResult> GetAllPublished()
+    public async Task<IActionResult> GetAllPublished(CancellationToken cancellationToken = default)
     {
-        var result = await _articleService.GetAllPublishedByUserIdAsync(UserId);
+        var result = await articleService.GetAllPublishedByUserIdAsync(UserId, cancellationToken);
 
         return GetDataResult(result);
     }
 
     [HttpGet("{topicName}")]
-    public async Task<IActionResult> GetAllPublished(string topicName)
+    public async Task<IActionResult> GetAllPublished(string topicName, CancellationToken cancellationToken = default)
     {
-        IDataResult<List<PublishedArticleListDto>> result = await _articleService.GetAllPublishedByTopicNameAsync(topicName);
+        var result = await articleService.GetAllPublishedByTopicNameAsync(topicName, cancellationToken);
 
         return GetDataResult(result);
     }
 
     [HttpGet("Unpublished")]
-    public async Task<IActionResult> GetAllUnpublished()
+    public async Task<IActionResult> GetAllUnpublished(CancellationToken cancellationToken = default)
     {
-        var result = await _articleService.GetAllUnpublishedByUserIdAsync(UserId);
+        var result = await articleService.GetAllUnpublishedByUserIdAsync(UserId, cancellationToken);
 
         return GetDataResult(result);
     }
 
     [HttpGet("Unpublished/{id:guid}")]
-    public async Task<IActionResult> GetUnpublishedById([FromRoute] Guid id)
+    public async Task<IActionResult> GetUnpublishedById([FromRoute] Guid id, CancellationToken cancellationToken = default)
     {
-        var result = await _articleService.GetUnpublishedByIdAsync(id);
+        var result = await articleService.GetUnpublishedByIdAsync(id, cancellationToken);
 
         return GetDataResult(result);
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetById([FromRoute] Guid id)
+    public async Task<IActionResult> GetById([FromRoute] Guid id, CancellationToken cancellationToken = default)
     {
-        var result = await _articleService.GetByIdAsync(id);
+        var result = await articleService.GetByIdAsync(id, cancellationToken);
 
         return GetDataResult(result);
     }
 
     [HttpGet("ShortDetails")]
-    public async Task<IActionResult> GetShortDetails()
+    public async Task<IActionResult> GetShortDetails(CancellationToken cancellationToken = default)
     {
-        var result = await _articleService.GetRandomArticlesWithShortDetails();
+        var result = await articleService.GetRandomArticlesWithShortDetails(cancellationToken);
 
         return GetDataResult(result);
     }
 
     [HttpGet("Trends")]
     [OutputCache]
-    public async Task<IActionResult> GetTrends()
+    public async Task<IActionResult> GetTrends(CancellationToken cancellationToken = default)
     {
-        var result = await _articleService.GetTrendsAsync();
+        var result = await articleService.GetTrendsAsync(cancellationToken);
 
         return GetDataResult(result);
     }
 
     [HttpPost]
     [DisableRateLimiting]
-    public async Task<IActionResult> Create([FromBody] ArticleCreateDto createArticleDto)
+    public async Task<IActionResult> Create([FromBody] ArticleCreateDto createArticleDto, CancellationToken cancellationToken = default)
     {
         if (!ModelState.IsValid)
         {
@@ -94,15 +86,15 @@ public class ArticlesController : BaseController
         }
 
         createArticleDto.UserId = UserId;
-        var result = await _articleService.AddAsync(createArticleDto);
+        var result = await articleService.AddAsync(createArticleDto, cancellationToken);
 
         return Ok(result);
     }
 
     [HttpPost("Publish")]
-    public async Task<IActionResult> Publish([FromBody] Guid id)
+    public async Task<IActionResult> Publish([FromBody] Guid id, CancellationToken cancellationToken = default)
     {
-        var result = await _articleService.PublishAsync(id);
+        var result = await articleService.PublishAsync(id, cancellationToken);
 
         return GetResult(result);
     }

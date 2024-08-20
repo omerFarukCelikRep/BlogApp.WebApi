@@ -9,7 +9,9 @@ using BlogApp.Entities.DbSets;
 using BlogApp.Entities.Dtos.Articles;
 using BlogApp.Entities.Dtos.PublishedArticles;
 using ArticleMessages = BlogApp.Business.Constants.ServiceMessages.Article;
-namespace BlogApp.Business.Concrete;
+
+namespace BlogApp.Business.Services;
+
 public class ArticleService(IArticleRepository articleRepository,
                             IPublishedArticleRepository publishedArticleRepository)
     : IArticleService

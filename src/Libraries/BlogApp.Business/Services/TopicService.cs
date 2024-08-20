@@ -7,7 +7,7 @@ using BlogApp.Entities.DbSets;
 using BlogApp.Entities.Dtos.Topics;
 using System.Linq.Expressions;
 
-namespace BlogApp.Business.Concrete;
+namespace BlogApp.Business.Services;
 public class TopicService(ITopicRepository topicRepository)
     : ITopicService
 {

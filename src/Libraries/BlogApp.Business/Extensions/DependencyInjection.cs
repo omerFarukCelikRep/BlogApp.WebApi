@@ -1,5 +1,4 @@
-﻿using BlogApp.Business.Concrete;
-using BlogApp.Business.Interfaces;
+﻿using BlogApp.Business.Interfaces;
 using BlogApp.Business.Services;
 using FluentValidation;
 using FluentValidation.AspNetCore;

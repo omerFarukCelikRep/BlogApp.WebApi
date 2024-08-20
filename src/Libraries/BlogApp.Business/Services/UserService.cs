@@ -1,5 +1,4 @@
-﻿using BlogApp.Business.Constants;
-using BlogApp.Business.Interfaces;
+﻿using BlogApp.Business.Interfaces;
 using BlogApp.Business.Mappings.Mapper;
 using BlogApp.Core.Utilities.Results.Concrete;
 using BlogApp.Core.Utilities.Results.Interfaces;
@@ -8,7 +7,7 @@ using BlogApp.Entities.Dtos.PublishedArticles;
 using BlogApp.Entities.Dtos.Users;
 using UserMessages = BlogApp.Business.Constants.ServiceMessages.User;
 
-namespace BlogApp.Business.Concrete;
+namespace BlogApp.Business.Services;
 public class UserService(IUserRepository userRepository)
     : IUserService
 {
@@ -30,7 +29,7 @@ public class UserService(IUserRepository userRepository)
 
         if (user is null)
         {
-            return Result<UserDto>.Failure(new("404",UserMessages.NotFound));
+            return Result<UserDto>.Failure(new("404", UserMessages.NotFound));
         }
 
         return Result<UserDto>.Success(ObjectMapper.Mapper.Map<UserDto>(user), UserMessages.Getted);
@@ -41,7 +40,7 @@ public class UserService(IUserRepository userRepository)
         var user = await userRepository.GetByIdAsync(userId, false, cancellationToken);
         if (user is null)
         {
-            return Result<PublishedArticleUserInfoDto>.Failure(new("404",UserMessages.NotFound));
+            return Result<PublishedArticleUserInfoDto>.Failure(new("404", UserMessages.NotFound));
         }
 
         return Result<PublishedArticleUserInfoDto>.Success(ObjectMapper.Mapper.Map<PublishedArticleUserInfoDto>(user), UserMessages.Getted);
@@ -52,7 +51,7 @@ public class UserService(IUserRepository userRepository)
         var user = await userRepository.GetByIdAsync(userUpdateDto.Id, cancellationToken: cancellationToken);
         if (user is null)
         {
-            return Result<UserUpdatedDto>.Failure(new("404",UserMessages.NotFound));
+            return Result<UserUpdatedDto>.Failure(new("404", UserMessages.NotFound));
         }
 
         var mappedUser = ObjectMapper.Mapper.Map(userUpdateDto, user);

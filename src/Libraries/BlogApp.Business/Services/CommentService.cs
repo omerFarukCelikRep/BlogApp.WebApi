@@ -1,5 +1,4 @@
-﻿using BlogApp.Business.Constants;
-using BlogApp.Business.Interfaces;
+﻿using BlogApp.Business.Interfaces;
 using BlogApp.Business.Mappings.Mapper;
 using BlogApp.Core.Utilities.Results.Concrete;
 using BlogApp.Core.Utilities.Results.Interfaces;
@@ -8,7 +7,7 @@ using BlogApp.Entities.DbSets;
 using BlogApp.Entities.Dtos.Comments;
 using CommentMessages = BlogApp.Business.Constants.ServiceMessages.Comment;
 
-namespace BlogApp.Business.Concrete;
+namespace BlogApp.Business.Services;
 public class CommentService(ICommentRepository commentRepository,
                             IUserRepository userRepository)
     : ICommentService

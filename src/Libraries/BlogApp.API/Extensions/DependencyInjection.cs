@@ -1,4 +1,5 @@
-﻿using BlogApp.Core.Utilities.Constants;
+﻿using BlogApp.API.Interceptors;
+using BlogApp.Core.Utilities.Constants;
 using BlogApp.DataAccess.Contexts;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Models;
@@ -17,6 +18,8 @@ public static class DependencyInjection
             .AddCustomRateLimiter()
             .AddCustomOutputCaching()
             .AddHttpContextAccessor()
+            .AddHttpLogging(opts => opts.CombineLogs = true)
+            .AddHttpLoggingInterceptor<ApiHttpLoggingInterceptor>()
             .AddControllers();
 
         services.AddEndpointsApiExplorer();
